@@ -1,0 +1,34 @@
+name = "erdos-simonovits-degeneracy"
+version = "1.0.0"
+keywords = ["math"]
+defaultTargets = ["Upstream", "ErdosDegeneracyLib", "ErdosDegeneracy", "ErdosDegeneracyTests"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "Upstream"
+srcDir = "upstream"
+roots = ["CompactnessAndDegeneracy"]
+
+[[lean_lib]]
+name = "ErdosDegeneracyLib"
+srcDir = "lib"
+roots = ["LawDefs", "Entropy3", "Sampling3", "Kernel3", "Bridge3", "SamplingR", "KernelR", "BridgeR", "ProfilesR", "LedgerR", "LemmaBQuant", "LedgerAsym"]
+
+[[lean_lib]]
+name = "ErdosDegeneracy"
+srcDir = "."
+roots = ["LemmaA", "Lemma61", "LemmaC", "LemmaB", "Theorem1", "Theorem2", "Theorem3a", "Theorem3b", "Prop63"]
+
+[[lean_lib]]
+name = "ErdosDegeneracyTests"
+srcDir = "tests"
+roots = ["KernelRCheck3"]
+
+[[lean_lib]]
+name = "Challenge"
+srcDir = "."
+roots = ["K_ThreeDegenerateGraphs"]
