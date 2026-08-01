@@ -70,29 +70,29 @@ because log-cosh is flatter than its parabola (negative quartic term).
 
 ## 4. Theorems
 
-**Theorem 1 (the $r=3$ counterexample).** *There is a connected bipartite
-graph $H$ of degeneracy exactly $3$ and a $c>0$ with*
+**Theorem 1 (the $r=3$ counterexample).** There is a connected bipartite
+graph $H$ of degeneracy exactly $3$ and a $c>0$ with
 $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
-*Lean:* [`Theorem1.lean`](Theorem1.lean) `threeDegenerateExtremalCounterexample`.
+**Lean:** [`Theorem1.lean`](Theorem1.lean) `threeDegenerateExtremalCounterexample`.
 
-**Theorem 2 (failure at every level).** *For every $r\ge2$ there exist a
-connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with*
+**Theorem 2 (failure at every level).** For every $r\ge2$ there exist a
+connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
 $$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
-*Lean:* [`Theorem2.lean`](Theorem2.lean) `rDegenerateExtremalCounterexample_explicit`.
+**Lean:** [`Theorem2.lean`](Theorem2.lean) `rDegenerateExtremalCounterexample_explicit`.
 
-**Theorem 3 (the asymptotic law).** *(a) For every fixed $\lambda$ with
-$\lambda\ln2<1$,*
+**Theorem 3 (the asymptotic law).** (a) For every fixed $\lambda$ with
+$\lambda\ln2<1$,
 $$\lim_{r\to\infty} r^2\bigl(C_r-A_r(\lambda)\bigr)\ =\ \frac{\lambda^4\ln^32}{64},$$
-*while for $\lambda\ln2>1$ the limit is $-\infty$: the threshold is exactly
-Gibbs weight $2^\lambda=e$.*
-*Lean:* [`Theorem3a.lean`](Theorem3a.lean) `width_tendsto_unconditional`;
+while for $\lambda\ln2>1$ the limit is $-\infty$: the threshold is exactly
+Gibbs weight $2^\lambda=e$.
+**Lean:** [`Theorem3a.lean`](Theorem3a.lean) `width_tendsto_unconditional`;
 [`Prop63.lean`](Prop63.lean) `threshold_sharp`.
 
-*(b) Along the schedule $\lambda_r=\tfrac{1-\ln r/r}{\ln2}$ the maximal
+(b) Along the schedule $\lambda_r=\tfrac{1-\ln r/r}{\ln2}$ the maximal
 admissible exponent gain $\varepsilon_r^{\max}$ (defined in
-[`lib/LedgerR.lean`](lib/LedgerR.lean)) satisfies*
+[`lib/LedgerR.lean`](lib/LedgerR.lean)) satisfies
 $$\boxed{\ \lim_{r\to\infty}\ 16\,r^2\,\varepsilon_r^{\max}\ =\ 1\ .}$$
-*Lean:* [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) `sixteen_rsq_epsMax_tendsto'`
+**Lean:** [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) `sixteen_rsq_epsMax_tendsto'`
 (schedule and Lemma-B applicability: [`Theorem3b.lean`](Theorem3b.lean)).
 
 ## 5. Formalization notes
