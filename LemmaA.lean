@@ -3,7 +3,7 @@ import LawDefs
 /-!
 # Lemma A: far field / concavity of `F_a`
 
-Paper reference: PAPER.md §4.1.
+Design-notes reference (notes not shipped in this repository): §4.1.
 
 Main results:
 * `Ffun_symm` : `F_a(q) = F_a(1-q)`.

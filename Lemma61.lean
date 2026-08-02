@@ -5,7 +5,7 @@ import CompactnessAndDegeneracy
 /-!
 # Lemma 6.1: the window upper bound `width_r ≤ W(λ)/r² (1 - 1/r)`
 
-This file formalises Lemma 6.1 of PAPER.md §6.6 together with all the
+This file formalises Lemma 6.1 of the design notes §6.6 together with all the
 ingredients it needs (the global `log cosh` lower bound of §5.1, the exact
 binomial moments of §5.2, and the entropy-series lower bound of §5.3 in the
 direction used by Step 2 of §6.6).
@@ -401,7 +401,7 @@ theorem centerSum_lower (r : ℕ) (lam : ℝ) (hr : 1 ≤ r) :
 
 /-! ## Step 4: assembly — Lemma 6.1 -/
 
-/-- **Lemma 6.1 (PAPER.md §6.6).** For `r ≥ 2`, `λ > 0` and `λ ln 2 < 2r`
+/-- **Lemma 6.1 (the design notes §6.6).** For `r ≥ 2`, `λ > 0` and `λ ln 2 < 2r`
 (i.e. `r > a/2`, so `τ_r ∈ (0,1/2)`),
 `width_r ≤ (W(λ)/r²)(1 - 1/r)`. No hypothesis on `sup G_r` is used. -/
 theorem width_le_mul (r : ℕ) (lam : ℝ) (hr : 2 ≤ r) (hlam : 0 < lam)

@@ -6,7 +6,7 @@ import LedgerAsym
 /-!
 # Proposition 6.3: supercritical blow-up, and the sharpness of `λ* = 1/ln 2`
 
-Paper reference: PAPER.md §6.7 (Prop. 6.3), verified numerically in §6.8.
+Design-notes reference (notes not shipped in this repository): §6.7 (Prop. 6.3), verified numerically in §6.8.
 
 Above the Gibbs threshold — `a = λ ln 2 > 1` — the centre `(½,½)` stops being
 the maximiser of `G_r`, and it loses by a **constant**, not by an `O(r^{-2})`
@@ -507,7 +507,7 @@ theorem rsq_width_tendsto_atBot (lam : ℝ) (ha : 1 < lam * Real.log 2) :
 
 /-! ## §6 Sharpness of the threshold -/
 
-/-- **Threshold sharpness (PAPER.md §6.7).**  The Gibbs threshold
+/-- **Threshold sharpness (the design notes §6.7).**  The Gibbs threshold
 `λ* = 1/ln 2` is sharp: strictly above it the rescaled window diverges to
 `-∞` (this file), while at and below it the window is positive of order
 `r^{-2}` — Theorem 3(a) for fixed `λ < λ*` and

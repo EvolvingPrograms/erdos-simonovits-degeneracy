@@ -3,7 +3,7 @@ import LawDefs
 /-!
 # The uniform ledger: arithmetic layer (paper §8, §9.2)
 
-This file is the *arithmetic* layer of the uniform ledger of PAPER.md §8.  Every
+This file is the *arithmetic* layer of the uniform ledger of the design notes §8.  Every
 statement takes the window `width r lam` as a **hypothesis**; nothing here proves
 that the window is open.  That is Lemma C's job, and this file deliberately does
 not import it (it re-proves its own copy of the entropy-defect bound, §2 below).
@@ -18,7 +18,7 @@ Contents.
 * §4  `K1_bound`: the general form of hypothesis (W3).
 * §5  The concrete corollary at `λ = 27/20`, `w = 0.00604`.
 
-Reference: `research/PAPER.md` §§5.2–5.3, 8.0–8.4, 9.2.
+Reference: the design notes §§5.2–5.3, 8.0–8.4, 9.2.
 -/
 
 namespace DegeneracyLedger

@@ -173,7 +173,7 @@ theorem tendsto_r_one_sub_betaMid :
 
 /-! ## §5 Theorem 3(b), unconditional -/
 
-/-- **Theorem 3(b) (PAPER.md Thm 10.6(b)), unconditional.**
+/-- **Theorem 3(b) (the design notes Thm 10.6(b)), unconditional.**
 
 Along the tuned sequence `λ_r = λ*(1 - ln r / r)`, at the ledger midpoint `β_r`,
 

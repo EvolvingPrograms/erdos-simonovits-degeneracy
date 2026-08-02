@@ -15,14 +15,15 @@ status:
     exponent family law 8 r^2 eps_r(beta_theta) -> 1 - theta across the
     feasible window (1/16 at the midpoint; supremal constant 1/8); and the
     explicit constants 1/(28 r^2) (all r >= 2) and 1/160 (r = 3), both
-    past the paper's midpoint constants 1/(107 r^2) and 1/200.
+    strictly improving the midpoint evaluation of the same chain
+    (kept as the 1/(108 r^2) checkpoint).
   axioms: ["propext", "Classical.choice", "Quot.sound"]
   sorries: 0  # in all proof targets; the four frozen challenge statement files in challenges/ intentionally contain one each
   main_results:
-    - name: "Theorem 1: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/160), exponent and exactness literal (past the paper certificate 1/200)"
+    - name: "Theorem 1: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/160), exponent and exactness literal"
       decl: "RDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp"
       file: "Theorem2.lean"
-    - name: "Theorem 2: for every r >= 2, H_r of degeneracy exactly r with ex(n;H_r) >= c n^(2 - 1/r + 1/(28 r^2)) (near-edge ledger theta=eta=1/100; past the paper's 1/(107 r^2))"
+    - name: "Theorem 2: for every r >= 2, H_r of degeneracy exactly r with ex(n;H_r) >= c n^(2 - 1/r + 1/(28 r^2)) (near-edge ledger theta=eta=1/100)"
       decl: "RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact"
       file: "Theorem2.lean"
     - name: "Theorem 3(a): r^2 (C_r - A_r) -> lambda^4 ln^3(2)/64 for every subcritical lambda (lambda ln 2 < 1)"
@@ -53,7 +54,7 @@ status:
     - name: "Theorem 1's constant: eps_3 >= 1/160 at r = 3 (Lemma C window bound specialized to r = 3)"
       decl: "DegeneracyLedgerSharp.eps_three_160"
       file: "lib/LedgerSharp.lean"
-    - name: "The paper's midpoint chain reproduced as a checkpoint: eps >= 1/(108 r^2) at theta = eta = 1/2"
+    - name: "The midpoint chain retained as a checkpoint: eps >= 1/(108 r^2) at theta = eta = 1/2"
       decl: "DegeneracyLedgerSharp.eps_half_108"
       file: "lib/LedgerSharp.lean"
     - name: "Compatibility form at the previous constant 1/(110 r^2)"
@@ -63,7 +64,7 @@ status:
       decl: "ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_exact"
       file: "Theorem1.lean"
   future_work:
-    - "Per-r interval width evaluation at small r (would push 1/(28 r^2) toward ~1/(21 r^2), eps_3 toward 1/138, and the 1/(108 r^2) midpoint checkpoint to the paper's 1/(107 r^2))"
+    - "Per-r interval width evaluation at small r (would push 1/(28 r^2) toward ~1/(21 r^2), eps_3 toward 1/138, and the 1/(108 r^2) midpoint checkpoint to 1/(107 r^2))"
 
 verification:
   # The CI workflow is the canonical verification script: run its steps

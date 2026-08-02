@@ -9,7 +9,7 @@ Conventions (fixed for the whole campaign — do not change):
 * `a = λ · ln 2` never appears as a separate definition; write `lam * Real.log 2`.
 * The window is `width r lam = Cside r (tauOf r lam) - Aside r lam`.
 
-Paper reference: PAPER.md §§4-6. Lemma names below match the paper.
+Design-notes reference (notes not shipped in this repository): §§4-6. Lemma names below match the design notes.
 -/
 
 namespace DegeneracyLaw

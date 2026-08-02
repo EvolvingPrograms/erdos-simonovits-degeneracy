@@ -77,8 +77,7 @@ Points to check:
 The asymptotic law for the feasibility window of the method. Unlike
 Challenges 1–2 this is not a pure graph-theoretic statement: the
 quantities are defined from scratch inside the file, and **the
-definitions are the content** — review them against §§4–5 of the README
-(or the paper's §§4–6).
+definitions are the content** — review them against §§4–5 of the README.
 
 > For every fixed `λ > 0` with `λ ln 2 < 1`:
 > `r² · width(r, λ) → λ⁴ ln³2 / 64` as `r → ∞`.
@@ -122,8 +121,7 @@ plus:
 
 Points to check:
 
-- At `θ = 1/2` (the midpoint of the window, the choice made in the
-  paper's construction) this gives `16 r² ε → 1`, i.e. the midpoint
+- At `θ = 1/2` (the midpoint of the window) this gives `16 r² ε → 1`, i.e. the midpoint
   constant `1/(16 r²)`.
 - As `θ → 0` the limit approaches the supremal constant `1/(8 r²)`; it is
   approached but not attained (the window edge itself is excluded).

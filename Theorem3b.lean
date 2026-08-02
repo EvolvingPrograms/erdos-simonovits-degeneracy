@@ -6,7 +6,7 @@ import LedgerR
 /-!
 # Theorem 3(b): the tuned sequence and the sharp constant `1/16`
 
-Paper reference: PAPER.md §10 (Cor. 10.2, Prop. 10.3, (10.1)–(10.2), Thm 10.6(b)).
+Design-notes reference (notes not shipped in this repository): §10 (Cor. 10.2, Prop. 10.3, (10.1)–(10.2), Thm 10.6(b)).
 
 Theorem 3(a) (`DegeneracyLaw.width_tendsto`) fixes `λ` and lets `r → ∞`; the
 resulting constant is `W(λ) = λ⁴ ln³2 / 64`, which is maximised only in the
@@ -383,7 +383,7 @@ theorem width_tuned_tendsto :
 
 /-! ## §10.6(b) The sharp constant `1/16` -/
 
-/-- **Theorem 3(b) (PAPER.md Thm 10.6(b)), the `ε^max` form.**
+/-- **Theorem 3(b) (the design notes Thm 10.6(b)), the `ε^max` form.**
 
 Along the tuned sequence, at the midpoint `β_r` of §8.1,
 

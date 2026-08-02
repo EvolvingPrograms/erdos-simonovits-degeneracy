@@ -22,7 +22,7 @@ powers of `1/r`, so the sandwich closes on `W(λ)`:
 Lemma B is taken here as a hypothesis
 `hB : ∀ r ≥ 2, supG r λ = G_r(1/2,1/2)` rather than imported.
 
-Paper reference: PAPER.md §6.7-6.8 and §9.3.
+Design-notes reference (notes not shipped in this repository): §6.7-6.8 and §9.3.
 -/
 
 namespace DegeneracyLaw
@@ -104,7 +104,7 @@ theorem lowerSeq_le_rsq_width (lam : ℝ) (hlam0 : 0 < lam)
 
 /-! ## Theorem 3(a) -/
 
-/-- **Theorem 3(a) (PAPER.md §6.7-6.8).** Conditional on Lemma B (`hB`), the rescaled
+/-- **Theorem 3(a) (the design notes §6.7-6.8).** Conditional on Lemma B (`hB`), the rescaled
 feasibility window converges: `r² · width_r → W(λ) = λ⁴ ln³2 / 64`. -/
 theorem width_tendsto (lam : ℝ) (hlam0 : 0 < lam) (hlam1 : lam * Real.log 2 < 1)
     (hB : ∀ r : ℕ, 2 ≤ r → supG r lam = Gfun r lam (1 / 2) (1 / 2)) :

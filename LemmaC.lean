@@ -248,7 +248,7 @@ theorem pascal_sum (r : ℕ) (f : ℝ → ℝ) :
           = (r.choose (j + 1) : ℝ) * f (2 * ((j + 1 : ℕ) : ℝ) - (r : ℝ) - 1) := by
       intro j _
       congr 1
-      push_cast; ring
+      push_cast; ring_nf
     rw [Finset.sum_congr rfl hcong, h0,
       ← Finset.sum_range_succ' (fun j => (r.choose j : ℝ) * f (2 * (j : ℝ) - (r : ℝ) - 1)) (r + 1),
       Finset.sum_range_succ]
@@ -588,9 +588,8 @@ theorem Aside_eq (r : ℕ) (hr : 1 ≤ r) (lam : ℝ)
   have haux : lam * (1 / 2 - lam * Real.log 2 / (4 * r))
       = lam / 2 - (lam * Real.log 2) ^ 2 / (4 * r * Real.log 2) := by
     field_simp
-  try ring
   rw [Aside, hB, Gfun_center_eq r hr lam, centerSum, tauOf, haux]
-  ring
+  ring_nf
 
 /-- Bound on the `log cosh` average, via Lemma 5.1 and the exact moments. -/
 theorem centerSum_le (r : ℕ) (hr : 1 ≤ r) (lam : ℝ) :

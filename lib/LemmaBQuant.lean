@@ -5,7 +5,7 @@ import LemmaB
 /-!
 # Lemma B, quantified: the explicit threshold `R(a)` (paper §10.1–10.3)
 
-Paper reference: PAPER.md §4.4–4.7 and §10.1–10.3.
+Design-notes reference (notes not shipped in this repository): §4.4–4.7 and §10.1–10.3.
 
 This file formalises the *quantitative* half of Lemma B — the closed-form
 threshold `R(a)` of Cor. 10.2 that makes Prop. 10.3 (and hence Theorem 3(b))

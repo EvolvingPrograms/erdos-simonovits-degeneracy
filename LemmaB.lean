@@ -6,7 +6,7 @@ import LemmaC
 /-!
 # Lemma B: the supremum of `G_r` sits at the symmetric point
 
-Paper reference: PAPER.md §4 (statement in §4.7).
+Design-notes reference (notes not shipped in this repository): §4 (statement in §4.7).
 
 Target:
 `supG r lam = Gfun r lam (1/2) (1/2)` for `2 ≤ r`, `0 < lam ≤ 27/20`.

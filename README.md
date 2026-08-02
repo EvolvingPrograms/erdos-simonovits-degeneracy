@@ -4,7 +4,7 @@
 The default build targets contain no `sorry` (the four standalone
 challenge statements of §8 intentionally end in one each and are
 excluded); axioms used:
-`propext, Classical.choice, Quot.sound`. Full paper forthcoming.
+`propext, Classical.choice, Quot.sound`.
 
 ## 1. Main results
 
@@ -59,8 +59,8 @@ $1/(16r^2)$.
 Theorem 3(b) is what produces the explicit constants: it licenses running
 the finite $r$ construction *near the exclusion edge* rather than at the
 midpoint, which is where the $1/(28r^2)$ of Theorem 2 and the $1/160$ of
-Theorem 1 come from (§9). Both exceed the constants of the forthcoming
-paper ($1/(107r^2)$ and $1/200$, obtained at the midpoint).
+Theorem 1 come from (§9). Both strictly improve on the midpoint
+evaluation of the same chain, retained as a checkpoint in §9.
 
 Every statement above is literal in Lean. In particular "degeneracy
 exactly $r$" is carried as `IsDegenerate r H ∧ ¬ IsDegenerate (r-1) H`,
@@ -321,12 +321,9 @@ where $w/r^2 \le w_r$ is a certified window lower bound, $K_1$ bounds
 $r(1-\beta_\theta)$, and $\eta\in(0,1)$ is a slack parameter
 (`epsR_theta_lower`, [`lib/LedgerSharp.lean`](lib/LedgerSharp.lean)).
 
-The forthcoming paper evaluates this chain at the midpoint
-$\theta=\eta=\tfrac12$ with sharp $K_1 = 0.1614$, obtaining
-$1/(107r^2)$; the Lean development reproduces that chain as a
-$1/(108r^2)$ checkpoint (`eps_half_108`; the residual gap to $107$ is due
-to Lemma C's uniform window constant at $r=2$). But the midpoint is a
-choice, not an optimum: by Theorem 3(b), $K_1(\theta)$ is essentially
+Evaluated at the midpoint $\theta=\eta=\tfrac12$, the chain certifies
+$1/(108r^2)$, retained as a checkpoint (`eps_half_108`). But the
+midpoint is a choice, not an optimum: by Theorem 3(b), $K_1(\theta)$ is essentially
 independent of $\theta$ while the certified gain scales as
 $(1-\eta)(1-\theta)$, so the chain improves monotonically toward the
 exclusion edge. Running it at $\theta=\eta=1/100$, with $r$-aware
@@ -339,17 +336,17 @@ $\approx 1/(27.2\,r^2)$.
 At $r=3$ the same ledger, fed with Lemma C's window bound specialized to
 $r=3$ ($w_3 \ge 0.0098/9$, `width_ge_three` in
 [`Theorem2.lean`](Theorem2.lean)) instead of the uniform constant, gives
-$\varepsilon_3 \ge 1/160$ (`eps_three_160`) — Theorem 1's exponent, past
-the paper's $1/200$. The original hand-certified $r=3$ assembly, with
+$\varepsilon_3 \ge 1/160$ (`eps_three_160`) — Theorem 1's exponent
+(the midpoint evaluation gives $1/200$). The original hand-certified $r=3$ assembly, with
 gain $1/4000$, is retained in [`Theorem1.lean`](Theorem1.lean)
 (`threeDegenerateExtremalCounterexample_exact`), and compatibility
 statements at the older constants are kept
 (`rDegenerateExtremalCounterexample_explicit_110`).
 
-Remaining headroom, recorded as future work: interval evaluation at each fixed $r$
-of the window at small $r$ would push $1/(28r^2)$ toward $1/(21r^2)$,
-$\varepsilon_3$ toward $1/138$, and the midpoint checkpoint from $108$
-to the paper's exact $107$.
+Remaining headroom, recorded as future work: interval evaluation of the
+window at each fixed small $r$ would push $1/(28r^2)$ toward
+$1/(21r^2)$, $\varepsilon_3$ toward $1/138$, and the midpoint checkpoint
+from $108$ to $107$.
 
 ## References
 
