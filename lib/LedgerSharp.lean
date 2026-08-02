@@ -396,7 +396,7 @@ theorem K1_hundredth_three_le :
   linarith [h, h1, h2, h3, h4]
 
 /-- **The sharp `r = 3` gain**: `ε₃ ≥ 1/160 > 1/200`, given Lemma C's
-window bound at `r = 3` (`width ≥ 0.0098/9`, discharged in `Theorem2.lean`).
+window bound at `r = 3` (`width ≥ 0.0098/9`, discharged in `lib/AssemblyR.lean`).
 Rational check: `(99/100)² · 0.0098 · 160 = 1.5368 ≥ 9 · 0.1624 = 1.4616`. -/
 theorem eps_three_160
     (hbpos : betaTheta 3 (27 / 20) (1 / 100) < 1)

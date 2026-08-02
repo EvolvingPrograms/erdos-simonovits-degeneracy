@@ -1,4 +1,4 @@
-import LedgerAsym
+import Theorem3b
 
 /-!
 # Comparator solution for Challenge 4 (`K_FamilyLaw.lean`)

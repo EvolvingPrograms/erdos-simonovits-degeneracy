@@ -68,12 +68,16 @@ and the exponents appear as written:
 
 | | Lean declaration | File |
 |---|---|---|
-| Theorem 1 | `threeDegenerateExtremalCounterexample_sharp` | [`Theorem2.lean`](Theorem2.lean) |
-| Theorem 2 | `rDegenerateExtremalCounterexample_exact` | [`Theorem2.lean`](Theorem2.lean) |
-| Theorem 3(a) | `width_tendsto_unconditional_full` | [`Theorem3a.lean`](Theorem3a.lean) |
-| Theorem 3(a), sharpness | `threshold_sharp` | [`Prop63.lean`](Prop63.lean) |
-| Theorem 3(b), family law | `eight_rsq_epsMax_theta_tendsto` | [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) |
-| Theorem 3(b), monotonicity | `epsMaxR_anti` | [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) |
+| Theorem 1 | `ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp` | [`Theorem1.lean`](Theorem1.lean) |
+| Theorem 2 | `RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact` | [`Theorem2.lean`](Theorem2.lean) |
+| Theorem 3(a) | `DegeneracyLaw.width_tendsto_unconditional_full` | [`Theorem3a.lean`](Theorem3a.lean) |
+| Theorem 3(a), sharpness | `DegeneracyLawSuper.threshold_sharp` | [`Prop63.lean`](Prop63.lean) |
+| Theorem 3(b), family law | `DegeneracyLawB.eight_rsq_epsMax_theta_tendsto` | [`Theorem3b.lean`](Theorem3b.lean) |
+| Theorem 3(b), monotonicity | `DegeneracyLawB.epsMaxR_anti` | [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) |
+
+Declaration names are given fully qualified: `threeDegenerateExtremalCounterexample`
+alone names three different statements in three namespaces, of which only the
+`_sharp` form above carries the literal exponent.
 
 Sections 2–5 give the proof in prose; §6 maps it to the Lean sources; §7
 explains verification; §8 describes the frozen challenge statement; §9
@@ -161,7 +165,7 @@ bounds compete:
   plus a telescoping potential correction. Here $G_r$ is an explicit
   function of two variables: $q$, the bit-frequency profile of the
   parents, and $v$, the child's disagreement rate. (Lean:
-  `typeEntropyBound_supG_gen` in [`Theorem2.lean`](Theorem2.lean); the
+  `typeEntropyBound_supG_gen` in [`lib/AssemblyR.lean`](lib/AssemblyR.lean); the
   bookkeeping assembling per-coordinate bounds into the global one — the
   "ledger" — is [`lib/LedgerR.lean`](lib/LedgerR.lean).)
 
@@ -218,22 +222,29 @@ discrepancy is the entire source of the counterexample.
 
 ## 6. Organization of the Lean development
 
-Theorem files are top-level; infrastructure is in `lib/`; consistency
-tests in `tests/`; the declaration inventory is
+The layout obeys one rule: **every headline theorem sits in the top-level file
+named after it, and all machinery sits in `lib/`.** No `lib/` module imports a
+top-level file, and each top-level file is small enough to read in full — the
+statement you are asked to trust is never buried in the development that proves
+it. Consistency tests are in `tests/`; the declaration inventory is
 [`formalization.yaml`](formalization.yaml).
 
 | File | Role |
 |---|---|
 | `LemmaA.lean`, `LemmaB.lean`, `LemmaC.lean`, `Lemma61.lean` | the analytic lemmas of §5 |
 | `lib/LemmaBQuant.lean` | quantified Lemma B (all subcritical $\lambda$, $r$ large) |
+| `lib/WindowLimit.lean` | the comparison sequences and the sandwich behind Theorem 3(a) |
+| `lib/SuperCritical.lean` | the supercritical lower bound on $G_r$ behind the sharpness of $\lambda^\ast$ |
 | `lib/SamplingR.lean`, `lib/KernelR.lean`, `lib/BridgeR.lean` | host density (§3); entropy kernel and embedding obstruction (§4), general $r$ |
-| `lib/LedgerR.lean`, `lib/ProfilesR.lean`, `lib/LedgerAsym.lean` | the ledger assembling per-coordinate entropy bounds; its $r\to\infty$ asymptotics (Theorem 3(b)) |
+| `lib/LedgerR.lean`, `lib/ProfilesR.lean`, `lib/LedgerTuned.lean`, `lib/LedgerAsym.lean` | the ledger assembling per-coordinate entropy bounds; the tuned schedule and its $r\to\infty$ asymptotics (Theorem 3(b)) |
 | `lib/LedgerSharp.lean` | sharp $r$-aware $K_1$ bounds and the $(\theta,\eta)$-parametric ledger (§9) |
 | `lib/ExactDegeneracy.lean` | the degeneracy lower bound (two-layer minimum-degree witness) |
 | `lib/Entropy3.lean`, `lib/Sampling3.lean`, `lib/Kernel3.lean`, `lib/Bridge3.lean` | hand-certified $r=3$ instances |
+| `lib/Assembly3.lean` | the hand-certified $r=3$ assembly (does **not** import `lib/AssemblyR.lean`) |
+| `lib/AssemblyR.lean` | the general $r$ assembly: forbidden graph, host, obstruction, endgame |
 | `lib/LawDefs.lean` | shared definitions for the window law |
 | `lib/CompactnessAndDegeneracy.lean` | upstream graph-theoretic prerequisites |
-| `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | final assemblies of Theorems 1–3 |
+| `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | the statements of Theorems 1–3 and of the sharpness proposition, and nothing else |
 | `tests/KernelRCheck3.lean` | the general $r$ kernel specializes at $r=3$ to the hand-certified one |
 | `tests/ChallengeFaithful.lean` | kernel-checked faithfulness of the challenge statement (§8) |
 | `challenges/K_*.lean`, `challenges/challenge*.json` | frozen challenge statements and Comparator configurations (§8) |
@@ -335,7 +346,7 @@ $\approx 1/(27.2\,r^2)$.
 
 At $r=3$ the same ledger, fed with Lemma C's window bound specialized to
 $r=3$ ($w_3 \ge 0.0098/9$, `width_ge_three` in
-[`Theorem2.lean`](Theorem2.lean)) instead of the uniform constant, gives
+[`lib/AssemblyR.lean`](lib/AssemblyR.lean)) instead of the uniform constant, gives
 $\varepsilon_3 \ge 1/160$ (`eps_three_160`) — Theorem 1's exponent
 (the midpoint evaluation gives $1/200$). The original hand-certified $r=3$ assembly, with
 gain $1/4000$, is retained in [`Theorem1.lean`](Theorem1.lean)

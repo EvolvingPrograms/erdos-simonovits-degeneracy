@@ -18,7 +18,7 @@ bound `¬ IsDegenerate (r - 1)`:
   every root lies in `C(base − 1, r − 1) ≥ C(r, r − 1) = r` children, so
   the union of the two layers has minimum degree `≥ r` inside itself.
 
-`Theorem1.lean` (the triple graph) and `Theorem2.lean` (the general
+`lib/Assembly3.lean` (the triple graph) and `lib/AssemblyR.lean` (the general
 layered `r`-graph) instantiate the witness with their bottom two layers.
 -/
 
