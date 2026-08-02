@@ -57,7 +57,7 @@ $\beta\to A_r^+$ and not attained; the midpoint $\theta=\tfrac12$ yields
 $1/(16r^2)$.
 
 Theorem 3(b) is what produces the explicit constants: it licenses running
-the finite-$r$ construction *near the exclusion edge* rather than at the
+the finite $r$ construction *near the exclusion edge* rather than at the
 midpoint, which is where the $1/(28r^2)$ of Theorem 2 and the $1/160$ of
 Theorem 1 come from (§9). Both exceed the constants of the forthcoming
 paper ($1/(107r^2)$ and $1/200$, obtained at the midpoint).
@@ -234,7 +234,7 @@ tests in `tests/`; the declaration inventory is
 | `lib/LawDefs.lean` | shared definitions for the window law |
 | `lib/CompactnessAndDegeneracy.lean` | upstream graph-theoretic prerequisites |
 | `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | final assemblies of Theorems 1–3 |
-| `tests/KernelRCheck3.lean` | the general-$r$ kernel specializes at $r=3$ to the hand-certified one |
+| `tests/KernelRCheck3.lean` | the general $r$ kernel specializes at $r=3$ to the hand-certified one |
 | `tests/ChallengeFaithful.lean` | kernel-checked faithfulness of the challenge statement (§8) |
 | `challenges/K_*.lean`, `challenges/challenge*.json` | frozen challenge statements and Comparator configurations (§8) |
 | `Solution1.lean` … `Solution4.lean` | Comparator-format solutions restating and proving the challenges (§8) |
@@ -285,10 +285,10 @@ proves it.
 
 | Challenge | Statement | Solution |
 |---|---|---|
-| [`K_ThreeDegenerateGraphs.lean`](challenges/K_ThreeDegenerateGraphs.lean) | Theorem 1, existential-$\varepsilon$ form (the original file from [OAI26], unmodified) | [`Solution1.lean`](Solution1.lean) |
+| [`K_ThreeDegenerateGraphs.lean`](challenges/K_ThreeDegenerateGraphs.lean) | Theorem 1 with existential $\varepsilon$ (the original file from [OAI26], unmodified) | [`Solution1.lean`](Solution1.lean) |
 | [`K_RDegenerateGraphs.lean`](challenges/K_RDegenerateGraphs.lean) | Theorem 2: degeneracy exactly $r$, gain $1/(28r^2)$, every $r\ge2$ | [`Solution2.lean`](Solution2.lean) |
 | [`K_WindowLaw.lean`](challenges/K_WindowLaw.lean) | Theorem 3(a): $r^2\,\mathrm{width}_r \to \lambda^4\ln^3 2/64$ | [`Solution3.lean`](Solution3.lean) |
-| [`K_FamilyLaw.lean`](challenges/K_FamilyLaw.lean) | Theorem 3(b): $8r^2\,\varepsilon^{\max}_r(\beta_\theta) \to 1-\theta$ | [`Solution4.lean`](Solution4.lean) |
+| [`K_FamilyLaw.lean`](challenges/K_FamilyLaw.lean) | Theorem 3(b): $8r^2 \varepsilon^{\max}(\beta_\theta) \to 1-\theta$ | [`Solution4.lean`](Solution4.lean) |
 
 Comparator verifies, per pair, that the solution proves a theorem of the
 identical name and statement, uses no axioms beyond `propext`,
@@ -313,7 +313,7 @@ solution modules on every push.
 ## 9. Optimization of the explicit constants
 
 Write $w_r = C_r - A_r$ for the window width at $\lambda = 27/20$, and
-for $\theta\in(0,1)$ let $\beta_\theta = A_r + \theta w_r$. The finite-$r$
+for $\theta\in(0,1)$ let $\beta_\theta = A_r + \theta w_r$. The finite $r$
 pipeline certifies the exponent gain
 $$\varepsilon\ =\ (1-\eta)\,\varepsilon_r^{\max}(\beta_\theta)
   \ \ge\ \frac{(1-\eta)(1-\theta)\,w}{K_1\,r^2},$$
@@ -346,7 +346,7 @@ gain $1/4000$, is retained in [`Theorem1.lean`](Theorem1.lean)
 statements at the older constants are kept
 (`rDegenerateExtremalCounterexample_explicit_110`).
 
-Remaining headroom, recorded as future work: per-$r$ interval evaluation
+Remaining headroom, recorded as future work: interval evaluation at each fixed $r$
 of the window at small $r$ would push $1/(28r^2)$ toward $1/(21r^2)$,
 $\varepsilon_3$ toward $1/138$, and the midpoint checkpoint from $108$
 to the paper's exact $107$.
