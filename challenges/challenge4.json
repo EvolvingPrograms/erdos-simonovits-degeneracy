@@ -1,0 +1,7 @@
+{
+    "challenge_module": "K_FamilyLaw",
+    "solution_module": "Solution4",
+    "theorem_names": ["FamilyLaw.eight_rsq_epsMax_tendsto"],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "enable_nanoda": false
+}

@@ -1,0 +1,7 @@
+{
+    "challenge_module": "K_WindowLaw",
+    "solution_module": "Solution3",
+    "theorem_names": ["WindowLaw.width_tendsto"],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "enable_nanoda": false
+}

@@ -1,0 +1,7 @@
+{
+    "challenge_module": "K_RDegenerateGraphs",
+    "solution_module": "Solution2",
+    "theorem_names": ["RDegenerateGraphs.rDegenerateExtremalCounterexample"],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "enable_nanoda": false
+}

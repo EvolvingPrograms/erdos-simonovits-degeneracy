@@ -1,0 +1,7 @@
+{
+    "challenge_module": "K_ThreeDegenerateGraphs",
+    "solution_module": "Solution1",
+    "theorem_names": ["ThreeDegenerateGraphs.threeDegenerateExtremalCounterexample"],
+    "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+    "enable_nanoda": false
+}

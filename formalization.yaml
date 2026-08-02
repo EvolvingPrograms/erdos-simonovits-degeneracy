@@ -17,7 +17,7 @@ status:
     explicit constants 1/(28 r^2) (all r >= 2) and 1/160 (r = 3), both
     past the paper's midpoint constants 1/(107 r^2) and 1/200.
   axioms: ["propext", "Classical.choice", "Quot.sound"]
-  sorries: 0  # in all proof targets; the challenge statement file (lake build Challenge) intentionally contains one
+  sorries: 0  # in all proof targets; the four frozen challenge statement files in challenges/ intentionally contain one each
   main_results:
     - name: "Theorem 1: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/160), exponent and exactness literal (past the paper certificate 1/200)"
       decl: "RDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp"
@@ -67,6 +67,7 @@ status:
 
 verification:
   build: "lake exe cache get && lake build"   # default targets, sorry-free
-  challenge: "lake build Challenge ChallengeFaithful"   # frozen statement + kernel-checked faithfulness (type_of%)
-  challenge_file: "K_ThreeDegenerateGraphs.lean"
+  challenge: "lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw ChallengeFaithful Solution1 Solution2 Solution3 Solution4"
+  challenge_files: "challenges/K_*.lean"   # four frozen statements; solutions Solution1..4.lean; reviewer notes in challenges/NOTES_FOR_REVIEWER.md
+  comparator: "lake env comparator challenges/challenge1.json"   # ...challenge2..4; leanprover/comparator judge, all four pass
   numerics: "python3 tests/numerics_check.py"   # independent floating-point redundancy, not proofs

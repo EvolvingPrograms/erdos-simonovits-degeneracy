@@ -29,11 +29,50 @@ srcDir = "tests"
 roots = ["KernelRCheck3"]
 
 [[lean_lib]]
-name = "Challenge"
-srcDir = "."
-roots = ["K_ThreeDegenerateGraphs"]
-
-[[lean_lib]]
 name = "ChallengeFaithful"
 srcDir = "tests"
 roots = ["ChallengeFaithful"]
+
+# --- Comparator challenge/solution pairs (see comparator-configs/) ---------
+# Frozen statement files (each ends in an intentional `sorry`) live in
+# challenges/; the solutions restate them verbatim and prove them.
+
+[[lean_lib]]
+name = "K_ThreeDegenerateGraphs"
+srcDir = "challenges"
+roots = ["K_ThreeDegenerateGraphs"]
+
+[[lean_lib]]
+name = "K_RDegenerateGraphs"
+srcDir = "challenges"
+roots = ["K_RDegenerateGraphs"]
+
+[[lean_lib]]
+name = "K_WindowLaw"
+srcDir = "challenges"
+roots = ["K_WindowLaw"]
+
+[[lean_lib]]
+name = "K_FamilyLaw"
+srcDir = "challenges"
+roots = ["K_FamilyLaw"]
+
+[[lean_lib]]
+name = "Solution1"
+srcDir = "."
+roots = ["Solution1"]
+
+[[lean_lib]]
+name = "Solution2"
+srcDir = "."
+roots = ["Solution2"]
+
+[[lean_lib]]
+name = "Solution3"
+srcDir = "."
+roots = ["Solution3"]
+
+[[lean_lib]]
+name = "Solution4"
+srcDir = "."
+roots = ["Solution4"]

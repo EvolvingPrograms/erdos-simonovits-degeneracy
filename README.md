@@ -235,7 +235,8 @@ tests in `tests/`; the declaration inventory is
 | `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | final assemblies of Theorems 1–3 |
 | `tests/KernelRCheck3.lean` | the general-$r$ kernel specializes at $r=3$ to the hand-certified one |
 | `tests/ChallengeFaithful.lean` | kernel-checked faithfulness of the challenge statement (§8) |
-| `K_ThreeDegenerateGraphs.lean` | the frozen challenge statement (§8) |
+| `challenges/K_*.lean`, `challenges/challenge*.json` | frozen challenge statements and Comparator configurations (§8) |
+| `Solution1.lean` … `Solution4.lean` | Comparator-format solutions restating and proving the challenges (§8) |
 
 Intermediate lemmas carry parameter thresholds (e.g.
 `2 * r ^ 2 ≤ parentCount` in `lib/BridgeR.lean`); all are discharged
@@ -252,9 +253,9 @@ beyond $r\ge2$.
   would surface as a build warning; `formalization.yaml` records
   `sorries: 0` and the axiom list). CI runs the build on every push.
 - Sorry inventory (source files only, excluding `.lake/`):
-  `grep -rn --include='*.lean' '\bsorry\b' ./*.lean lib tests`.
-  The only hit outside documentation is the intentional one in the
-  challenge statement (§8).
+  `grep -rn --include='*.lean' '\bsorry\b' ./*.lean lib tests challenges`.
+  The only hits outside documentation are the four intentional ones in
+  the frozen challenge statements (§8).
 - Independent numerical redundancy: `python3 tests/numerics_check.py`
   reimplements the window and ledger formulas and the layered graph
   outside Lean, and checks the 3(a) limit (approached from below), the
@@ -264,26 +265,43 @@ beyond $r\ge2$.
   failure would constitute a genuine counterexample to a claimed
   inequality.
 
-## 8. The frozen challenge statement
+## 8. The frozen challenge statements
 
-[`K_ThreeDegenerateGraphs.lean`](K_ThreeDegenerateGraphs.lean) is a
-40-line standalone statement file in the idiom of
-`J_TwoDegenerateGraphs.lean` from [OAI26]: it defines degeneracy from
-scratch, states Theorem 1 (in its existential-$\varepsilon$ form), and
-ends in an **intentional `sorry`**. It is the frozen, human-auditable
-specification of the target, kept verbatim rather than importing the
-proof, so that a referee can check the statement in isolation. It is
-excluded from `defaultTargets` and builds via `lake build Challenge`.
+The [`challenges/`](challenges/) directory contains four standalone
+statement files in the format of
+[leanprover/comparator](https://github.com/leanprover/comparator), the
+Lean FRO's standard procedure for judging a Lean proof against a frozen
+statement. Each file defines its quantities from scratch, states one
+theorem, and ends in an **intentional `sorry`**; each is discharged by a
+solution file at the repository root that restates it verbatim and
+proves it.
 
-The discharge: the `ThreeDegenerateGraphsTarget` namespace at the end of
-[`Theorem1.lean`](Theorem1.lean) restates the challenge
-token-for-token and proves it (this copy is part of the sorry-free
-default build). Faithfulness is kernel-checked:
+| Challenge | Statement | Solution |
+|---|---|---|
+| [`K_ThreeDegenerateGraphs.lean`](challenges/K_ThreeDegenerateGraphs.lean) | Theorem 1, existential-$\varepsilon$ form (the original file from [OAI26], unmodified) | [`Solution1.lean`](Solution1.lean) |
+| [`K_RDegenerateGraphs.lean`](challenges/K_RDegenerateGraphs.lean) | Theorem 2: degeneracy exactly $r$, gain $1/(28r^2)$, every $r\ge2$ | [`Solution2.lean`](Solution2.lean) |
+| [`K_WindowLaw.lean`](challenges/K_WindowLaw.lean) | Theorem 3(a): $r^2\,\mathrm{width}_r \to \lambda^4\ln^3 2/64$ | [`Solution3.lean`](Solution3.lean) |
+| [`K_FamilyLaw.lean`](challenges/K_FamilyLaw.lean) | Theorem 3(b): $8r^2\,\varepsilon^{\max}_r(\beta_\theta) \to 1-\theta$ | [`Solution4.lean`](Solution4.lean) |
+
+Comparator verifies, per pair, that the solution proves a theorem of the
+identical name and statement, uses no axioms beyond `propext`,
+`Quot.sound`, `Classical.choice`, and is accepted by a kernel replay:
+
+```sh
+lake env comparator challenges/challenge1.json   # …challenge2..4
+```
+
+All four pass. The only input requiring human review is the four
+statements themselves; [`challenges/NOTES_FOR_REVIEWER.md`](challenges/NOTES_FOR_REVIEWER.md)
+walks through each statement and what to check.
+
+Independently of Comparator, faithfulness of the original challenge is
+also kernel-checked inside Lean:
 [`tests/ChallengeFaithful.lean`](tests/ChallengeFaithful.lean) asserts
-that the proven theorem has *exactly the type of the challenge
-declaration* (via `type_of%`), so any drift between the two files fails
-to compile. CI runs `lake build Challenge ChallengeFaithful` on every
-push.
+that the theorem proved in [`Theorem1.lean`](Theorem1.lean) has *exactly
+the type of the challenge declaration* (via `type_of%`), so any drift
+between the two files fails to compile. CI builds all challenge and
+solution modules on every push.
 
 ## 9. Optimization of the explicit constants
 
