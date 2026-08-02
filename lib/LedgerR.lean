@@ -50,26 +50,6 @@ theorem betaMid_spec (r : ℕ) (lam : ℝ) :
     Cside r (tauOf r lam) - betaMid r lam = width r lam / 2 := by
   simp only [betaMid, width]; ring
 
-/-- At the midpoint, `β_r - A_r = width_r / 2` (paper (8.1)). -/
-theorem betaMid_spec' (r : ℕ) (lam : ℝ) :
-    betaMid r lam - Aside r lam = width r lam / 2 := by
-  simp only [betaMid, width]; ring
-
-/-- `δ_r ≥ w/(8r²)` (paper (8.2)). -/
-theorem deltaR_lower (r : ℕ) (lam betaR w : ℝ)
-    (hbeta : betaR - Aside r lam = width r lam / 2)
-    (hwidth : w / (r : ℝ) ^ 2 ≤ width r lam) :
-    w / (8 * (r : ℝ) ^ 2) ≤ deltaR r lam betaR := by
-  simp only [deltaR, hbeta]
-  have h8 : w / (8 * (r : ℝ) ^ 2) = w / (r : ℝ) ^ 2 / 8 := by ring
-  rw [h8]
-  linarith [hwidth]
-
-/-! ## §2 The entropy defect (own copy; paper §5.2–§5.3)
-
-`entGap u = log 2 - binEntropy ((1-u)/2) = ∑_{k≥1} u^{2k}/(2k(2k-1))`, in nats.
--/
-
 /-- `log 2 - binEntropy ((1-u)/2)`: the entropy deficit in nats. -/
 def entGap (u : ℝ) : ℝ := Real.log 2 - Real.binEntropy ((1 - u) / 2)
 

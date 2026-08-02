@@ -455,16 +455,6 @@ theorem tripleCoordinateKernel_childProbability
           ((tripleTypeGroup parents coordinate
             (tripleBitTypeOfOutcomes l m r)).card : ℝ) := rfl
 
-theorem tripleCoordinateKernel_parentProbability
-    (hparents : 0 < parentCount)
-    (parents : Fin parentCount → HammingWord dimension)
-    (children : TripleLayer parentCount 1 → HammingWord dimension)
-    (coordinate : Fin dimension) :
-    (tripleCoordinateKernel hparents parents children
-        coordinate).parentProbability =
-      (pairParentCoordinateOneCount parents coordinate : ℝ) /
-        (parentCount : ℝ) := rfl
-
 /-- Any observable that only depends on the *type* of the ordered triple has
 without-replacement expectation the type-weighted average. -/
 theorem worTripleExpectation_of_type
@@ -657,12 +647,6 @@ theorem tripleMismatchCount_eq
     rw [hfilter]
     simp only [if_true]
     omega
-
-theorem tripleBitType_le_three
-    (parents : Fin parentCount → HammingWord dimension)
-    (coordinate : Fin dimension) (triple : TripleLayer parentCount 1) :
-    (tripleCoordinateBitType parents coordinate triple).val ≤ 3 := by
-  omega
 
 theorem sum_tripleMismatchCount
     (parents : Fin parentCount → HammingWord dimension)

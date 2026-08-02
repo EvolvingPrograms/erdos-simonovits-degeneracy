@@ -204,33 +204,6 @@ theorem rCoordinateClassificationFiber_card
     _ = (rTypeGroup parents coordinate bitType).card :=
       Fintype.card_coe _
 
-theorem sum_rTypeGroup_card
-    {parentCount dimension r : ℕ}
-    (parents : Fin parentCount → HammingWord dimension)
-    (coordinate : Fin dimension) :
-    (∑ bitType : RBitType r,
-      (rTypeGroup parents coordinate bitType).card) =
-      parentCount.choose r := by
-  classical
-  have hmaps :
-      (((Finset.univ : Finset (RLayer parentCount r 1)) :
-        Set (RLayer parentCount r 1))).MapsTo
-          (rCoordinateBitType parents coordinate)
-          (Finset.univ : Finset (RBitType r)) := by
-    intro sub _
-    exact Finset.mem_univ _
-  have hpartition := Finset.card_eq_sum_card_fiberwise hmaps
-  have hsubs :
-      (Finset.univ : Finset (RLayer parentCount r 1)).card =
-        parentCount.choose r := by
-    rw [Finset.card_univ, rLayer_one_card]
-  calc
-    (∑ bitType : RBitType r,
-        (rTypeGroup parents coordinate bitType).card) =
-      (Finset.univ : Finset (RLayer parentCount r 1)).card := by
-        simpa [rTypeGroup] using hpartition.symm
-    _ = parentCount.choose r := hsubs
-
 theorem rTypeGroup_card_le
     {parentCount dimension r : ℕ}
     (parents : Fin parentCount → HammingWord dimension)

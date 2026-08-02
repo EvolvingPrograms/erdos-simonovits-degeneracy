@@ -227,33 +227,6 @@ theorem tripleCoordinateClassificationFiber_card
     _ = (tripleTypeGroup parents coordinate bitType).card :=
       Fintype.card_coe _
 
-theorem sum_tripleTypeGroup_card
-    {parentCount dimension : ℕ}
-    (parents : Fin parentCount → HammingWord dimension)
-    (coordinate : Fin dimension) :
-    (∑ bitType : TripleBitType,
-      (tripleTypeGroup parents coordinate bitType).card) =
-      parentCount.choose 3 := by
-  classical
-  have hmaps :
-      (((Finset.univ : Finset (TripleLayer parentCount 1)) :
-        Set (TripleLayer parentCount 1))).MapsTo
-          (tripleCoordinateBitType parents coordinate)
-          (Finset.univ : Finset TripleBitType) := by
-    intro triple _
-    exact Finset.mem_univ _
-  have hpartition := Finset.card_eq_sum_card_fiberwise hmaps
-  have htriples :
-      (Finset.univ : Finset (TripleLayer parentCount 1)).card =
-        parentCount.choose 3 := by
-    rw [Finset.card_univ, tripleLayer_one_card]
-  calc
-    (∑ bitType : TripleBitType,
-        (tripleTypeGroup parents coordinate bitType).card) =
-      (Finset.univ : Finset (TripleLayer parentCount 1)).card := by
-        simpa [tripleTypeGroup] using hpartition.symm
-    _ = parentCount.choose 3 := htriples
-
 theorem tripleTypeGroup_card_le
     {parentCount dimension : ℕ}
     (parents : Fin parentCount → HammingWord dimension)
@@ -892,18 +865,6 @@ theorem threeExponent_product_gt (beta eps : ℝ)
     (1 - beta) * (5 / 3 + eps) < 1 - 2 * beta + binaryEntropy tauThree := by
   have hH := binaryEntropy_tauThree_ge
   nlinarith [hH, hbeta, heps, heps0, mul_nonneg (sub_nonneg.mpr hbeta) heps0.le]
-
-/-- Ratio form: the sampled edge exponent exceeds `5/3 + ε`. -/
-theorem threeExponent_ratio_gt (beta eps : ℝ)
-    (_ : 9125 / 10000 < beta) (hbeta : beta ≤ 9126 / 10000)
-    (heps : eps ≤ 1 / 4000) (heps0 : 0 < eps) :
-    5 / 3 + eps <
-      (1 + binaryEntropy tauThree - 2 * beta) / (1 - beta) := by
-  have hpos : 0 < 1 - beta := by linarith
-  rw [lt_div_iff₀ hpos]
-  have := threeExponent_product_gt beta eps hbeta heps heps0
-  nlinarith [this]
-
 
 noncomputable def threeRetentionProbability (dimension : ℕ) : ℝ :=
   Real.exp (-((beta:ℝ) * (dimension : ℝ) * Real.log 2))

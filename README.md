@@ -222,16 +222,22 @@ discrepancy is the entire source of the counterexample.
 
 ## 6. Organization of the Lean development
 
-The layout obeys one rule: **every headline theorem sits in the top-level file
+The layout obeys one rule: **every named result sits in the top-level file
 named after it, and all machinery sits in `lib/`.** No `lib/` module imports a
-top-level file, and each top-level file is small enough to read in full — the
-statement you are asked to trust is never buried in the development that proves
-it. Consistency tests are in `tests/`; the declaration inventory is
+theorem file, and the nine top-level files total 755 lines — small enough to
+read in full, so the statement you are asked to trust is never buried in the
+development that proves it. The four analytic lemmas form an API layer that
+`lib/` builds on; the five theorem files are consumed only by `Solution*.lean`.
+Consistency tests are in `tests/`; the declaration inventory is
 [`formalization.yaml`](formalization.yaml).
 
 | File | Role |
 |---|---|
-| `LemmaA.lean`, `LemmaB.lean`, `LemmaC.lean`, `Lemma61.lean` | the analytic lemmas of §5 |
+| `LemmaA.lean`, `LemmaB.lean`, `LemmaC.lean`, `Lemma61.lean` | the statements of the analytic lemmas of §5, and nothing else |
+| `lib/EntropyConcavity.lean` | Lemma A's machinery: the log-cosh form of $F_a$ and its derivatives |
+| `lib/BernsteinStrip.lean` | Lemma B's machinery: the Bernstein operator, the angular strip, the off-strip certificate |
+| `lib/WindowLowerBound.lean` | Lemma C's machinery: $\log\cosh$ bounds, binomial moments, the entropy series |
+| `lib/WindowUpperBound.lean` | Lemma 6.1's machinery: the centre value and the entropy defect |
 | `lib/LemmaBQuant.lean` | quantified Lemma B (all subcritical $\lambda$, $r$ large) |
 | `lib/WindowLimit.lean` | the comparison sequences and the sandwich behind Theorem 3(a) |
 | `lib/SuperCritical.lean` | the supercritical lower bound on $G_r$ behind the sharpness of $\lambda^\ast$ |

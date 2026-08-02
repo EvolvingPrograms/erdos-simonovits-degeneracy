@@ -260,43 +260,9 @@ theorem card_slots_identity {L r : ℕ} (hL : 1 ≤ L) (hr : 1 ≤ r) :
   obtain ⟨k, rfl⟩ : ∃ k, r = k + 1 := ⟨r - 1, by omega⟩
   simpa [Nat.mul_comm] using (Nat.add_one_mul_choose_eq n k)
 
-/-- **The parent bias seen by the children is exactly the empirical mean.** -/
-theorem rSubset_slot_marginal {L r : ℕ} (hr : 1 ≤ r) (hL : r ≤ L)
-    (x : Fin L → Bool) :
-    (∑ S ∈ (univ : Finset (Fin L)).powersetCard r,
-        ∑ a ∈ S, (if x a then (1 : ℝ) else 0))
-      = ((r : ℝ) * (L.choose r : ℝ) / (L : ℝ)) *
-          ((univ.filter fun a => x a).card : ℝ) := by
-  classical
-  have hLpos : (0 : ℝ) < (L : ℝ) := by
-    have : 0 < L := by omega
-    exact_mod_cast this
-  have hcount :
-      ∑ a : Fin L, (if x a then (1 : ℝ) else 0)
-        = ((univ.filter fun a => x a).card : ℝ) := by
-    rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_one]
-  have hid : (L : ℝ) * ((L - 1).choose (r - 1) : ℝ) = (r : ℝ) * (L.choose r : ℝ) := by
-    exact_mod_cast congrArg (Nat.cast : ℕ → ℝ)
-      (card_slots_identity (L := L) (r := r) (by omega) hr)
-  rw [sum_rSubsets_slots hr, hcount]
-  have hrew : ((L - 1).choose (r - 1) : ℝ) = (r : ℝ) * (L.choose r : ℝ) / (L : ℝ) := by
-    field_simp
-    linarith [hid]
-  rw [hrew]
-
-/-! ## §3 The without-replacement mass in terms of the type groups
-
-An ordered word `x` of type `j = popcount x` has without-replacement mass
-`|G_j| / C(L,r) · j!(r−j)!/r!`.  For `r = 3` the weight is `1` on the two
-homogeneous types and `1/3` on the two mixed ones, reproducing
-`Bridge3.tripleOutcomeWeight`. -/
-
 /-- The multiplicity weight `j!(r−j)!/r!`. -/
 noncomputable def rOutcomeWeight (r j : ℕ) : ℝ :=
   ((Nat.factorial j * Nat.factorial (r - j) : ℕ) : ℝ) / ((Nat.factorial r : ℕ) : ℝ)
-
-theorem rOutcomeWeight_nonneg (r j : ℕ) : 0 ≤ rOutcomeWeight r j := by
-  unfold rOutcomeWeight; positivity
 
 /-- `C(r,j) · j!(r−j)!/r! = 1` for `j ≤ r`. -/
 theorem choose_mul_rOutcomeWeight {r j : ℕ} (hj : j ≤ r) :
@@ -518,17 +484,6 @@ theorem rCoordinateKernel_childProbability
       ((rTypeGroupChildOnes parents children coordinate
         (rBitTypeOfWord x)).card : ℝ) /
           ((rTypeGroup parents coordinate (rBitTypeOfWord x)).card : ℝ) := rfl
-
-theorem rCoordinateKernel_parentProbability
-    (hparents : 0 < parentCount)
-    (parents : Fin parentCount → HammingWord dimension)
-    (children : RLayer parentCount r 1 → HammingWord dimension)
-    (coordinate : Fin dimension) :
-    (rCoordinateKernel hparents parents children coordinate).parentProbability =
-      (pairParentCoordinateOneCount parents coordinate : ℝ) /
-        (parentCount : ℝ) := rfl
-
-/-! ### The three empirical functionals -/
 
 theorem group_prob_mul_ratio
     (hparents : r ≤ parentCount)

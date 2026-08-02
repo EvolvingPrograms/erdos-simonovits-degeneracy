@@ -212,21 +212,12 @@ theorem log_sigmaZero : Real.log sigmaZero = -(1 / 8 : ℝ) * Real.log 2 :=
 theorem log_sigmaOne : Real.log sigmaOne = -(17 / 48 : ℝ) * Real.log 2 :=
   Real.log_exp _
 
-theorem theta_le_one : theta ≤ 1 := by
-  unfold theta
-  rw [Real.exp_le_one_iff]
-  nlinarith [Real.log_pos (by norm_num : (1 : ℝ) < 2)]
-
 private theorem exp_pow_eq (c : ℝ) (n : ℕ) :
     Real.exp (c * Real.log 2) ^ n = Real.exp ((n : ℝ) * c * Real.log 2) := by
   rw [← Real.exp_nat_mul]; ring_nf
 
 theorem inv_sigmaZero : 1 / sigmaZero = ratioZero := by
   unfold sigmaZero ratioZero
-  rw [one_div, ← Real.exp_neg]; ring_nf
-
-theorem inv_sigmaOne : 1 / sigmaOne = Real.exp ((17 / 48 : ℝ) * Real.log 2) := by
-  unfold sigmaOne
   rw [one_div, ← Real.exp_neg]; ring_nf
 
 theorem div_sigmaZero (x : ℝ) : x / sigmaZero = x * ratioZero := by

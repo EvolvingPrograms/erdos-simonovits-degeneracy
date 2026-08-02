@@ -406,16 +406,6 @@ is exactly `RExponentGap 3 β ε` unfolded. -/
 def RExponentGap (r : ℕ) (tau beta eps : ℝ) : Prop :=
   (1 - beta) * ((2 - 1 / (r : ℝ)) + eps) < 1 - 2 * beta + binaryEntropy tau
 
-/-- Ratio form of the exponent hypothesis. -/
-theorem rExponent_ratio_gt {r : ℕ} {tau beta eps : ℝ}
-    (hbeta : beta < 1) (hgap : RExponentGap r tau beta eps) :
-    (2 - 1 / (r : ℝ)) + eps <
-      (1 + binaryEntropy tau - 2 * beta) / (1 - beta) := by
-  have hpos : 0 < 1 - beta := by linarith
-  rw [lt_div_iff₀ hpos]
-  unfold RExponentGap at hgap
-  nlinarith [hgap]
-
 /-- `log` of the growth rate of `p²·2^m·D_m`, i.e. `(1 − 2β)·log 2 + h_nat(τ)`. -/
 noncomputable def sampledREdgeEntropyRate (tau : ℝ) : ℝ :=
   (1 - 2 * (beta : ℝ)) * Real.log 2 + Real.binEntropy tau

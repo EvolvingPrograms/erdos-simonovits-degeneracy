@@ -200,11 +200,6 @@ the `θ = ½` member of the family. -/
 def betaTheta (r : ℕ) (lam theta : ℝ) : ℝ :=
   Aside r lam + theta * width r lam
 
-/-- The midpoint is the `θ = ½` member of the family. -/
-theorem betaTheta_half (r : ℕ) (lam : ℝ) :
-    betaTheta r lam (1 / 2) = betaMid r lam := by
-  simp only [betaTheta, betaMid, width]; ring
-
 /-- `C_r - β_θ = (1 - θ) · width_r`. -/
 theorem Cside_sub_betaTheta (r : ℕ) (lam theta : ℝ) :
     Cside r (tauOf r lam) - betaTheta r lam theta = (1 - theta) * width r lam := by

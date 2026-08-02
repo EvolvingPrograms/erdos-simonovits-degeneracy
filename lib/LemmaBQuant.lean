@@ -358,8 +358,6 @@ definitions as `DegeneracyLaw.LemmaB.rhoCrit/rho/thetaOf/inStrip`, so the bridge
 is `rfl` in every case.  Keeping the two copies means this file still reads
 standalone, while the proofs below can call `LemmaB` directly. -/
 
-lemma rhoCrit_eq (a : ℝ) : rhoCrit a = DegeneracyLaw.LemmaB.rhoCrit a := rfl
-lemma rho_eq (a : ℝ) : rho a = DegeneracyLaw.LemmaB.rho a := rfl
 lemma thetaOf_eq (v : ℝ) : thetaOf v = DegeneracyLaw.LemmaB.thetaOf v := rfl
 lemma inStripQ_iff (lam v : ℝ) : inStripQ lam v ↔ DegeneracyLaw.LemmaB.inStrip lam v :=
   Iff.rfl

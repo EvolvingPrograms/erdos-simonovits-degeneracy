@@ -262,10 +262,6 @@ theorem typeSum_affine {r j : ℕ} (f : (Fin r → Bool) → ℝ) (a b : ℝ) :
   rw [show (∑ x ∈ popcountFibre r j, f x) = typeSum f j from rfl, typeSum_eq_mul]
   ring
 
-theorem typeSum_one {r : ℕ} (j : ℕ) :
-    typeSum (fun _ : Fin r → Bool => (1 : ℝ)) j = (r.choose j : ℝ) := by
-  simp [typeSum, popcountFibre_card]
-
 theorem typeAvg_nonneg {r j : ℕ} {f : (Fin r → Bool) → ℝ}
     (h0 : ∀ x, 0 ≤ f x) : 0 ≤ typeAvg f j :=
   div_nonneg (Finset.sum_nonneg fun x _ => h0 x) (Nat.cast_nonneg _)
@@ -432,14 +428,6 @@ theorem typeProbability_nonneg (kernel : BinaryRKernel r) (j : ℕ) :
 theorem typeProbability_le_one (kernel : BinaryRKernel r) (j : ℕ) :
     kernel.typeProbability j ≤ 1 :=
   typeAvg_le_one kernel.childProbability_le_one
-
-theorem typeWeight_nonneg (kernel : BinaryRKernel r) (j : ℕ) :
-    0 ≤ kernel.typeWeight j := by
-  have h : (0 : ℝ) ≤ 1 - kernel.parentProbability := by
-    linarith [kernel.parentProbability_le_one]
-  unfold typeWeight
-  have := kernel.parentProbability_nonneg
-  positivity
 
 /-- **Normal form 1.**  The child marginal in terms of the `r+1` type numbers. -/
 theorem childMarginal_eq_types (kernel : BinaryRKernel r) :

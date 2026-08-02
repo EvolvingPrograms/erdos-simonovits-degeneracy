@@ -293,22 +293,6 @@ theorem K1_half_le (r : ℕ) (hr : 2 ≤ r) :
   have h := K1_theta_le r (1 / 2) hr (by norm_num) (by norm_num)
   linarith
 
-/-- **The sharpened explicit constant.**  With the certified window bound
-`0.00603/r² ≤ width_r` (Theorem 2's `width_ge`), the `(θ, η) = (¼, ¼)`
-ledger certifies `ε ≥ 1/(48 r²)` — beating the paper's midpoint `1/(107 r²)`.
-Rational check: `(3/4)² · 0.00603 · 48 = 0.16281 ≥ 0.1627`. -/
-theorem eps_quarter_48 (r : ℕ) (hr : 2 ≤ r)
-    (hbpos : betaTheta r (27 / 20) (1 / 4) < 1)
-    (hwidth : (0.00603 : ℝ) / (r : ℝ) ^ 2 ≤ width r (27 / 20)) :
-    1 / (48 * (r : ℝ) ^ 2) ≤ epsR r (27 / 20) (betaTheta r (27 / 20) (1 / 4)) (1 / 4) := by
-  have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
-  have h := epsR_theta_lower r (27 / 20) 0.00603 0.1627 (1 / 4) (1 / 4) hr
-    (by norm_num) (by norm_num) hbpos (by norm_num) (by norm_num) (by norm_num)
-    (by norm_num) hwidth (K1_quarter_le r hr)
-  refine le_trans ?_ h
-  rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  nlinarith [sq_nonneg ((r : ℝ))]
-
 /-- **The midpoint checkpoint.**  Same machinery at `(θ, η) = (½, ½)`
 certifies `ε ≥ 1/(108 r²)` — the paper's `1/107` needs, in addition, the
 per-`r` interval value of `width(2)` (Lemma C's uniform `0.00603` is what

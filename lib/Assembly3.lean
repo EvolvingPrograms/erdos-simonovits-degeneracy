@@ -719,10 +719,6 @@ noncomputable def entropyLowerEndpointThree : ℝ := 17 / 80 + (7 / 4) * (2 / 5)
 noncomputable def potentialIncrementThree : ℝ :=
   2 * (((betaThree : NNReal) : ℝ) - 2 * slackThree - entropyLowerEndpointThree)
 
-theorem potentialIncrementThree_pos : 0 < potentialIncrementThree := by
-  unfold potentialIncrementThree entropyLowerEndpointThree slackThree betaThree
-  norm_num
-
 def baseSizeThree : ℕ := 10 ^ 7
 
 def depthThree : ℕ := 10000
