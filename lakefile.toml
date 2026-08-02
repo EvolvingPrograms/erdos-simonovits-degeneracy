@@ -16,7 +16,7 @@ roots = ["CompactnessAndDegeneracy"]
 [[lean_lib]]
 name = "ErdosDegeneracyLib"
 srcDir = "lib"
-roots = ["LawDefs", "Entropy3", "Sampling3", "Kernel3", "Bridge3", "SamplingR", "KernelR", "BridgeR", "ProfilesR", "LedgerR", "LemmaBQuant", "LedgerAsym", "ExactDegeneracy"]
+roots = ["LawDefs", "Entropy3", "Sampling3", "Kernel3", "Bridge3", "SamplingR", "KernelR", "BridgeR", "ProfilesR", "LedgerR", "LemmaBQuant", "LedgerAsym", "ExactDegeneracy", "LedgerSharp"]
 
 [[lean_lib]]
 name = "ErdosDegeneracy"
