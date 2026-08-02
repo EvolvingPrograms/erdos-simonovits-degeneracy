@@ -10,7 +10,7 @@ rev = "v4.32.0"
 
 [[lean_lib]]
 name = "Upstream"
-srcDir = "upstream"
+srcDir = "lib"
 roots = ["CompactnessAndDegeneracy"]
 
 [[lean_lib]]
