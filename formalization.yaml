@@ -19,7 +19,7 @@ status:
     - name: "Theorem 1: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/4000), exponent and exactness literal"
       decl: "ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_exact"
       file: "Theorem1.lean"
-    - name: "Theorem 2: for every r >= 2, H_r of degeneracy exactly r with ex(n;H_r) >= c n^(2 - 1/r + 1/(110 r^2))"
+    - name: "Theorem 2: for every r >= 2, H_r of degeneracy exactly r with ex(n;H_r) >= c n^(2 - 1/r + 1/(48 r^2)) (optimized off-midpoint ledger; beats the paper's 1/(107 r^2))"
       decl: "RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact"
       file: "Theorem2.lean"
     - name: "Theorem 3(a): r^2 (C_r - A_r) -> lambda^4 ln^3(2)/64 for every subcritical lambda (lambda ln 2 < 1)"
@@ -35,8 +35,8 @@ status:
       decl: "ExactDegeneracy.not_isDegenerate_of_layer_witness"
       file: "lib/ExactDegeneracy.lean"
   future_work:
-    - "Sharpen Theorem 2's constant 1/(110 r^2) to the paper's 1/(107 r^2) (sharp K1 evaluation)"
-    - "Sharpen Theorem 1's 1/4000 to the certificate's 1/200 (formalized interval certificate)"
+    - "Sharpen Theorem 1's 1/4000 at r=3 past the certificate's 1/200 (optimized ledger at r=3 with interval evaluation of the r=3 window)"
+    - "Per-r interval width evaluation at small r (would push 1/(48 r^2) toward the family ceiling ~1/(36 r^2) at theta=1/4, and 1/(108 r^2) midpoint to the paper's 1/(107 r^2))"
 
 build: "lake build"
 challenge: "K_ThreeDegenerateGraphs.lean"

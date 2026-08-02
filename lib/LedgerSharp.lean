@@ -237,7 +237,7 @@ private theorem log2_pow_bounds :
 `0 ≤ θ ≤ 1`, `K₁(θ) ≤ 0.158003 + (1 - θ) · 0.00432085`.
 (θ = ¼ gives `≤ 0.16125`... see the two corollaries for the values used.) -/
 theorem K1_theta_le (r : ℕ) (theta : ℝ) (hr : 2 ≤ r)
-    (htheta0 : 0 ≤ theta) (htheta1 : theta ≤ 1) :
+    (_htheta0 : 0 ≤ theta) (htheta1 : theta ≤ 1) :
     (r : ℝ) * (1 - betaTheta r (27 / 20) theta)
       ≤ 0.1593953 + (1 - theta) * 0.0043209 := by
   have hL : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9

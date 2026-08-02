@@ -32,7 +32,7 @@ $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
 
 **Theorem 2 (failure at every level).** For every $r\ge2$ there is a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
-$$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
+$$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{48\,r^2}}\ }\qquad\text{for all large }n.$$
 
 **Theorem 3 (the exact asymptotic law).** The proof method has one free
 parameter (a "Gibbs weight" $2^\lambda$, explained in §4), and its power
@@ -51,8 +51,10 @@ $$\boxed{\ \lim_{r\to\infty}\ 8\,r^2\,\varepsilon_r^{\max}(\beta_\theta)\ =\ 1-\
 at every position $\beta_\theta=A_r+\theta\,(C_r-A_r)$ of the window,
 $\theta\in(0,1)$. So the method's best constant is $1/(8r^2)$ — approached
 as $\beta$ nears the exclusion threshold, never attained — and the
-canonical midpoint choice $\theta=\tfrac12$ certifies $1/(16r^2)$, whose
-explicit finite-$r$ remnant is the $1/(110r^2)$ of Theorem 2.
+canonical midpoint choice $\theta=\tfrac12$ certifies $1/(16r^2)$. The
+$1/(48r^2)$ of Theorem 2 is the explicit finite-$r$ output of this family
+at $(\theta,\eta)=(\tfrac14,\tfrac14)$ — the family law is what licenses
+running the ledger off the midpoint.
 
 Each theorem statement is literal in Lean — "degeneracy exactly $r$" is
 carried as `IsDegenerate r H ∧ ¬ IsDegenerate (r-1) H`, and the exponents
@@ -86,7 +88,7 @@ The construction succeeds exactly when the **window** $A_r < \beta < C_r$
 is nonempty. The heart of the proof — and all of the analytic difficulty —
 is showing this window is open for every $r$ (§5). Its width turns out to
 be of order $1/r^2$: tiny, but positive, and this $1/r^2$ is exactly the
-$1/(110r^2)$ exponent gain in Theorem 2.
+$1/(48r^2)$ exponent gain in Theorem 2.
 
 Everything is a generalization of the $r=2$ argument of [OAI26, ch. 10],
 with two new ingredients: the whole machine is run at a general $r$
@@ -275,13 +277,22 @@ proven theorem has *exactly the type of the challenge declaration*
 (`type_of%`), so any drift between the two files fails to compile; CI
 runs `lake build Challenge ChallengeFaithful` on every push.
 
-## 9. Toward the paper constants
+## 9. Beyond the paper constants
 
-The full paper (forthcoming) proves the sharper constants $1/(107r^2)$
-and, at $r=3$, $1/200$ (via a sharp $K_1$ evaluation and an
-interval-arithmetic certificate); the Lean constants $1/(110r^2)$ and
-$1/4000$ are the machine-checked forms, and closing that gap is listed as
-future work.
+The paper's midpoint chain gives $1/(107r^2)$ (sharp $K_1=0.1614$) and, at
+$r=3$, $1/200$. The Lean development now runs the ledger **off the
+midpoint** — at window position $\theta=\tfrac14$ with slack
+$\eta=\tfrac14$, licensed by Theorem 3(b)'s family law — and certifies
+$1/(48r^2)$, strictly better than the paper's own headline constant
+([`lib/LedgerSharp.lean`](lib/LedgerSharp.lean): the sharp $r$-aware $K_1$
+bounds, the $(\theta,\eta)$-parametric ledger, and the paper's midpoint
+chain reproduced as a `1/(108r^2)` checkpoint — the last hair to $107$ is
+Lemma C's uniform window constant at $r=2$). A compatibility statement at
+the old $1/(110r^2)$ is kept
+(`rDegenerateExtremalCounterexample_explicit_110`). Remaining: the sharp
+$r=3$ certificate (the same optimized ledger at $r=3$ targets
+$\varepsilon_3 > 1/200$; the current machine-checked $r=3$ exponent gain
+is $1/4000$).
 
 ## References
 

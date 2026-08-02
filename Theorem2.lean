@@ -2,6 +2,7 @@ import SamplingR
 import BridgeR
 import Theorem3a
 import LedgerR
+import LedgerSharp
 import ExactDegeneracy
 
 /-!
@@ -387,26 +388,30 @@ theorem rGraph_parent_child_adj
 
 /-! ## Block E: the parameters, generic in `r`
 
-All constants come from `LedgerR` at `λ = 27/20`:
+All constants come from `LedgerR`/`LedgerSharp` at `λ = 27/20`, at the
+**optimized window position** `θ = ¼` with slack `η = ¼` (the midpoint
+`θ = η = ½` of the paper costs a factor ≈ 2.3 in the final constant —
+see `lib/LedgerSharp.lean` and Theorem 3(b)'s family law):
 
-* `betaC r = β_r = ½(A_r + C_r)` (`betaMid`),
-* `slackC r = δ_r = (β_r − A_r)/4 = width_r/8` (`deltaR`),
+* `betaC r = β_r = A_r + ¼·width_r` (`betaTheta` at `θ = ¼`),
+* `slackC r = δ_r = (β_r − A_r)/4 = width_r/16` (`deltaR`),
 * `endpointC r = A_r = λ τ_r + sup G_r` (`Aside`) — the ledger endpoint,
-* `epsC r = ½ ε^max_r` (`epsR` at `η = 1/2`),
-* `depthC r = ⌈2/width_r⌉ + 1` (`sR`).
+* `epsC r = ¾ ε^max_r` (`epsR` at `η = ¼`),
+* `depthC r = ⌈4/width_r⌉ + 1` (so `depth · increment > 1` at the
+  per-layer increment `width_r/4`).
 
 The only input is `0 < width r (27/20)` (`DegeneracyLaw.width_pos_all`,
 unconditional) plus the *upper* window bound of Lemma 6.1 (`Theorem3a`). -/
 
 namespace Params
 
-open DegeneracyLaw DegeneracyLedger TwoDegenerateGraphs
+open DegeneracyLaw DegeneracyLedger DegeneracyLawB TwoDegenerateGraphs
 
-noncomputable def betaC (r : ℕ) : ℝ := betaMid r (27 / 20)
+noncomputable def betaC (r : ℕ) : ℝ := betaTheta r (27 / 20) (1 / 4)
 noncomputable def slackC (r : ℕ) : ℝ := deltaR r (27 / 20) (betaC r)
 noncomputable def endpointC (r : ℕ) : ℝ := Aside r (27 / 20)
-noncomputable def epsC (r : ℕ) : ℝ := epsR r (27 / 20) (betaC r) (1 / 2)
-noncomputable def depthC (r : ℕ) : ℕ := sR r (27 / 20)
+noncomputable def epsC (r : ℕ) : ℝ := epsR r (27 / 20) (betaC r) (1 / 4)
+noncomputable def depthC (r : ℕ) : ℕ := ⌈4 / width r (27 / 20)⌉₊ + 1
 
 theorem lam_log_le : (27 / 20 : ℝ) * Real.log 2 ≤ 1 := by
   have := Real.log_two_lt_d9; nlinarith
@@ -463,11 +468,14 @@ theorem Cside_ge (r : ℕ) (hr : 2 ≤ r) : (0.9 : ℝ) ≤ Cside r (tauOf r (27
   · linarith
 
 theorem betaC_spec (r : ℕ) :
-    Cside r (tauOf r (27 / 20)) - betaC r = width r (27 / 20) / 2 :=
-  betaMid_spec r (27 / 20)
+    Cside r (tauOf r (27 / 20)) - betaC r = 3 / 4 * width r (27 / 20) := by
+  have h := Cside_sub_betaTheta r (27 / 20) (1 / 4)
+  unfold betaC
+  linarith
 
-theorem betaC_spec' (r : ℕ) : betaC r - Aside r (27 / 20) = width r (27 / 20) / 2 :=
-  betaMid_spec' r (27 / 20)
+theorem betaC_spec' (r : ℕ) : betaC r - Aside r (27 / 20) = width r (27 / 20) / 4 := by
+  simp only [betaC, betaTheta]
+  ring
 
 theorem betaC_pos (r : ℕ) (hr : 2 ≤ r) : 0 < betaC r := by
   have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
@@ -509,8 +517,8 @@ theorem tauC_le_one (r : ℕ) (hr : 2 ≤ r) : tauOf r (27 / 20) ≤ 1 := by
   have : (0 : ℝ) ≤ (27 / 20 : ℝ) * Real.log 2 / (4 * (r : ℝ)) := by positivity
   linarith
 
-/-- `δ_r = width_r / 8`. -/
-theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 8 := by
+/-- `δ_r = width_r / 16`. -/
+theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 16 := by
   have h := betaC_spec' r
   simp only [slackC, deltaR]
   linarith
@@ -518,26 +526,26 @@ theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 8 := by
 theorem slackC_pos (r : ℕ) (hr : 2 ≤ r) : 0 < slackC r := by
   rw [slackC_eq]; linarith [width_pos r hr]
 
-/-- The per-layer potential increment is exactly `width_r / 2`. -/
+/-- The per-layer potential increment is exactly `width_r / 4`. -/
 theorem increment_eq (r : ℕ) :
     RGenericBridge.potentialIncrement (betaC r) (slackC r) (endpointC r) =
-      width r (27 / 20) / 2 := by
+      width r (27 / 20) / 4 := by
   have h := betaC_spec' r
   simp only [RGenericBridge.potentialIncrement, endpointC, slackC_eq]
   linarith
 
 theorem depthC_pos (r : ℕ) : 0 < depthC r := by
-  simp [depthC, sR]
+  simp [depthC]
 
 theorem depthC_increment (r : ℕ) (hr : 2 ≤ r) :
     1 < (depthC r : ℝ) *
       RGenericBridge.potentialIncrement (betaC r) (slackC r) (endpointC r) := by
   have hw := width_pos r hr
-  have hceil : 2 / width r (27 / 20) ≤ (⌈2 / width r (27 / 20)⌉₊ : ℝ) := Nat.le_ceil _
-  have hcast : ((depthC r : ℕ) : ℝ) = (⌈2 / width r (27 / 20)⌉₊ : ℝ) + 1 := by
-    simp [depthC, sR]
+  have hceil : 4 / width r (27 / 20) ≤ (⌈4 / width r (27 / 20)⌉₊ : ℝ) := Nat.le_ceil _
+  have hcast : ((depthC r : ℕ) : ℝ) = (⌈4 / width r (27 / 20)⌉₊ : ℝ) + 1 := by
+    simp [depthC]
   rw [increment_eq, hcast]
-  have hlow : 2 / width r (27 / 20) * (width r (27 / 20) / 2) = 1 := by
+  have hlow : 4 / width r (27 / 20) * (width r (27 / 20) / 4) = 1 := by
     field_simp
   nlinarith [hceil, hw]
 
@@ -2008,17 +2016,11 @@ theorem width_ge (r : ℕ) (hr : 2 ≤ r) :
   rw [div_le_iff₀ (by positivity)]
   nlinarith [hmain, hlow]
 
-/-- **The explicit exponent**, unconditional: `ε_r ≥ 1/(110 r²)`. -/
-theorem epsC_lower (r : ℕ) (hr : 2 ≤ r) : 1 / (110 * (r : ℝ) ^ 2) ≤ epsC r := by
-  have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
-  have hrpos : (0 : ℝ) < (r : ℝ) := by linarith
-  have hK := DegeneracyLedger.K1_numeric r (betaC r) hr (betaC_spec r) (width_le r hr)
-  have hhalf := DegeneracyLedger.epsR_lower_half r (27 / 20) (betaC r) 0.00603 0.1657
-    hr (by norm_num) (by norm_num) (betaC_lt_one r hr) (width_ge r hr)
-    (betaC_spec r) hK
-  refine le_trans ?_ hhalf
-  rw [div_le_div_iff₀ (by positivity) (by positivity)]
-  nlinarith [sq_nonneg ((r : ℝ))]
+/-- **The explicit exponent**, unconditional: `ε_r ≥ 1/(48 r²)` — the
+optimized `(θ, η) = (¼, ¼)` ledger of `lib/LedgerSharp.lean`, beating the
+midpoint chain (`1/(110 r²)` with the frozen `K₁`, `1/(108 r²)` sharp). -/
+theorem epsC_lower (r : ℕ) (hr : 2 ≤ r) : 1 / (48 * (r : ℝ) ^ 2) ≤ epsC r :=
+  DegeneracyLedgerSharp.eps_quarter_48 r hr (betaC_lt_one r hr) (width_ge r hr)
 
 
 /-! ## Block G: the counterexample -/
@@ -2091,7 +2093,7 @@ theorem rDegenerateExtremalCounterexample_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     rDegenerateExtremalCounterexample_of_hosts hr hb hdepth hhosts
   exact ⟨q, H, hcon, hbip, hdeg, hnodeg, c, epsC r, hc0, epsC_pos r hr, hbnd⟩
 
-/-- **Theorem 2 with the explicit exponent** `ε = 1/(110 r²)`, conditional on the
+/-- **Theorem 2 with the explicit exponent** `ε = 1/(48 r²)`, conditional on the
 Gibbs bound. -/
 theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     (hGibbs : TypeEntropyBound r (supG r (27 / 20)) (27 / 20)) :
@@ -2099,7 +2101,7 @@ theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 �
       H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts r hr hGibbs
   have hb : r + 1 ≤ baseSize := by nlinarith
@@ -2108,10 +2110,10 @@ theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 �
   refine ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, ?_⟩
   filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
   have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
-  have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+  have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
       (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + epsC r) :=
     Real.rpow_le_rpow_of_exponent_le hn1' (by linarith [epsC_lower r hr])
-  calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2))
+  calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2))
       ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + epsC r) :=
         mul_le_mul_of_nonneg_left hmono hc0.le
     _ ≤ (SimpleGraph.extremalNumber n H : ℝ) := hn
@@ -2122,7 +2124,7 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
       H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
   rDegenerateExtremalCounterexample_explicit_of_gibbs r hr (typeEntropyBound_supG r hr)
 
@@ -2180,11 +2182,11 @@ theorem rDegenerateExtremalCounterexample_exact (r : ℕ) (hr : 2 ≤ r) :
       ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
   RAssembly.rDegenerateExtremalCounterexample_explicit r hr
 
--- The same, with the exponent gain pinned to `ε = 1/(110 r²)`.
+-- The same, with the exponent gain pinned to `ε = 1/(48 r²)`.
 open Classical in
 theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
@@ -2193,10 +2195,40 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
       IsDegenerate r H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
     RAssembly.rDegenerateExtremalCounterexample_explicit r hr
   exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
+
+-- Compatibility form at the previous constant `ε = 1/(110 r²)` (weaker
+-- exponent, follows from the `1/(48 r²)` statement by monotonicity).
+open Classical in
+theorem rDegenerateExtremalCounterexample_explicit_110 (r : ℕ) (hr : 2 ≤ r) :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsDegenerate r H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, c, hc0, hbnd⟩ :=
+    rDegenerateExtremalCounterexample_explicit r hr
+  refine ⟨q, H, hcon, hbip, hdeg, c, hc0, ?_⟩
+  have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
+  have hrpos : (0 : ℝ) < (r : ℝ) := by linarith
+  filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
+  have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
+  have hexp : 1 / (110 * (r : ℝ) ^ 2) ≤ 1 / (48 * (r : ℝ) ^ 2) := by
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    nlinarith [sq_nonneg ((r : ℝ))]
+  have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
+      (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) :=
+    Real.rpow_le_rpow_of_exponent_le hn1' (by linarith)
+  calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2))
+      ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) :=
+        mul_le_mul_of_nonneg_left hmono hc0.le
+    _ ≤ (SimpleGraph.extremalNumber n H : ℝ) := hn
 
 end RDegenerateGraphsTarget

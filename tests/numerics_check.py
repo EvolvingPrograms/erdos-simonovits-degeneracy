@@ -157,6 +157,21 @@ for theta in (0.1, 0.25, 0.5, 0.9):
         f"r={r_big}: {val:.5f} vs {1 - theta}",
     )
 
+# ---- 4b. Theorem 2's explicit constant: (theta,eta)=(1/4,1/4) ledger -------
+# eps = (1-eta)(1-theta) * width / (r (1 - beta_theta)) must clear 1/(48 r^2)
+# for every r >= 2 (Lean: DegeneracyLedgerSharp.eps_quarter_48).
+lam2 = 27 / 20
+vals = []
+for r in range(2, 400):
+    wd = width(r, lam2)
+    beta = Aside(r, lam2) + 0.25 * wd
+    vals.append(r**2 * 0.75 * 0.75 * wd / (r * (1 - beta)))
+check(
+    "Thm2 constant: min r^2 eps at (1/4,1/4) >= 1/48",
+    min(vals) >= 1 / 48,
+    f"min {min(vals):.6f} (=1/{1/min(vals):.1f}) vs 1/48={1/48:.6f}",
+)
+
 # ---- 5. exact degeneracy of the layered pattern ----------------------------
 def layered(base, r, depth):
     layers = [[("L0", i) for i in range(base)]]
