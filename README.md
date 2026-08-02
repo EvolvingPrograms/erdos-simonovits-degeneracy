@@ -5,7 +5,7 @@ The default build targets contain no `sorry` (the standalone challenge
 statement of §8 intentionally ends in one and is excluded); axioms used:
 `propext, Classical.choice, Quot.sound`. Full paper forthcoming.
 
-## 1. Results
+## 1. Main results
 
 Let $\mathrm{ex}(n;H)$ denote the **extremal number** of $H$: the maximum
 number of edges in an $n$-vertex graph containing no copy of $H$ as a
@@ -78,12 +78,12 @@ Sections 2–5 give the proof in prose; §6 maps it to the Lean sources; §7
 explains verification; §8 describes the frozen challenge statement; §9
 derives the explicit constants.
 
-## 2. Structure of the argument
+## 2. Outline of the proof
 
 A lower bound on $\mathrm{ex}(n;H_r)$ requires a single dense $n$-vertex
 graph with no copy of $H_r$. The argument has three components:
 
-1. a **pattern graph** $H_r$ of degeneracy exactly $r$ (§3);
+1. a **forbidden graph** $H_r$ of degeneracy exactly $r$ (§3);
 2. a **random host**: for a density parameter $\beta$ below a threshold
    $C_r(\tau)$, a sparsified Hamming graph retains
    $n^{2-1/r+\varepsilon}$ edges with positive probability (§3);
@@ -104,9 +104,9 @@ is left free and optimized. The optimization is not cosmetic: Theorem 3
 shows the method has a sharp phase transition at weight $e$, and the
 choice of window position drives the final constants (§9).
 
-## 3. The pattern and the host
+## 3. The forbidden graph and the host construction
 
-**The pattern.** $H_r$ is the layered $r$-subset graph. Let $V_0$ be a
+**The forbidden graph.** $H_r$ is the layered $r$-subset graph. Let $V_0$ be a
 finite set of roots and inductively $V_{i+1}=\binom{V_i}{r}$; each
 $r$-subset ("child") is joined to its $r$ elements ("parents"). The
 result is connected and bipartite (odd layers versus even layers).
@@ -136,7 +136,7 @@ where $h$ is the binary entropy function (base 2). Thus $C_r$ is the
 density threshold: below it, sparsification leaves the host dense enough
 to violate the conjectured bound.
 
-## 4. The embedding obstruction
+## 4. Exclusion of $H_r$: the entropy bound
 
 Suppose a copy of $H_r$ embeds in the retained host. Each vertex of
 $H_r$ receives a string in $\{0,1\}^m$, and each child's string lies
@@ -147,8 +147,8 @@ conditional entropy of a child string given its $r$ parent strings. Two
 bounds compete:
 
 - **Lower bound (survival).** Retained vertices have density
-  $2^{-\beta m}$; for the pattern to find retained children above every
-  $r$-set of parents, children must spread over many candidate strings,
+  $2^{-\beta m}$; for the embedded copy to supply retained children above
+  every $r$-set of parents, children must spread over many candidate strings,
   forcing average conditional entropy $> \beta$ per bit. This is a
   counting/union-bound argument over retained children
   ([`lib/BridgeR.lean`](lib/BridgeR.lean)).
@@ -256,7 +256,7 @@ beyond $r\ge2$.
   The only hit outside documentation is the intentional one in the
   challenge statement (§8).
 - Independent numerical redundancy: `python3 tests/numerics_check.py`
-  reimplements the window and ledger formulas and the layered pattern
+  reimplements the window and ledger formulas and the layered graph
   outside Lean, and checks the 3(a) limit (approached from below), the
   supercritical divergence, Lemma B's center maximization, the 3(b)
   family law, both explicit constants of §9, and exact degeneracy by
@@ -264,7 +264,7 @@ beyond $r\ge2$.
   failure would constitute a genuine counterexample to a claimed
   inequality.
 
-## 8. The challenge statement
+## 8. The frozen challenge statement
 
 [`K_ThreeDegenerateGraphs.lean`](K_ThreeDegenerateGraphs.lean) is a
 40-line standalone statement file in the idiom of
@@ -285,7 +285,7 @@ declaration* (via `type_of%`), so any drift between the two files fails
 to compile. CI runs `lake build Challenge ChallengeFaithful` on every
 push.
 
-## 9. The explicit constants
+## 9. Optimization of the explicit constants
 
 Write $w_r = C_r - A_r$ for the window width at $\lambda = 27/20$, and
 for $\theta\in(0,1)$ let $\beta_\theta = A_r + \theta w_r$. The finite-$r$
