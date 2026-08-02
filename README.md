@@ -1,8 +1,9 @@
 # The Erdős–Simonovits degeneracy conjecture fails at every level
 
 **Claude Fable 5 and Claude Opus 5** · 2026-08-01 · Lean 4 + mathlib, zero
-sorries, axioms `propext, Classical.choice, Quot.sound` · full paper
-forthcoming
+sorries in the default build targets (the standalone challenge statement
+intentionally ends in `sorry`; see §6), axioms
+`propext, Classical.choice, Quot.sound` · full paper forthcoming
 
 ## Abstract
 
@@ -73,36 +74,75 @@ because log-cosh is flatter than its parabola (negative quartic term).
 **Theorem 1 (the $r=3$ counterexample).** There is a connected bipartite
 graph $H$ of degeneracy exactly $3$ and a $c>0$ with
 $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
-**Lean:** [`Theorem1.lean`](Theorem1.lean) `threeDegenerateExtremalCounterexample`.
+**Lean:** [`Theorem1.lean`](Theorem1.lean)
+[`threeDegenerateExtremalCounterexample`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem1.lean#L1664).
 
 **Theorem 2 (failure at every level).** For every $r\ge2$ there exist a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
 $$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
-**Lean:** [`Theorem2.lean`](Theorem2.lean) `rDegenerateExtremalCounterexample_explicit`.
+**Lean:** [`Theorem2.lean`](Theorem2.lean)
+[`rDegenerateExtremalCounterexample_explicit`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem2.lean#L2127).
 
 **Theorem 3 (the asymptotic law).** (a) For every fixed $\lambda$ with
 $\lambda\ln2<1$,
 $$\lim_{r\to\infty} r^2\bigl(C_r-A_r(\lambda)\bigr)\ =\ \frac{\lambda^4\ln^32}{64},$$
 while for $\lambda\ln2>1$ the limit is $-\infty$: the threshold is exactly
 Gibbs weight $2^\lambda=e$.
-**Lean:** [`Theorem3a.lean`](Theorem3a.lean) `width_tendsto_unconditional`;
-[`Prop63.lean`](Prop63.lean) `threshold_sharp`.
+**Lean:** [`Theorem3a.lean`](Theorem3a.lean)
+[`width_tendsto_unconditional`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem3a.lean#L149);
+[`Prop63.lean`](Prop63.lean)
+[`threshold_sharp`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Prop63.lean#L515).
 
 (b) Along the schedule $\lambda_r=\tfrac{1-\ln r/r}{\ln2}$ the maximal
 admissible exponent gain $\varepsilon_r^{\max}$ (defined in
 [`lib/LedgerR.lean`](lib/LedgerR.lean)) satisfies
 $$\boxed{\ \lim_{r\to\infty}\ 16\,r^2\,\varepsilon_r^{\max}\ =\ 1\ .}$$
-**Lean:** [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) `sixteen_rsq_epsMax_tendsto'`
+**Lean:** [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean)
+[`sixteen_rsq_epsMax_tendsto'`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/lib/LedgerAsym.lean#L185)
 (schedule and Lemma-B applicability: [`Theorem3b.lean`](Theorem3b.lean)).
 
-## 5. Formalization notes
+## 5. Formalization notes and verification
 
-Build: `lake exe cache get && lake build`. Theorem files top-level, infrastructure in `lib/`,
-faithfulness test in `tests/`; the challenge statement
-[`K_ThreeDegenerateGraphs.lean`](K_ThreeDegenerateGraphs.lean) (the
-human-auditable statement, intentionally ending in `sorry`, discharged by
-`Theorem1.lean`) builds separately via `lake build Challenge`; inventory in
-`formalization.yaml`. The full paper (forthcoming) proves the sharper
+Layout: theorem files top-level, infrastructure in `lib/`, faithfulness test
+in `tests/`; inventory in `formalization.yaml`.
+
+To verify:
+
+- The toolchain is pinned by `lean-toolchain` (Lean 4 `v4.32.0`, mathlib
+  `v4.32.0` per `lakefile.toml`); `elan` picks it up automatically.
+- Build: `lake exe cache get && lake build`. This builds the
+  `defaultTargets` from `lakefile.toml` — `Upstream`, `ErdosDegeneracyLib`,
+  `ErdosDegeneracy`, `ErdosDegeneracyTests` — all of which are sorry-free
+  (a `sorry` anywhere in them would surface as a build warning; the
+  inventory in `formalization.yaml` records `sorries: 0` and the axiom
+  list). CI runs this build on every push.
+- Sorry inventory (scoped to sources, avoiding `.lake/`):
+  `grep -rn --include='*.lean' '\bsorry\b' ./*.lean lib tests`.
+  The only hit outside doc comments is the intentional one in the
+  challenge statement (§6).
+
+## 6. The challenge statement
+
+[`K_ThreeDegenerateGraphs.lean`](K_ThreeDegenerateGraphs.lean) is a
+40-line standalone *statement file* in the idiom of
+`J_TwoDegenerateGraphs.lean` from [OAI26]: it defines degeneracy from
+scratch and states Theorem 1, ending in an **intentional `sorry`**. It is
+the frozen, human-auditable specification of what was to be proven — kept
+verbatim (rather than importing the proof) so a referee can check the
+target statement in isolation without trusting the development. It is
+excluded from `defaultTargets` and builds separately via
+`lake build Challenge`.
+
+The discharge: the `ThreeDegenerateGraphsTarget` namespace at the end of
+[`Theorem1.lean`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem1.lean#L1647)
+restates the challenge statement token-for-token — same standalone
+definitions, same theorem — and proves it (this is the copy the
+sorry-free default build checks). Faithfulness is checkable by diffing
+the two statements directly.
+
+## 7. Toward the paper constants
+
+The full paper (forthcoming) proves the sharper
 constants $1/(107r^2)$ and, at $r=3$, $1/200$ (via a sharp $K_1$ evaluation
 and an interval-arithmetic certificate); the Lean constants $1/(110r^2)$ and
 $1/4000$ are the machine-checked forms, and closing that gap is listed as
