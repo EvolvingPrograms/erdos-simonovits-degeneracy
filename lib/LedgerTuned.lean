@@ -1,4 +1,4 @@
-import LemmaBQuant
+import CenterMaxThreshold
 import LemmaC
 import WindowLimit
 import LedgerR
@@ -22,7 +22,7 @@ Theorem 3(b) escapes by letting `λ` drift:
 
 Since `ν_r → 0` more slowly than `1/r`, the sequence outruns its own threshold:
 `R(a_r) ≤ ⌈r/(4 ln r)⌉ ≤ r` (Prop. 10.3), so
-`DegeneracyLawQuant.supG_eq_center_quant` — which `LemmaBQuant.lean` now proves
+`DegeneracyLawQuant.supG_eq_center_quant` — which `CenterMaxThreshold.lean` now proves
 unconditionally given `r ≥ R_of λ` — applies at every member of the sequence.
 
 ## What is proved here
@@ -284,7 +284,7 @@ theorem R_of_lamR_le {r : ℕ} (hr : 7 ≤ r) : R_of (lamR r) ≤ r := by
   refine max_le (by omega) ?_
   exact Nat.ceil_le.2 hfin
 
-/-- **Lemma B along the tuned sequence** — the point of `LemmaBQuant`.
+/-- **Lemma B along the tuned sequence** — the point of `CenterMaxThreshold`.
 For every `r ≥ 7`, `sup_{[0,1]²} G_r(λ_r,·,·) = G_r(λ_r,½,½)`, with no unproved
 finite checks and no fixed-`λ` restriction. -/
 theorem supG_eq_center_tuned {r : ℕ} (hr : 7 ≤ r) :

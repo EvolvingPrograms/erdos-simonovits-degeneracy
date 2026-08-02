@@ -196,7 +196,7 @@ $\sup_{[0,1]^2} G_r=G_r(\tfrac12,\tfrac12)$. The proof combines
 per-term concavity in $v$, transfer of curvature bounds through a
 Bernstein operator in $q$, and Lemma A away from a central strip. A
 quantified version valid for **every** subcritical $\lambda$ once
-$r \ge R(\lambda)$ is [`lib/LemmaBQuant.lean`](lib/LemmaBQuant.lean)
+$r \ge R(\lambda)$ is [`lib/CenterMaxThreshold.lean`](lib/CenterMaxThreshold.lean)
 (`supG_eq_center_quant`); it is this version that makes Theorem 3(a)
 unconditional on the full range $\lambda \ln 2 < 1$. Lemma B reduces
 $A_r(\lambda)$ to an explicit quantity.
@@ -238,7 +238,7 @@ Consistency tests are in `tests/`; the declaration inventory is
 | `lib/BernsteinStrip.lean` | Lemma B's machinery: the Bernstein operator, the angular strip, the off-strip certificate |
 | `lib/WindowLowerBound.lean` | Lemma C's machinery: $\log\cosh$ bounds, binomial moments, the entropy series |
 | `lib/WindowUpperBound.lean` | Lemma 6.1's machinery: the centre value and the entropy defect |
-| `lib/LemmaBQuant.lean` | quantified Lemma B (all subcritical $\lambda$, $r$ large) |
+| `lib/CenterMaxThreshold.lean` | quantified Lemma B (all subcritical $\lambda$, $r$ large) |
 | `lib/WindowLimit.lean` | the comparison sequences and the sandwich behind Theorem 3(a) |
 | `lib/SuperCritical.lean` | the supercritical lower bound on $G_r$ behind the sharpness of $\lambda^\ast$ |
 | `lib/SamplingR.lean`, `lib/KernelR.lean`, `lib/BridgeR.lean` | host density (§3); entropy kernel and embedding obstruction (§4), general $r$ |

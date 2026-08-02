@@ -44,7 +44,7 @@ status:
       file: "lib/ExactDegeneracy.lean"
     - name: "Quantified Lemma B: sup G_r attained at the center for every subcritical lambda once r >= R(lambda) (discharges Theorem 3(a) on the full range)"
       decl: "DegeneracyLawQuant.supG_eq_center_quant"
-      file: "lib/LemmaBQuant.lean"
+      file: "lib/CenterMaxThreshold.lean"
     - name: "(theta, eta)-parametric ledger: eps >= (1-eta)(1-theta) w / (K1 r^2)"
       decl: "DegeneracyLedgerSharp.epsR_theta_lower"
       file: "lib/LedgerSharp.lean"

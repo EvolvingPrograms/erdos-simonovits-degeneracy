@@ -13,7 +13,7 @@ through a Bernstein operator in `q`, and Lemma A away from a central strip;
 all of that development is `lib/BernsteinStrip.lean`.
 
 A quantified version valid for every subcritical `λ` once `r ≥ R(λ)` is
-`lib/LemmaBQuant.lean`; it is that version which makes Theorem 3(a)
+`lib/CenterMaxThreshold.lean`; it is that version which makes Theorem 3(a)
 unconditional on the full range `λ ln 2 < 1`.
 -/
 

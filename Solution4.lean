@@ -4,9 +4,7 @@ import Theorem3b
 # Comparator solution for Challenge 4 (`K_FamilyLaw.lean`)
 
 Restates the challenge verbatim and discharges it with
-`DegeneracyLawB.eight_rsq_epsMax_theta_tendsto` (accepted by the kernel by
-definitional equality: the challenge's from-scratch definitions unfold to
-the development's).
+`DegeneracyLawB.eight_rsq_epsMax_theta_tendsto`.
 
 Judged by `comparator` with `challenges/challenge4.json`.
 -/

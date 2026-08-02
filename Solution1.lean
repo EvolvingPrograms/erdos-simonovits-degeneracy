@@ -12,8 +12,8 @@ permitted axioms.
 This file is that solution: it restates the challenge verbatim — the
 auxiliary definitions token-for-token and the theorem with the identical
 fully qualified name `ThreeDegenerateGraphs.threeDegenerateExtremalCounterexample`
-— and discharges it with the proof from `Theorem1.lean` (accepted by the
-kernel by definitional equality; cf. `tests/ChallengeFaithful.lean`).
+— and discharges it with the proof from `Theorem1.lean`; cf.
+`tests/ChallengeFaithful.lean`.
 
 Judged by `comparator` with `challenges/challenge1.json`:
   challenge_module = "K_ThreeDegenerateGraphs", solution_module = "Solution".

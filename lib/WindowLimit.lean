@@ -1,7 +1,7 @@
 import Lemma61
 import LemmaC
 import LemmaB
-import LemmaBQuant
+import CenterMaxThreshold
 
 /-!
 # The rescaled feasibility window: comparison sequences and the sandwich

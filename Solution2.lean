@@ -4,8 +4,7 @@ import Theorem2
 # Comparator solution for Challenge 2 (`K_RDegenerateGraphs.lean`)
 
 Restates the challenge verbatim and discharges it with
-`RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact`
-(accepted by the kernel by definitional equality).
+`RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact`.
 
 Judged by `comparator` with `challenges/challenge2.json`.
 -/

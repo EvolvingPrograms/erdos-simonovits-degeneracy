@@ -4,9 +4,7 @@ import Theorem3a
 # Comparator solution for Challenge 3 (`K_WindowLaw.lean`)
 
 Restates the challenge verbatim and discharges it with
-`DegeneracyLaw.width_tendsto_unconditional_full` (accepted by the kernel by
-definitional equality: the challenge's from-scratch definitions unfold to
-the development's).
+`DegeneracyLaw.width_tendsto_unconditional_full`.
 
 Judged by `comparator` with `challenges/challenge3.json`.
 -/
