@@ -157,19 +157,27 @@ for theta in (0.1, 0.25, 0.5, 0.9):
         f"r={r_big}: {val:.5f} vs {1 - theta}",
     )
 
-# ---- 4b. Theorem 2's explicit constant: (theta,eta)=(1/4,1/4) ledger -------
-# eps = (1-eta)(1-theta) * width / (r (1 - beta_theta)) must clear 1/(48 r^2)
-# for every r >= 2 (Lean: DegeneracyLedgerSharp.eps_quarter_48).
+# ---- 4b. explicit constants: the (1/100,1/100) near-edge ledger ------------
+# eps = (1-eta)(1-theta) * width / (r (1 - beta_theta)) must clear 1/(28 r^2)
+# for every r >= 2 (Lean: DegeneracyLedgerSharp.eps_hundredth_28 / eps_three_160).
 lam2 = 27 / 20
 vals = []
 for r in range(2, 400):
     wd = width(r, lam2)
-    beta = Aside(r, lam2) + 0.25 * wd
-    vals.append(r**2 * 0.75 * 0.75 * wd / (r * (1 - beta)))
+    beta = Aside(r, lam2) + 0.01 * wd
+    vals.append(r**2 * 0.99 * 0.99 * wd / (r * (1 - beta)))
 check(
-    "Thm2 constant: min r^2 eps at (1/4,1/4) >= 1/48",
-    min(vals) >= 1 / 48,
-    f"min {min(vals):.6f} (=1/{1/min(vals):.1f}) vs 1/48={1/48:.6f}",
+    "Thm2 constant: min r^2 eps at (1/100,1/100) >= 1/28",
+    min(vals) >= 1 / 28,
+    f"min {min(vals):.6f} (=1/{1/min(vals):.1f}) vs 1/28={1/28:.6f}",
+)
+wd3 = width(3, lam2)
+beta3 = Aside(3, lam2) + 0.01 * wd3
+eps3 = 0.99 * 0.99 * wd3 / (3 * (1 - beta3))
+check(
+    "Thm1 sharp: eps_3 at (1/100,1/100) >= 1/160 (> 1/200)",
+    eps3 >= 1 / 160,
+    f"eps3 {eps3:.6f} (=1/{1/eps3:.1f})",
 )
 
 # ---- 5. exact degeneracy of the layered pattern ----------------------------

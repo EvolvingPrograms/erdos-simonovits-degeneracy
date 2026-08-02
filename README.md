@@ -28,11 +28,11 @@ by a polynomial margin:
 
 **Theorem 1 (the $r=3$ counterexample).** There is a connected bipartite
 graph $H$ of degeneracy exactly 3 and a $c>0$ with
-$$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
+$$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/160}\qquad\text{for all large }n.$$
 
 **Theorem 2 (failure at every level).** For every $r\ge2$ there is a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
-$$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{48\,r^2}}\ }\qquad\text{for all large }n.$$
+$$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{28\,r^2}}\ }\qquad\text{for all large }n.$$
 
 **Theorem 3 (the exact asymptotic law).** The proof method has one free
 parameter (a "Gibbs weight" $2^\lambda$, explained in §4), and its power
@@ -52,9 +52,9 @@ at every position $\beta_\theta=A_r+\theta\,(C_r-A_r)$ of the window,
 $\theta\in(0,1)$. So the method's best constant is $1/(8r^2)$ — approached
 as $\beta$ nears the exclusion threshold, never attained — and the
 canonical midpoint choice $\theta=\tfrac12$ certifies $1/(16r^2)$. The
-$1/(48r^2)$ of Theorem 2 is the explicit finite-$r$ output of this family
-at $(\theta,\eta)=(\tfrac14,\tfrac14)$ — the family law is what licenses
-running the ledger off the midpoint.
+$1/(28r^2)$ of Theorem 2 is the explicit finite-$r$ output of this family
+run near the exclusion edge, $(\theta,\eta)=(\tfrac1{100},\tfrac1{100})$ —
+the family law is what licenses leaving the midpoint.
 
 Each theorem statement is literal in Lean — "degeneracy exactly $r$" is
 carried as `IsDegenerate r H ∧ ¬ IsDegenerate (r-1) H`, and the exponents
@@ -62,7 +62,7 @@ appear as written:
 
 | | Lean declaration | File |
 |---|---|---|
-| Theorem 1 | `threeDegenerateExtremalCounterexample_exact` | [`Theorem1.lean`](Theorem1.lean) |
+| Theorem 1 | `threeDegenerateExtremalCounterexample_sharp` | [`Theorem2.lean`](Theorem2.lean) |
 | Theorem 2 | `rDegenerateExtremalCounterexample_exact` | [`Theorem2.lean`](Theorem2.lean) |
 | Theorem 3(a) | `width_tendsto_unconditional_full` | [`Theorem3a.lean`](Theorem3a.lean) |
 | Theorem 3(a), sharpness | `threshold_sharp` | [`Prop63.lean`](Prop63.lean) |
@@ -88,7 +88,7 @@ The construction succeeds exactly when the **window** $A_r < \beta < C_r$
 is nonempty. The heart of the proof — and all of the analytic difficulty —
 is showing this window is open for every $r$ (§5). Its width turns out to
 be of order $1/r^2$: tiny, but positive, and this $1/r^2$ is exactly the
-$1/(48r^2)$ exponent gain in Theorem 2.
+$1/(28r^2)$ exponent gain in Theorem 2.
 
 Everything is a generalization of the $r=2$ argument of [OAI26, ch. 10],
 with two new ingredients: the whole machine is run at a general $r$
@@ -281,18 +281,24 @@ runs `lake build Challenge ChallengeFaithful` on every push.
 
 The paper's midpoint chain gives $1/(107r^2)$ (sharp $K_1=0.1614$) and, at
 $r=3$, $1/200$. The Lean development now runs the ledger **off the
-midpoint** — at window position $\theta=\tfrac14$ with slack
-$\eta=\tfrac14$, licensed by Theorem 3(b)'s family law — and certifies
-$1/(48r^2)$, strictly better than the paper's own headline constant
+midpoint** — near the exclusion edge, $(\theta,\eta)=(1/100,1/100)$,
+licensed by Theorem 3(b)'s family law — and certifies $1/(28r^2)$,
+strictly better than the paper's own headline constant, against the
+route ceiling $\approx 1/(27.2\,r^2)$
 ([`lib/LedgerSharp.lean`](lib/LedgerSharp.lean): the sharp $r$-aware $K_1$
 bounds, the $(\theta,\eta)$-parametric ledger, and the paper's midpoint
 chain reproduced as a `1/(108r^2)` checkpoint — the last hair to $107$ is
-Lemma C's uniform window constant at $r=2$). A compatibility statement at
-the old $1/(110r^2)$ is kept
-(`rDegenerateExtremalCounterexample_explicit_110`). Remaining: the sharp
-$r=3$ certificate (the same optimized ledger at $r=3$ targets
-$\varepsilon_3 > 1/200$; the current machine-checked $r=3$ exponent gain
-is $1/4000$).
+Lemma C's uniform window constant at $r=2$). At $r=3$, specializing
+Lemma C's window bound to $r=3$ feeds the same ledger and certifies
+$\varepsilon_3 \ge 1/160$, past the paper's $1/200$
+(`threeDegenerateExtremalCounterexample_sharp`); the original
+hand-certified $r=3$ assembly with $1/4000$ is retained in
+[`Theorem1.lean`](Theorem1.lean)
+(`threeDegenerateExtremalCounterexample_exact`). Compatibility statements
+at the older constants are kept
+(`rDegenerateExtremalCounterexample_explicit_110`). Remaining headroom:
+per-$r$ interval evaluation of the window at small $r$ would push
+$1/(28r^2)$ toward $1/(21r^2)$ and $\varepsilon_3$ toward $1/138$.
 
 ## References
 

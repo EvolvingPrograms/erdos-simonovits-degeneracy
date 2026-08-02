@@ -325,6 +325,91 @@ theorem eps_half_108 (r : ℕ) (hr : 2 ≤ r)
   rw [div_le_div_iff₀ (by positivity) (by positivity)]
   nlinarith [sq_nonneg ((r : ℝ))]
 
+/-! ### Near the exclusion edge: `θ = η = 1/100`
+
+`K₁(θ)` barely grows as `θ → 0` while the certified constant scales like
+`(1-η)(1-θ)`, so the route-A optimum sits at the edge.  `θ = η = 1/100`
+certifies `1/(28 r²)` — against the route-A ceiling `≈ 1/27.2`. -/
+
+/-- `K₁(1/100) ≤ 0.1637` for every `r ≥ 2`. -/
+theorem K1_hundredth_le (r : ℕ) (hr : 2 ≤ r) :
+    (r : ℝ) * (1 - betaTheta r (27 / 20) (1 / 100)) ≤ 0.1637 := by
+  have h := K1_theta_le r (1 / 100) hr (by norm_num) (by norm_num)
+  linarith
+
+/-- **The headline constant**: `ε ≥ 1/(28 r²)` at `(θ, η) = (1/100, 1/100)`.
+Rational check: `(99/100)² · 0.00603 · 28 = 0.16548 ≥ 0.1637`. -/
+theorem eps_hundredth_28 (r : ℕ) (hr : 2 ≤ r)
+    (hbpos : betaTheta r (27 / 20) (1 / 100) < 1)
+    (hwidth : (0.00603 : ℝ) / (r : ℝ) ^ 2 ≤ width r (27 / 20)) :
+    1 / (28 * (r : ℝ) ^ 2) ≤
+      epsR r (27 / 20) (betaTheta r (27 / 20) (1 / 100)) (1 / 100) := by
+  have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
+  have h := epsR_theta_lower r (27 / 20) 0.00603 0.1637 (1 / 100) (1 / 100) hr
+    (by norm_num) (by norm_num) hbpos (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) hwidth (K1_hundredth_le r hr)
+  refine le_trans ?_ h
+  rw [div_le_div_iff₀ (by positivity) (by positivity)]
+  nlinarith [sq_nonneg ((r : ℝ))]
+
+/-! ### The sharp `r = 3` instance
+
+At `r = 3` the frozen-at-`r = 2` terms of `K1_theta_le` can be re-evaluated
+(`1/r² = 1/9`, `1/r⁴ = 1/81`, `1/r - 1/r² = 2/9`), and Lemma C's window
+bound at `r = 3` is `width ≥ 0.0098/9` (vs the uniform `0.00603/r²`), so
+the same `(1/100, 1/100)` ledger certifies `ε₃ ≥ 1/160` — past the
+paper's `1/200`. -/
+
+/-- `K₁(1/100)` at `r = 3`: `≤ 0.1624`. -/
+theorem K1_hundredth_three_le :
+    ((3 : ℕ) : ℝ) * (1 - betaTheta 3 (27 / 20) (1 / 100)) ≤ 0.1624 := by
+  have hL : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9
+  have hL0 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+  have hlamL : (27 / 20 : ℝ) * Real.log 2 ≤ 1 := by nlinarith
+  have h := K1_theta_bound 3 (27 / 20) (1 / 100) (by norm_num) (by norm_num)
+    hlamL (by norm_num)
+  obtain ⟨hL3, hL5⟩ := log2_pow_bounds
+  have hr3 : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+  have h1 : (27 / 20 : ℝ) ^ 2 * Real.log 2 / 8 ≤ 0.1579076 := by nlinarith
+  have h2 : (27 / 20 : ℝ) ^ 4 * Real.log 2 ^ 3 / (192 * ((3 : ℕ) : ℝ) ^ 2)
+      ≤ 0.0006403 := by
+    rw [hr3, div_le_iff₀ (by norm_num)]
+    nlinarith [hL3, pow_pos hL0 3]
+  have h3 : (27 / 20 : ℝ) ^ 6 * Real.log 2 ^ 5 / (1280 * ((3 : ℕ) : ℝ) ^ 4)
+      ≤ 0.0000094 := by
+    rw [hr3, div_le_iff₀ (by norm_num)]
+    nlinarith [hL5, pow_pos hL0 5]
+  have hW : Wconst (27 / 20) ≤ 0.0172836 := by
+    rw [Wconst, div_le_iff₀ (by norm_num : (0:ℝ) < 64)]
+    calc (27 / 20 : ℝ) ^ 4 * Real.log 2 ^ 3
+        ≤ (27 / 20 : ℝ) ^ 4 * 0.33302498 :=
+          mul_le_mul_of_nonneg_left hL3 (by positivity)
+      _ ≤ 0.0172836 * 64 := by norm_num
+  have hW0 : (0 : ℝ) ≤ Wconst (27 / 20) := by rw [Wconst]; positivity
+  have h4 : (1 - 1 / 100 : ℝ) *
+      (Wconst (27 / 20) * (1 / ((3 : ℕ) : ℝ) - 1 / ((3 : ℕ) : ℝ) ^ 2))
+        ≤ 0.0038024 := by
+    rw [hr3]
+    have hq : (1 / (3 : ℝ) - 1 / (3 : ℝ) ^ 2) = 2 / 9 := by norm_num
+    rw [hq]
+    nlinarith [hW, hW0]
+  linarith [h, h1, h2, h3, h4]
+
+/-- **The sharp `r = 3` gain**: `ε₃ ≥ 1/160 > 1/200`, given Lemma C's
+window bound at `r = 3` (`width ≥ 0.0098/9`, discharged in `Theorem2.lean`).
+Rational check: `(99/100)² · 0.0098 · 160 = 1.5368 ≥ 9 · 0.1624 = 1.4616`. -/
+theorem eps_three_160
+    (hbpos : betaTheta 3 (27 / 20) (1 / 100) < 1)
+    (hwidth : (0.0098 : ℝ) / ((3 : ℕ) : ℝ) ^ 2 ≤ width 3 (27 / 20)) :
+    1 / 160 ≤ epsR 3 (27 / 20) (betaTheta 3 (27 / 20) (1 / 100)) (1 / 100) := by
+  have h := epsR_theta_lower 3 (27 / 20) 0.0098 0.1624 (1 / 100) (1 / 100)
+    (by norm_num) (by norm_num) (by norm_num) hbpos (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) hwidth K1_hundredth_three_le
+  refine le_trans ?_ h
+  have hr3 : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+  rw [hr3]
+  norm_num
+
 end Numeric
 
 end DegeneracyLedgerSharp

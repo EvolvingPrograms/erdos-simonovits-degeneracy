@@ -389,16 +389,17 @@ theorem rGraph_parent_child_adj
 /-! ## Block E: the parameters, generic in `r`
 
 All constants come from `LedgerR`/`LedgerSharp` at `λ = 27/20`, at the
-**optimized window position** `θ = ¼` with slack `η = ¼` (the midpoint
-`θ = η = ½` of the paper costs a factor ≈ 2.3 in the final constant —
-see `lib/LedgerSharp.lean` and Theorem 3(b)'s family law):
+**optimized window position** `θ = 1/100` with slack `η = 1/100` (the
+midpoint `θ = η = ½` of the paper costs a factor ≈ 4 in the final
+constant; `K₁(θ)` barely grows as `θ → 0`, so the ledger runs near the
+exclusion edge — see `lib/LedgerSharp.lean` and Theorem 3(b)'s family law):
 
-* `betaC r = β_r = A_r + ¼·width_r` (`betaTheta` at `θ = ¼`),
-* `slackC r = δ_r = (β_r − A_r)/4 = width_r/16` (`deltaR`),
+* `betaC r = β_r = A_r + width_r/100` (`betaTheta` at `θ = 1/100`),
+* `slackC r = δ_r = (β_r − A_r)/4 = width_r/400` (`deltaR`),
 * `endpointC r = A_r = λ τ_r + sup G_r` (`Aside`) — the ledger endpoint,
-* `epsC r = ¾ ε^max_r` (`epsR` at `η = ¼`),
-* `depthC r = ⌈4/width_r⌉ + 1` (so `depth · increment > 1` at the
-  per-layer increment `width_r/4`).
+* `epsC r = (99/100) ε^max_r` (`epsR` at `η = 1/100`),
+* `depthC r = ⌈100/width_r⌉ + 1` (so `depth · increment > 1` at the
+  per-layer increment `width_r/100`).
 
 The only input is `0 < width r (27/20)` (`DegeneracyLaw.width_pos_all`,
 unconditional) plus the *upper* window bound of Lemma 6.1 (`Theorem3a`). -/
@@ -407,11 +408,11 @@ namespace Params
 
 open DegeneracyLaw DegeneracyLedger DegeneracyLawB TwoDegenerateGraphs
 
-noncomputable def betaC (r : ℕ) : ℝ := betaTheta r (27 / 20) (1 / 4)
+noncomputable def betaC (r : ℕ) : ℝ := betaTheta r (27 / 20) (1 / 100)
 noncomputable def slackC (r : ℕ) : ℝ := deltaR r (27 / 20) (betaC r)
 noncomputable def endpointC (r : ℕ) : ℝ := Aside r (27 / 20)
-noncomputable def epsC (r : ℕ) : ℝ := epsR r (27 / 20) (betaC r) (1 / 4)
-noncomputable def depthC (r : ℕ) : ℕ := ⌈4 / width r (27 / 20)⌉₊ + 1
+noncomputable def epsC (r : ℕ) : ℝ := epsR r (27 / 20) (betaC r) (1 / 100)
+noncomputable def depthC (r : ℕ) : ℕ := ⌈100 / width r (27 / 20)⌉₊ + 1
 
 theorem lam_log_le : (27 / 20 : ℝ) * Real.log 2 ≤ 1 := by
   have := Real.log_two_lt_d9; nlinarith
@@ -468,12 +469,12 @@ theorem Cside_ge (r : ℕ) (hr : 2 ≤ r) : (0.9 : ℝ) ≤ Cside r (tauOf r (27
   · linarith
 
 theorem betaC_spec (r : ℕ) :
-    Cside r (tauOf r (27 / 20)) - betaC r = 3 / 4 * width r (27 / 20) := by
-  have h := Cside_sub_betaTheta r (27 / 20) (1 / 4)
+    Cside r (tauOf r (27 / 20)) - betaC r = 99 / 100 * width r (27 / 20) := by
+  have h := Cside_sub_betaTheta r (27 / 20) (1 / 100)
   unfold betaC
   linarith
 
-theorem betaC_spec' (r : ℕ) : betaC r - Aside r (27 / 20) = width r (27 / 20) / 4 := by
+theorem betaC_spec' (r : ℕ) : betaC r - Aside r (27 / 20) = width r (27 / 20) / 100 := by
   simp only [betaC, betaTheta]
   ring
 
@@ -517,8 +518,8 @@ theorem tauC_le_one (r : ℕ) (hr : 2 ≤ r) : tauOf r (27 / 20) ≤ 1 := by
   have : (0 : ℝ) ≤ (27 / 20 : ℝ) * Real.log 2 / (4 * (r : ℝ)) := by positivity
   linarith
 
-/-- `δ_r = width_r / 16`. -/
-theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 16 := by
+/-- `δ_r = width_r / 400`. -/
+theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 400 := by
   have h := betaC_spec' r
   simp only [slackC, deltaR]
   linarith
@@ -526,10 +527,10 @@ theorem slackC_eq (r : ℕ) : slackC r = width r (27 / 20) / 16 := by
 theorem slackC_pos (r : ℕ) (hr : 2 ≤ r) : 0 < slackC r := by
   rw [slackC_eq]; linarith [width_pos r hr]
 
-/-- The per-layer potential increment is exactly `width_r / 4`. -/
+/-- The per-layer potential increment is exactly `width_r / 100`. -/
 theorem increment_eq (r : ℕ) :
     RGenericBridge.potentialIncrement (betaC r) (slackC r) (endpointC r) =
-      width r (27 / 20) / 4 := by
+      width r (27 / 20) / 100 := by
   have h := betaC_spec' r
   simp only [RGenericBridge.potentialIncrement, endpointC, slackC_eq]
   linarith
@@ -541,11 +542,11 @@ theorem depthC_increment (r : ℕ) (hr : 2 ≤ r) :
     1 < (depthC r : ℝ) *
       RGenericBridge.potentialIncrement (betaC r) (slackC r) (endpointC r) := by
   have hw := width_pos r hr
-  have hceil : 4 / width r (27 / 20) ≤ (⌈4 / width r (27 / 20)⌉₊ : ℝ) := Nat.le_ceil _
-  have hcast : ((depthC r : ℕ) : ℝ) = (⌈4 / width r (27 / 20)⌉₊ : ℝ) + 1 := by
+  have hceil : 100 / width r (27 / 20) ≤ (⌈100 / width r (27 / 20)⌉₊ : ℝ) := Nat.le_ceil _
+  have hcast : ((depthC r : ℕ) : ℝ) = (⌈100 / width r (27 / 20)⌉₊ : ℝ) + 1 := by
     simp [depthC]
   rw [increment_eq, hcast]
-  have hlow : 4 / width r (27 / 20) * (width r (27 / 20) / 4) = 1 := by
+  have hlow : 100 / width r (27 / 20) * (width r (27 / 20) / 100) = 1 := by
     field_simp
   nlinarith [hceil, hw]
 
@@ -2016,11 +2017,79 @@ theorem width_ge (r : ℕ) (hr : 2 ≤ r) :
   rw [div_le_iff₀ (by positivity)]
   nlinarith [hmain, hlow]
 
+/-- Lemma C's window bound specialized at `r = 3`: the generic `lowerSeq_ge`
+freezes `t = 1/r` at its `r = 2` worst case; at `t = 1/3` the same chain
+gives `lowerSeq ≥ 0.0098` (true value `0.0098169`). -/
+theorem lowerSeq_ge_three : (0.0098 : ℝ) ≤ lowerSeq (27 / 20) 3 := by
+  have h1 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
+  have h2 : Real.log 2 < 0.6931471808 := Real.log_two_lt_d9
+  have hL : (0 : ℝ) < Real.log 2 := by linarith
+  obtain ⟨hs1, hs2⟩ := log_two_sq_bounds
+  obtain ⟨hc1, hc2⟩ := log_two_cube_bounds
+  have ht : (1 : ℝ) / ((3 : ℕ) : ℝ) = 1 / 3 := by norm_num
+  have hW : Wconst (27 / 20 : ℝ) = (531441 / 160000 : ℝ) * Real.log 2 ^ 3 / 64 := by
+    rw [Wconst]; norm_num
+  have hWlow : (0.0172834 : ℝ) ≤ Wconst (27 / 20 : ℝ) := by rw [hW]; linarith [hc1]
+  have hWpos : (0 : ℝ) < Wconst (27 / 20 : ℝ) := by linarith
+  have hcform : 1 + ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 3
+      = 1 + (243 / 400 : ℝ) * Real.log 2 ^ 2 := by ring
+  have hcup : 1 + ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 3 ≤ 1.291875208 := by
+    rw [hcform]; linarith [hs2]
+  have hfac : (0.569374930 : ℝ) ≤
+      1 - (1 + ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 3) * (1 / 3) := by
+    linarith [hcup]
+  have hlead : (0.0098405 : ℝ) ≤
+      Wconst (27 / 20 : ℝ) * (1 - (1 + ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 3) * (1 / 3)) := by
+    have hprod := mul_le_mul hWlow hfac (by norm_num) hWpos.le
+    linarith [hprod]
+  have hden : (0 : ℝ) < 1 - ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 4 := by
+    have he : ((27 / 20 : ℝ) * Real.log 2) ^ 2 = (729 / 400 : ℝ) * Real.log 2 ^ 2 := by
+      ring
+    rw [he]; linarith [hs2]
+  have hsix : Real.log 2 ^ 6 ≤ 0.1109055 := by
+    have h6 : Real.log 2 ^ 6 = (Real.log 2 ^ 3) ^ 2 := by ring
+    rw [h6]; nlinarith [hc1, hc2]
+  have hK : ((27 / 20 : ℝ) * Real.log 2) ^ 6 /
+      (1920 * Real.log 2 * (1 - ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 4)) ≤ 0.000648 := by
+    rw [div_le_iff₀ (by positivity)]
+    have hnum : ((27 / 20 : ℝ) * Real.log 2) ^ 6
+        = (387420489 / 64000000 : ℝ) * Real.log 2 ^ 6 := by ring
+    have hrhs : (0.000648 : ℝ) *
+          (1920 * Real.log 2 * (1 - ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 4))
+        = 1.24416 * Real.log 2 - (1.24416 * 729 / 1600) * Real.log 2 ^ 3 := by ring
+    rw [hnum, hrhs]
+    linarith [hsix, hc2, h1]
+  have hKpos : (0 : ℝ) ≤ ((27 / 20 : ℝ) * Real.log 2) ^ 6 /
+      (1920 * Real.log 2 * (1 - ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 4)) := by positivity
+  have htail : ((27 / 20 : ℝ) * Real.log 2) ^ 6 /
+      (1920 * Real.log 2 * (1 - ((27 / 20 : ℝ) * Real.log 2) ^ 2 / 4)) * (1 / 3) ^ 3
+        ≤ 0.000024 := by
+    nlinarith [hK, hKpos]
+  rw [lowerSeq, ht]
+  linarith [hlead, htail]
+
+/-- The `r = 3` window bound: `width(3) ≥ 0.0098/9`. -/
+theorem width_ge_three : (0.0098 : ℝ) / ((3 : ℕ) : ℝ) ^ 2 ≤ width 3 (27 / 20) := by
+  have hB : supG 3 (27 / 20) = Gfun 3 (27 / 20) (1 / 2) (1 / 2) :=
+    LemmaB.supG_eq_center 3 (27 / 20) (by norm_num) (by norm_num) (by norm_num)
+  have hmain := lowerSeq_le_rsq_width (27 / 20) (by norm_num) lam_log_lt
+    (by norm_num : 2 ≤ 3) hB
+  have hlow := lowerSeq_ge_three
+  have h3 : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+  rw [h3, div_le_iff₀ (by norm_num)]
+  rw [h3] at hmain
+  nlinarith [hmain, hlow]
+
+/-- **The sharp `r = 3` exponent gain**: `ε₃ ≥ 1/160 > 1/200`. -/
+theorem epsC_three_lower : 1 / 160 ≤ epsC 3 :=
+  DegeneracyLedgerSharp.eps_three_160 (betaC_lt_one 3 (by norm_num)) width_ge_three
+
 /-- **The explicit exponent**, unconditional: `ε_r ≥ 1/(48 r²)` — the
-optimized `(θ, η) = (¼, ¼)` ledger of `lib/LedgerSharp.lean`, beating the
-midpoint chain (`1/(110 r²)` with the frozen `K₁`, `1/(108 r²)` sharp). -/
-theorem epsC_lower (r : ℕ) (hr : 2 ≤ r) : 1 / (48 * (r : ℝ) ^ 2) ≤ epsC r :=
-  DegeneracyLedgerSharp.eps_quarter_48 r hr (betaC_lt_one r hr) (width_ge r hr)
+optimized `(θ, η) = (1/100, 1/100)` ledger of `lib/LedgerSharp.lean`,
+beating the midpoint chain (`1/(110 r²)` with the frozen `K₁`,
+`1/(108 r²)` sharp) and the intermediate `1/(48 r²)` at `(¼, ¼)`. -/
+theorem epsC_lower (r : ℕ) (hr : 2 ≤ r) : 1 / (28 * (r : ℝ) ^ 2) ≤ epsC r :=
+  DegeneracyLedgerSharp.eps_hundredth_28 r hr (betaC_lt_one r hr) (width_ge r hr)
 
 
 /-! ## Block G: the counterexample -/
@@ -2093,7 +2162,7 @@ theorem rDegenerateExtremalCounterexample_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     rDegenerateExtremalCounterexample_of_hosts hr hb hdepth hhosts
   exact ⟨q, H, hcon, hbip, hdeg, hnodeg, c, epsC r, hc0, epsC_pos r hr, hbnd⟩
 
-/-- **Theorem 2 with the explicit exponent** `ε = 1/(48 r²)`, conditional on the
+/-- **Theorem 2 with the explicit exponent** `ε = 1/(28 r²)`, conditional on the
 Gibbs bound. -/
 theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     (hGibbs : TypeEntropyBound r (supG r (27 / 20)) (27 / 20)) :
@@ -2101,7 +2170,7 @@ theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 �
       H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts r hr hGibbs
   have hb : r + 1 ≤ baseSize := by nlinarith
@@ -2110,10 +2179,10 @@ theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 �
   refine ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, ?_⟩
   filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
   have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
-  have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
+  have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) ≤
       (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + epsC r) :=
     Real.rpow_le_rpow_of_exponent_le hn1' (by linarith [epsC_lower r hr])
-  calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2))
+  calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2))
       ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + epsC r) :=
         mul_le_mul_of_nonneg_left hmono hc0.le
     _ ≤ (SimpleGraph.extremalNumber n H : ℝ) := hn
@@ -2124,7 +2193,7 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
       H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
   rDegenerateExtremalCounterexample_explicit_of_gibbs r hr (typeEntropyBound_supG r hr)
 
@@ -2139,6 +2208,37 @@ theorem rDegenerateExtremalCounterexample (r : ℕ) (hr : 2 ≤ r) :
             (SimpleGraph.extremalNumber n H : ℝ) :=
   rDegenerateExtremalCounterexample_of_gibbs r hr (typeEntropyBound_supG r hr)
 
+/-- **The sharp `r = 3` counterexample**: exponent `5/3 + 1/160`, past the
+paper's `1/200` (and far past Theorem 1's hand-certified `1/4000`).  The
+generic pipeline at `r = 3`, with Lemma C's window bound specialized at
+`r = 3` (`width_ge_three`) feeding the `(1/100, 1/100)` ledger. -/
+theorem threeDegenerateExtremalCounterexample_sharp :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate 3 H ∧ ¬ IsDegenerate 2 H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 160) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ :=
+    exists_free_dense_hosts 3 (by norm_num) (typeEntropyBound_supG 3 (by norm_num))
+  have hb : 3 + 1 ≤ baseSize := by omega
+  obtain ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, hbnd⟩ :=
+    rDegenerateExtremalCounterexample_of_hosts (by norm_num) hb hdepth hhosts
+  refine ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, ?_⟩
+  have hexp : (5 : ℝ) / 3 + 1 / 160 ≤ (2 : ℝ) - 1 / ((3 : ℕ) : ℝ) + epsC 3 := by
+    have h := epsC_three_lower
+    have h3 : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [h3]
+    linarith
+  filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
+  have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
+  have hmono : (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 160) ≤
+      (n : ℝ) ^ ((2 : ℝ) - 1 / ((3 : ℕ) : ℝ) + epsC 3) :=
+    Real.rpow_le_rpow_of_exponent_le hn1' hexp
+  calc c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 160)
+      ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / ((3 : ℕ) : ℝ) + epsC 3) :=
+        mul_le_mul_of_nonneg_left hmono hc0.le
+    _ ≤ (SimpleGraph.extremalNumber n H : ℝ) := hn
 
 end RAssembly
 
@@ -2182,11 +2282,11 @@ theorem rDegenerateExtremalCounterexample_exact (r : ℕ) (hr : 2 ≤ r) :
       ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
   RAssembly.rDegenerateExtremalCounterexample_explicit r hr
 
--- The same, with the exponent gain pinned to `ε = 1/(48 r²)`.
+-- The same, with the exponent gain pinned to `ε = 1/(28 r²)`.
 open Classical in
 theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
@@ -2195,14 +2295,14 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
       IsDegenerate r H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) ≤
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
     RAssembly.rDegenerateExtremalCounterexample_explicit r hr
   exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
 
 -- Compatibility form at the previous constant `ε = 1/(110 r²)` (weaker
--- exponent, follows from the `1/(48 r²)` statement by monotonicity).
+-- exponent, follows from the `1/(28 r²)` statement by monotonicity).
 open Classical in
 theorem rDegenerateExtremalCounterexample_explicit_110 (r : ℕ) (hr : 2 ≤ r) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
@@ -2220,15 +2320,30 @@ theorem rDegenerateExtremalCounterexample_explicit_110 (r : ℕ) (hr : 2 ≤ r) 
   have hrpos : (0 : ℝ) < (r : ℝ) := by linarith
   filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
   have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
-  have hexp : 1 / (110 * (r : ℝ) ^ 2) ≤ 1 / (48 * (r : ℝ) ^ 2) := by
+  have hexp : 1 / (110 * (r : ℝ) ^ 2) ≤ 1 / (28 * (r : ℝ) ^ 2) := by
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [sq_nonneg ((r : ℝ))]
   have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
-      (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) :=
+      (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) :=
     Real.rpow_le_rpow_of_exponent_le hn1' (by linarith)
   calc c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2))
-      ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (48 * (r : ℝ) ^ 2)) :=
+      ≤ c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (28 * (r : ℝ) ^ 2)) :=
         mul_le_mul_of_nonneg_left hmono hc0.le
     _ ≤ (SimpleGraph.extremalNumber n H : ℝ) := hn
+
+-- **The sharp `r = 3` form**: degeneracy exactly 3 and exponent
+-- `5/3 + 1/160` — past the paper's `1/200` for this case.
+open Classical in
+theorem threeDegenerateExtremalCounterexample_sharp :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsDegenerate 3 H ∧
+      ¬ IsDegenerate 2 H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 160) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) :=
+  RAssembly.threeDegenerateExtremalCounterexample_sharp
 
 end RDegenerateGraphsTarget
