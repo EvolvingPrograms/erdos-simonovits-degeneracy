@@ -187,6 +187,85 @@ theorem sixteen_rsq_epsMax_tendsto' :
       16 * (r : ℝ) ^ 2 * epsMaxR r (lamR r) (betaMid r (lamR r))) atTop (𝓝 1) :=
   sixteen_rsq_epsMax_tendsto tendsto_r_one_sub_betaMid
 
+/-! ## §6 The whole in-window family: `β_θ = A + θ·width`
+
+The midpoint `θ = ½` is a choice, not an optimum.  For any fixed
+`θ ∈ (0,1)` the parameter `β_θ := A_r + θ·width_r` is in the open window,
+and `8 r² ε^max_r(β_θ) → 1 - θ`.  Since `ε^max` is antitone in `β` on the
+window (`epsMaxR_anti`), the method's supremal constant is `1/(8 r²)`,
+approached (but not attained) as `θ → 0`; the midpoint value `1/(16 r²)` is
+the `θ = ½` member of the family. -/
+
+/-- `β_θ := A_r + θ · width_r`, the general in-window parameter. -/
+def betaTheta (r : ℕ) (lam theta : ℝ) : ℝ :=
+  Aside r lam + theta * width r lam
+
+/-- The midpoint is the `θ = ½` member of the family. -/
+theorem betaTheta_half (r : ℕ) (lam : ℝ) :
+    betaTheta r lam (1 / 2) = betaMid r lam := by
+  simp only [betaTheta, betaMid, width]; ring
+
+/-- `C_r - β_θ = (1 - θ) · width_r`. -/
+theorem Cside_sub_betaTheta (r : ℕ) (lam theta : ℝ) :
+    Cside r (tauOf r lam) - betaTheta r lam theta = (1 - theta) * width r lam := by
+  simp only [betaTheta, width]; ring
+
+/-- §10.4(c) for the whole family: `r (1 - β_θ) → 1/(8 ln 2)`, independent
+of `θ` (the window term is lower order). -/
+theorem tendsto_r_one_sub_betaTheta (theta : ℝ) :
+    Tendsto (fun r : ℕ => (r : ℝ) * (1 - betaTheta r (lamR r) theta)) atTop
+      (𝓝 (1 / (8 * Real.log 2))) := by
+  have hwin : Tendsto (fun r : ℕ =>
+      ((r : ℝ) ^ 2 * width r (lamR r)) * ((1 : ℝ) / (r : ℝ)) * (1 - theta)) atTop
+      (𝓝 ((1 / (64 * Real.log 2)) * 0 * (1 - theta))) :=
+    (width_tuned_tendsto.mul tendsto_inv_nat).mul_const _
+  rw [mul_zero, zero_mul] at hwin
+  have h := tendsto_r_one_sub_Cside.add hwin
+  rw [add_zero] at h
+  refine h.congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with r hr
+  have hrne : ((r : ℝ)) ≠ 0 := Nat.cast_ne_zero.2 (by omega)
+  simp only [betaTheta, width]
+  field_simp
+  ring
+
+/-- **The family law**: for every fixed `θ`, along the tuned sequence,
+`8 r² ε^max_r(β_θ) → 1 - θ`.  At `θ = ½` this recovers
+`sixteen_rsq_epsMax_tendsto'`; as `θ → 0` the limit approaches the supremal
+constant `1/8`. -/
+theorem eight_rsq_epsMax_theta_tendsto (theta : ℝ) :
+    Tendsto (fun r : ℕ =>
+      8 * (r : ℝ) ^ 2 * epsMaxR r (lamR r) (betaTheta r (lamR r) theta)) atTop
+      (𝓝 (1 - theta)) := by
+  have hL := logTwoPos
+  have hne : (1 : ℝ) / (8 * Real.log 2) ≠ 0 := by positivity
+  have hnum : Tendsto (fun r : ℕ =>
+      8 * ((r : ℝ) ^ 2 * width r (lamR r)) * (1 - theta)) atTop
+      (𝓝 (8 * (1 / (64 * Real.log 2)) * (1 - theta))) :=
+    (width_tuned_tendsto.const_mul 8).mul_const _
+  have hq := hnum.div (tendsto_r_one_sub_betaTheta theta) hne
+  have hval : 8 * (1 / (64 * Real.log 2)) * (1 - theta) / (1 / (8 * Real.log 2))
+      = 1 - theta := by
+    field_simp
+    ring
+  rw [← hval]
+  refine hq.congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with r hr
+  simp only [Pi.div_apply]
+  rw [epsMaxR, Cside_sub_betaTheta]
+  ring
+
+/-- `ε^max` is antitone in `β` below `1` when `C_r ≤ 1`: pushing `β` down
+toward the exclusion threshold `A_r` only increases the certified gain.
+Combined with `eight_rsq_epsMax_theta_tendsto`, the supremum of the method's
+constant over the open window is `1/8`, approached as `β → A_r⁺`. -/
+theorem epsMaxR_anti (r : ℕ) (lam : ℝ) {beta beta' : ℝ} (hr0 : 0 < (r : ℝ))
+    (hC1 : Cside r (tauOf r lam) ≤ 1) (hle : beta' ≤ beta)
+    (hb1 : beta < 1) :
+    epsMaxR r lam beta ≤ epsMaxR r lam beta' := by
+  rw [epsMaxR, epsMaxR, div_le_div_iff₀ (by nlinarith) (by nlinarith)]
+  nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 hle) (sub_nonneg.2 hC1)) hr0.le]
+
 end
 
 end DegeneracyLawB

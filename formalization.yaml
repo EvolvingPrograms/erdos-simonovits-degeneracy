@@ -11,25 +11,29 @@ status:
     Complete, sorry-free Lean 4 + mathlib formalization of all results:
     counterexamples to Erdős problem #146 at r=3 and at every r >= 2, the
     asymptotic window law with sharp threshold at Gibbs weight e, and the
-    sharp exponent law 16 r^2 eps_r -> 1.
+    exponent law 8 r^2 eps_r(beta_theta) -> 1 - theta across the feasible
+    window (1/16 at the midpoint; supremal constant 1/8).
   axioms: ["propext", "Classical.choice", "Quot.sound"]
   sorries: 0  # in all proof targets; the challenge statement file (lake build Challenge) intentionally contains one
   main_results:
-    - name: "Theorem 1: 3-degenerate H with ex(n;H) >= c n^(5/3 + 1/4000)"
-      decl: "ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample"
+    - name: "Theorem 1: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/4000), exponent and exactness literal"
+      decl: "ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_exact"
       file: "Theorem1.lean"
-    - name: "Theorem 2: for every r >= 2, r-degenerate H_r with ex(n;H_r) >= c n^(2 - 1/r + 1/(110 r^2))"
-      decl: "RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_explicit"
+    - name: "Theorem 2: for every r >= 2, H_r of degeneracy exactly r with ex(n;H_r) >= c n^(2 - 1/r + 1/(110 r^2))"
+      decl: "RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact"
       file: "Theorem2.lean"
-    - name: "Theorem 3(a): r^2 (C_r - A_r) -> lambda^4 ln^3(2)/64 for subcritical lambda"
-      decl: "DegeneracyLaw.width_tendsto_unconditional"
+    - name: "Theorem 3(a): r^2 (C_r - A_r) -> lambda^4 ln^3(2)/64 for every subcritical lambda (lambda ln 2 < 1)"
+      decl: "DegeneracyLaw.width_tendsto_unconditional_full"
       file: "Theorem3a.lean"
     - name: "Theorem 3(a) sharpness: r^2 width -> -infinity for lambda > 1/ln 2 (weight e)"
       decl: "DegeneracyLawSuper.threshold_sharp"
       file: "Prop63.lean"
-    - name: "Theorem 3(b): 16 r^2 eps_r^max -> 1 along lambda_r = (1 - ln r / r)/ln 2"
-      decl: "DegeneracyLawB.sixteen_rsq_epsMax_tendsto'"
+    - name: "Theorem 3(b): 8 r^2 eps_r^max(beta_theta) -> 1 - theta for the whole in-window family (midpoint theta = 1/2 gives 16 r^2 eps -> 1; supremal constant 1/8 as theta -> 0)"
+      decl: "DegeneracyLawB.eight_rsq_epsMax_theta_tendsto"
       file: "lib/LedgerAsym.lean"
+    - name: "Degeneracy lower bound: the layered pattern is not (r-1)-degenerate (two-layer witness)"
+      decl: "ExactDegeneracy.not_isDegenerate_of_layer_witness"
+      file: "lib/ExactDegeneracy.lean"
   future_work:
     - "Sharpen Theorem 2's constant 1/(110 r^2) to the paper's 1/(107 r^2) (sharp K1 evaluation)"
     - "Sharpen Theorem 1's 1/4000 to the certificate's 1/200 (formalized interval certificate)"

@@ -2,6 +2,7 @@ import SamplingR
 import BridgeR
 import Theorem3a
 import LedgerR
+import ExactDegeneracy
 
 /-!
 # Theorem 2: the `r`-generic degeneracy counterexample
@@ -291,6 +292,48 @@ theorem rGraphOverFin_isDegenerate (baseSize r depth : ℕ) :
     IsDegenerate r (rGraphOverFin baseSize r depth) :=
   isDegenerate_of_iso (rGraphOverFinIso baseSize r depth)
     (rGraph_isDegenerate baseSize r depth)
+
+/-! ### Exact degeneracy: the lower bound
+
+`IsDegenerate r` is only an upper bound (degeneracy at most `r`).  For
+`baseSize ≥ r + 1` the layered graph also has degeneracy at least `r`, by
+the generic two-layer witness `ExactDegeneracy.not_isDegenerate_of_layer_witness`
+applied to layers 0 and 1. -/
+
+theorem rGraph_not_isDegenerate (baseSize r depth : ℕ) (hr : 1 ≤ r)
+    (hbase : r + 1 ≤ baseSize) (hdepth : 0 < depth) :
+    ¬ IsDegenerate (r - 1) (rParentSystem baseSize r depth).graph := by
+  classical
+  have h0 : (0 : ℕ) < depth + 1 := by omega
+  have h1 : (1 : ℕ) < depth + 1 := by omega
+  set emb0 := rLayerEmbedding baseSize r depth 0 h0 with hemb0
+  set emb1 := rLayerEmbedding baseSize r depth 1 h1 with hemb1
+  -- layer-0 and layer-1 vertices sit at different levels, so never coincide
+  have hne01 : ∀ (a : RLayer baseSize r 0) (c : RLayer baseSize r 1),
+      emb0 a ≠ emb1 c := by
+    intro a c heq
+    have := congrArg (fun z : RVertex baseSize r depth => z.1.val) heq
+    simp [hemb0, hemb1, rLayerEmbedding] at this
+  -- adjacency between a root and a layer-1 child containing it
+  have hadj : ∀ (a : RLayer baseSize r 0)
+      (c : {parents : Finset (RLayer baseSize r 0) // parents.card = r}),
+      a ∈ c.val →
+        (rParentSystem baseSize r depth).graph.Adj (emb0 a) (emb1 c) := by
+    intro a c hac
+    refine ((rParentSystem baseSize r depth).graph_adj_iff _ _).mpr
+      ⟨hne01 a c, Or.inr ?_⟩
+    show emb0 a ∈ rParents baseSize r depth (emb1 c)
+    exact Finset.mem_map_of_mem emb0 hac
+  exact ExactDegeneracy.not_isDegenerate_of_layer_witness hr
+    (by rw [rLayer_card_zero]; omega) emb0 emb1 hadj
+
+/-- Exact degeneracy transported to the `Fin q` form. -/
+theorem rGraphOverFin_not_isDegenerate (baseSize r depth : ℕ) (hr : 1 ≤ r)
+    (hbase : r + 1 ≤ baseSize) (hdepth : 0 < depth) :
+    ¬ IsDegenerate (r - 1) (rGraphOverFin baseSize r depth) := by
+  intro h
+  exact rGraph_not_isDegenerate baseSize r depth hr hbase hdepth
+    (ExactDegeneracy.isDegenerate_of_iso (rGraphOverFinIso baseSize r depth).symm h)
 
 /-! ### Layer equivalences and parent/child adjacency -/
 
@@ -1090,7 +1133,7 @@ theorem eventually_expectedRetainedEdge_le_extremalNumber
 -- The final assembly, modulo the existence of a free dense retained host.
 open Classical in
 theorem rDegenerateExtremalCounterexample_of_hosts
-    {baseSize r depth : ℕ} (hr : 2 ≤ r) (hbase : r ≤ baseSize) (hdepth : 0 < depth)
+    {baseSize r depth : ℕ} (hr : 2 ≤ r) (hbase1 : r + 1 ≤ baseSize) (hdepth : 0 < depth)
     (hhosts : ∀ᶠ dimension : ℕ in atTop,
       ∃ retained : Set (Bool × HammingWord dimension),
         (rGraphOverFin baseSize r depth).Free
@@ -1101,12 +1144,13 @@ theorem rDegenerateExtremalCounterexample_of_hosts
         threeExpectedRetainedEdgeCount (betaNN r) dimension (radiusC r dimension) / 2 ≤
           hammingRetainedEdgeCount dimension (radiusC r dimension) retained) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + epsC r) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   classical
+  have hbase : r ≤ baseSize := by omega
   set forbidden := rGraphOverFin baseSize r depth with hforbidden
   have hnoisolated :
       ∀ vertex : Fin (Fintype.card (RVertex baseSize r depth)),
@@ -1124,6 +1168,7 @@ theorem rDegenerateExtremalCounterexample_of_hosts
     rGraphOverFin_connected baseSize r depth hr hbase hdepth,
     rGraphOverFin_isBipartite baseSize r depth,
     rGraphOverFin_isDegenerate baseSize r depth,
+    rGraphOverFin_not_isDegenerate baseSize r depth (by omega) hbase1 hdepth,
     1 / (2 : ℝ) ^ powerC r,
     one_div_pos.mpr (Real.rpow_pos_of_pos (by norm_num) (powerC r)), ?_⟩
   obtain ⟨minimum, hminimum⟩ := Filter.eventually_atTop.1 hsubsequence
@@ -1958,7 +2003,7 @@ theorem width_ge (r : ℕ) (hr : 2 ≤ r) :
   have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
   have hB : ∀ r' : ℕ, 2 ≤ r' → supG r' (27 / 20) = Gfun r' (27 / 20) (1 / 2) (1 / 2) :=
     fun r' hr' => LemmaB.supG_eq_center r' (27 / 20) hr' (by norm_num) (by norm_num)
-  have hmain := lowerSeq_le_rsq_width (27 / 20) (by norm_num) lam_log_lt hB hr
+  have hmain := lowerSeq_le_rsq_width (27 / 20) (by norm_num) lam_log_lt hr (hB r hr)
   have hlow := lowerSeq_ge r hr
   rw [div_le_iff₀ (by positivity)]
   nlinarith [hmain, hlow]
@@ -2029,38 +2074,38 @@ theorem exists_free_dense_hosts (r : ℕ) (hr : 2 ≤ r)
       (depthC_increment r hr) herror retained hout,
     hvert, hedge⟩
 
-/-- **Theorem 2.**  For every `r ≥ 2` there is a connected bipartite
-`r`-degenerate graph `H` on finitely many vertices and constants `c, ε > 0`
-with `c · n^(2 − 1/r + ε) ≤ ex(n, H)` for all large `n`. -/
+/-- **Theorem 2.**  For every `r ≥ 2` there is a connected bipartite graph
+`H` of degeneracy exactly `r` on finitely many vertices and constants
+`c, ε > 0` with `c · n^(2 − 1/r + ε) ≤ ex(n, H)` for all large `n`. -/
 theorem rDegenerateExtremalCounterexample_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     (hGibbs : TypeEntropyBound r (supG r (27 / 20)) (27 / 20)) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + ε) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts r hr hGibbs
-  have hb : r ≤ baseSize := by nlinarith
-  obtain ⟨q, H, hcon, hbip, hdeg, c, hc0, hbnd⟩ :=
+  have hb : r + 1 ≤ baseSize := by nlinarith
+  obtain ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, hbnd⟩ :=
     rDegenerateExtremalCounterexample_of_hosts hr hb hdepth hhosts
-  exact ⟨q, H, hcon, hbip, hdeg, c, epsC r, hc0, epsC_pos r hr, hbnd⟩
+  exact ⟨q, H, hcon, hbip, hdeg, hnodeg, c, epsC r, hc0, epsC_pos r hr, hbnd⟩
 
 /-- **Theorem 2 with the explicit exponent** `ε = 1/(110 r²)`, conditional on the
 Gibbs bound. -/
 theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 ≤ r)
     (hGibbs : TypeEntropyBound r (supG r (27 / 20)) (27 / 20)) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts r hr hGibbs
-  have hb : r ≤ baseSize := by nlinarith
-  obtain ⟨q, H, hcon, hbip, hdeg, c, hc0, hbnd⟩ :=
+  have hb : r + 1 ≤ baseSize := by nlinarith
+  obtain ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, hbnd⟩ :=
     rDegenerateExtremalCounterexample_of_hosts hr hb hdepth hhosts
-  refine ⟨q, H, hcon, hbip, hdeg, c, hc0, ?_⟩
+  refine ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, ?_⟩
   filter_upwards [hbnd, Filter.eventually_ge_atTop 1] with n hn hn1
   have hn1' : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn1
   have hmono : (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
@@ -2074,7 +2119,7 @@ theorem rDegenerateExtremalCounterexample_explicit_of_gibbs (r : ℕ) (hr : 2 �
 /-- **Theorem 2 with the explicit exponent**, unconditional. -/
 theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
@@ -2085,7 +2130,7 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
 `typeEntropyBound_supG` is proved above. -/
 theorem rDegenerateExtremalCounterexample (r : ℕ) (hr : 2 ≤ r) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H ∧
       ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + ε) ≤
@@ -2119,8 +2164,25 @@ theorem rDegenerateExtremalCounterexample (r : ℕ) (hr : 2 ≤ r) :
       ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + ε) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
+    RAssembly.rDegenerateExtremalCounterexample r hr
+  exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
+
+-- The same, with the degeneracy pinned exactly: `H` is `r`-degenerate but
+-- not `(r-1)`-degenerate.
+open Classical in
+theorem rDegenerateExtremalCounterexample_exact (r : ℕ) (hr : 2 ≤ r) :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsDegenerate r H ∧
+      ¬ IsDegenerate (r - 1) H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
-  RAssembly.rDegenerateExtremalCounterexample r hr
+  RAssembly.rDegenerateExtremalCounterexample_explicit r hr
 
 -- The same, with the exponent gain pinned to `ε = 1/(110 r²)`.
 open Classical in
@@ -2132,7 +2194,9 @@ theorem rDegenerateExtremalCounterexample_explicit (r : ℕ) (hr : 2 ≤ r) :
       ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((2 : ℝ) - 1 / (r : ℝ) + 1 / (110 * (r : ℝ) ^ 2)) ≤
-            (SimpleGraph.extremalNumber n H : ℝ) :=
-  RAssembly.rDegenerateExtremalCounterexample_explicit r hr
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
+    RAssembly.rDegenerateExtremalCounterexample_explicit r hr
+  exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
 
 end RDegenerateGraphsTarget

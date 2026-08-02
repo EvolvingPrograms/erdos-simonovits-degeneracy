@@ -1,6 +1,7 @@
 import Lemma61
 import LemmaC
 import LemmaB
+import LemmaBQuant
 
 /-!
 # Theorem 3(a): the limit of the rescaled feasibility window
@@ -85,14 +86,13 @@ theorem rsq_width_le_upperSeq (lam : ℝ) (hlam0 : 0 < lam)
   try ring
 
 theorem lowerSeq_le_rsq_width (lam : ℝ) (hlam0 : 0 < lam)
-    (hlam1 : lam * Real.log 2 < 1)
-    (hB : ∀ r : ℕ, 2 ≤ r → supG r lam = Gfun r lam (1 / 2) (1 / 2))
-    {r : ℕ} (hr : 2 ≤ r) :
+    (hlam1 : lam * Real.log 2 < 1) {r : ℕ} (hr : 2 ≤ r)
+    (hB : supG r lam = Gfun r lam (1 / 2) (1 / 2)) :
     lowerSeq lam r ≤ (r : ℝ) ^ 2 * width r lam := by
   have hr0 : (0 : ℝ) < r := by
     exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one (le_trans (by norm_num) hr)
   have hlog : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
-  have h := LemmaC.width_ge r lam hr hlam0 hlam1 (hB r hr)
+  have h := LemmaC.width_ge r lam hr hlam0 hlam1 hB
   have hsq : (0 : ℝ) < (r : ℝ) ^ 2 := by positivity
   have h' := mul_le_mul_of_nonneg_left h hsq.le
   refine le_trans (le_of_eq ?_) h'
@@ -112,7 +112,7 @@ theorem width_tendsto (lam : ℝ) (hlam0 : 0 < lam) (hlam1 : lam * Real.log 2 < 
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (lowerSeq_tendsto lam) (upperSeq_tendsto lam) ?_ ?_
   · filter_upwards [eventually_ge_atTop 2] with r hr
-    exact lowerSeq_le_rsq_width lam hlam0 hlam1 hB hr
+    exact lowerSeq_le_rsq_width lam hlam0 hlam1 hr (hB r hr)
   · filter_upwards [eventually_ge_atTop 2] with r hr
     exact rsq_width_le_upperSeq lam hlam0 hlam1 hr
 
@@ -151,6 +151,39 @@ theorem width_tendsto_unconditional (lam : ℝ) (hlam0 : 0 < lam)
     Tendsto (fun r : ℕ => (r : ℝ) ^ 2 * width r lam) atTop (𝓝 (Wconst lam)) :=
   width_tendsto lam hlam0 hlam1
     (fun r hr => LemmaB.supG_eq_center r lam hr hlam0 hlam2)
+
+/-- **Theorem 3(a), unconditional, full subcritical range.** For every fixed
+`λ` with `λ ln 2 < 1`, `r² · width_r → W(λ) = λ⁴ ln³2 / 64`.  The sandwich
+only needs Lemma B eventually in `r`, so the quantified Lemma B
+(`DegeneracyLawQuant.supG_eq_center_quant`, valid for `r ≥ R_of λ`)
+discharges the center-maximization hypothesis with no cap on `λ`. -/
+theorem width_tendsto_unconditional_full (lam : ℝ) (hlam0 : 0 < lam)
+    (hlam1 : lam * Real.log 2 < 1) :
+    Tendsto (fun r : ℕ => (r : ℝ) ^ 2 * width r lam) atTop (𝓝 (Wconst lam)) := by
+  have ha0 : 0 < lam * Real.log 2 :=
+    mul_pos hlam0 (Real.log_pos (by norm_num))
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (lowerSeq_tendsto lam) (upperSeq_tendsto lam) ?_ ?_
+  · filter_upwards [eventually_ge_atTop (max 2 (DegeneracyLawQuant.R_of lam))]
+      with r hr
+    exact lowerSeq_le_rsq_width lam hlam0 hlam1 (le_trans (le_max_left _ _) hr)
+      (DegeneracyLawQuant.supG_eq_center_quant r lam ha0 hlam1
+        (le_trans (le_max_right _ _) hr))
+  · filter_upwards [eventually_ge_atTop 2] with r hr
+    exact rsq_width_le_upperSeq lam hlam0 hlam1 hr
+
+/-- **Eventual positivity, full subcritical range**: unconditional form of
+`width_eventually_pos`. -/
+theorem width_eventually_pos_full (lam : ℝ) (hlam0 : 0 < lam)
+    (hlam1 : lam * Real.log 2 < 1) :
+    ∀ᶠ r : ℕ in atTop, 0 < width r lam := by
+  have h := width_tendsto_unconditional_full lam hlam0 hlam1
+  have hpos : ∀ᶠ r : ℕ in atTop, 0 < (r : ℝ) ^ 2 * width r lam :=
+    h.eventually (eventually_gt_nhds (Wconst_pos hlam0)) |>.mono fun r hr => hr
+  filter_upwards [hpos, eventually_ge_atTop 1] with r hr hr1
+  have hr0 : (0 : ℝ) < r := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hr1
+  have hsq : (0 : ℝ) < (r : ℝ) ^ 2 := by positivity
+  nlinarith [hr, hsq]
 
 end
 

@@ -13,3 +13,7 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           use-mathlib-cache: true
+      # The challenge statement (intentional sorry) and the kernel-checked
+      # faithfulness test that the proven theorem has exactly its type.
+      - name: Check challenge statement faithfulness
+        run: lake build Challenge ChallengeFaithful

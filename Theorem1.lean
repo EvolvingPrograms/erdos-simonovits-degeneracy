@@ -1,6 +1,7 @@
 import Sampling3
 import Kernel3
 import Bridge3
+import ExactDegeneracy
 
 /-!
 # Assembly of the `r = 3` counterexample
@@ -269,6 +270,49 @@ theorem tripleGraphOverFin_isThreeDegenerate (baseSize depth : ℕ) :
     IsDegenerate 3 (tripleGraphOverFin baseSize depth) :=
   isThreeDegenerate_of_iso (tripleGraphOverFinIso baseSize depth)
     (tripleGraph_isThreeDegenerate baseSize depth)
+
+/-! ### Exact degeneracy: the lower bound
+
+For `baseSize ≥ 4` the triple graph is not 2-degenerate, by the generic
+two-layer witness `ExactDegeneracy.not_isDegenerate_of_layer_witness`
+applied to layers 0 and 1. -/
+
+theorem tripleGraph_not_isTwoDegenerate (baseSize depth : ℕ)
+    (hbase : 4 ≤ baseSize) (hdepth : 0 < depth) :
+    ¬ IsDegenerate 2 (tripleParentSystem baseSize depth).graph := by
+  classical
+  have h0 : (0 : ℕ) < depth + 1 := by omega
+  have h1 : (1 : ℕ) < depth + 1 := by omega
+  set emb0 := tripleLayerEmbedding baseSize depth 0 h0 with hemb0
+  set emb1 := tripleLayerEmbedding baseSize depth 1 h1 with hemb1
+  -- layer-0 and layer-1 vertices sit at different levels, so never coincide
+  have hne01 : ∀ (a : TripleLayer baseSize 0) (c : TripleLayer baseSize 1),
+      emb0 a ≠ emb1 c := by
+    intro a c heq
+    have := congrArg (fun z : TripleVertex baseSize depth => z.1.val) heq
+    simp [hemb0, hemb1, tripleLayerEmbedding] at this
+  -- adjacency between a root and a layer-1 child containing it
+  have hadj : ∀ (a : TripleLayer baseSize 0)
+      (c : {parents : Finset (TripleLayer baseSize 0) // parents.card = 3}),
+      a ∈ c.val →
+        (tripleParentSystem baseSize depth).graph.Adj (emb0 a) (emb1 c) := by
+    intro a c hac
+    refine ((tripleParentSystem baseSize depth).graph_adj_iff _ _).mpr
+      ⟨hne01 a c, Or.inr ?_⟩
+    show emb0 a ∈ tripleParents baseSize depth (emb1 c)
+    exact Finset.mem_map_of_mem emb0 hac
+  have h := ExactDegeneracy.not_isDegenerate_of_layer_witness (r := 3)
+    (by norm_num) (by rw [tripleLayer_card_zero]; omega) emb0 emb1 hadj
+  simpa using h
+
+/-- Exact degeneracy transported to the `Fin q` form. -/
+theorem tripleGraphOverFin_not_isTwoDegenerate (baseSize depth : ℕ)
+    (hbase : 4 ≤ baseSize) (hdepth : 0 < depth) :
+    ¬ IsDegenerate 2 (tripleGraphOverFin baseSize depth) := by
+  intro h
+  exact tripleGraph_not_isTwoDegenerate baseSize depth hbase hdepth
+    (ExactDegeneracy.isDegenerate_of_iso
+      (tripleGraphOverFinIso baseSize depth).symm h)
 
 /-! ### Layer equivalences and parent/child adjacency -/
 
@@ -904,9 +948,10 @@ theorem eventually_expectedRetainedEdge_le_extremalNumber
     _ ≤ (SimpleGraph.extremalNumber (threeVertexCount dimension)
         (tripleGraphOverFin baseSize depth) : ℝ) := by exact_mod_cast hpadded_edges
 
--- The final assembly, modulo the existence of a free dense retained host.
+-- The final assembly, modulo the existence of a free dense retained host,
+-- with the exponent gain explicit: `ε = epsThree = 1/4000`.
 open Classical in
-theorem threeDegenerateExtremalCounterexample_of_hosts
+theorem threeDegenerateExtremalCounterexample_explicit_of_hosts
     {baseSize depth : ℕ} (hbase : 4 ≤ baseSize) (hdepth : 0 < depth)
     (hhosts : ∀ᶠ dimension : ℕ in atTop,
       ∃ retained : Set (Bool × HammingWord dimension),
@@ -919,10 +964,10 @@ theorem threeDegenerateExtremalCounterexample_of_hosts
             (threeHammingRadius dimension) / 2 ≤
           hammingRetainedEdgeCount dimension (threeHammingRadius dimension) retained) :
     ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
-      H.Connected ∧ H.IsBipartite ∧ IsDegenerate 3 H ∧
-      ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate 3 H ∧ ¬ IsDegenerate 2 H ∧
+      ∃ c : ℝ, 0 < c ∧
         ∀ᶠ n : ℕ in atTop,
-          c * (n : ℝ) ^ ((5 : ℝ) / 3 + ε) ≤
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + epsThree) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   classical
   set forbidden := tripleGraphOverFin baseSize depth with hforbidden
@@ -942,9 +987,10 @@ theorem threeDegenerateExtremalCounterexample_of_hosts
     tripleGraphOverFin_connected baseSize depth (by omega) hdepth,
     tripleGraphOverFin_isBipartite baseSize depth,
     tripleGraphOverFin_isThreeDegenerate baseSize depth,
-    1 / (2 : ℝ) ^ threeExtremalPower, epsThree,
+    tripleGraphOverFin_not_isTwoDegenerate baseSize depth hbase hdepth,
+    1 / (2 : ℝ) ^ threeExtremalPower,
     one_div_pos.mpr (Real.rpow_pos_of_pos (by norm_num) threeExtremalPower),
-    epsThree_pos, ?_⟩
+    ?_⟩
   obtain ⟨minimum, hminimum⟩ := Filter.eventually_atTop.1 hsubsequence
   apply Filter.eventually_atTop.2
   refine ⟨threeVertexCount minimum, ?_⟩
@@ -979,6 +1025,30 @@ theorem threeDegenerateExtremalCounterexample_of_hosts
     _ ≤ (SimpleGraph.extremalNumber (threeVertexCount dimension) forbidden : ℝ) :=
         hsubseq
     _ ≤ (SimpleGraph.extremalNumber n forbidden : ℝ) := by exact_mod_cast hmonotone
+
+-- The existential-`ε` form, derived from the explicit one.
+open Classical in
+theorem threeDegenerateExtremalCounterexample_of_hosts
+    {baseSize depth : ℕ} (hbase : 4 ≤ baseSize) (hdepth : 0 < depth)
+    (hhosts : ∀ᶠ dimension : ℕ in atTop,
+      ∃ retained : Set (Bool × HammingWord dimension),
+        (tripleGraphOverFin baseSize depth).Free
+            (retainedHammingHost dimension (threeHammingRadius dimension) retained) ∧
+        threeRetainedVertexCount dimension retained <
+          3 * threeRetentionProbability betaThree dimension *
+            ((2 ^ dimension : ℕ) : ℝ) ∧
+        threeExpectedRetainedEdgeCount betaThree dimension
+            (threeHammingRadius dimension) / 2 ≤
+          hammingRetainedEdgeCount dimension (threeHammingRadius dimension) retained) :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧ H.IsBipartite ∧ IsDegenerate 3 H ∧ ¬ IsDegenerate 2 H ∧
+      ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + ε) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, hnodeg, c, hc0, hbnd⟩ :=
+    threeDegenerateExtremalCounterexample_explicit_of_hosts hbase hdepth hhosts
+  exact ⟨q, H, hcon, hbip, hdeg, hnodeg, c, epsThree, hc0, epsThree_pos, hbnd⟩
 
 /-! ## Block F: the remaining seam — layer exclusion
 
@@ -1633,12 +1703,28 @@ theorem threeDegenerateExtremalCounterexample :
       H.Connected ∧
       H.IsBipartite ∧
       IsDegenerate 3 H ∧
+      ¬ IsDegenerate 2 H ∧
       ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((5 : ℝ) / 3 + ε) ≤
             (SimpleGraph.extremalNumber n H : ℝ) := by
   obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts
   exact threeDegenerateExtremalCounterexample_of_hosts hbase hdepth hhosts
+
+-- **Theorem 1 with the explicit exponent** `5/3 + 1/4000`.
+open Classical in
+theorem threeDegenerateExtremalCounterexample_explicit :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsDegenerate 3 H ∧
+      ¬ IsDegenerate 2 H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 4000) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨baseSize, depth, hbase, hdepth, hhosts⟩ := exists_free_dense_hosts
+  exact threeDegenerateExtremalCounterexample_explicit_of_hosts hbase hdepth hhosts
 
 end ThreeAssembly
 
@@ -1669,7 +1755,39 @@ theorem threeDegenerateExtremalCounterexample :
       ∃ c ε : ℝ, 0 < c ∧ 0 < ε ∧
         ∀ᶠ n : ℕ in atTop,
           c * (n : ℝ) ^ ((5 : ℝ) / 3 + ε) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
+    ThreeAssembly.threeDegenerateExtremalCounterexample
+  exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
+
+-- The same, with the degeneracy pinned exactly: `H` is 3-degenerate but
+-- not 2-degenerate, and the exponent gain is `ε = 1/4000`.
+open Classical in
+theorem threeDegenerateExtremalCounterexample_exact :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsThreeDegenerate H ∧
+      ¬ IsDegenerate 2 H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 4000) ≤
             (SimpleGraph.extremalNumber n H : ℝ) :=
-  ThreeAssembly.threeDegenerateExtremalCounterexample
+  ThreeAssembly.threeDegenerateExtremalCounterexample_explicit
+
+-- The same, with the exponent gain pinned to `ε = 1/4000`.
+open Classical in
+theorem threeDegenerateExtremalCounterexample_explicit :
+    ∃ (q : ℕ) (H : SimpleGraph (Fin q)),
+      H.Connected ∧
+      H.IsBipartite ∧
+      IsThreeDegenerate H ∧
+      ∃ c : ℝ, 0 < c ∧
+        ∀ᶠ n : ℕ in atTop,
+          c * (n : ℝ) ^ ((5 : ℝ) / 3 + 1 / 4000) ≤
+            (SimpleGraph.extremalNumber n H : ℝ) := by
+  obtain ⟨q, H, hcon, hbip, hdeg, -, hbnd⟩ :=
+    ThreeAssembly.threeDegenerateExtremalCounterexample_explicit
+  exact ⟨q, H, hcon, hbip, hdeg, hbnd⟩
 
 end ThreeDegenerateGraphsTarget

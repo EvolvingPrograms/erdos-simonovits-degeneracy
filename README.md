@@ -30,13 +30,17 @@ by a polynomial margin:
 graph $H$ of degeneracy exactly 3 and a $c>0$ with
 $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
 Lean: [`Theorem1.lean`](Theorem1.lean), declaration
-[`threeDegenerateExtremalCounterexample`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem1.lean#L1664).
+`threeDegenerateExtremalCounterexample_exact` (both the exponent
+$5/3+1/4000$ and "degeneracy exactly 3" — `IsDegenerate 3 H` together
+with `¬ IsDegenerate 2 H` — are literal in the statement).
 
 **Theorem 2 (failure at every level).** For every $r\ge2$ there exist a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
 $$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
 Lean: [`Theorem2.lean`](Theorem2.lean), declaration
-[`rDegenerateExtremalCounterexample_explicit`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem2.lean#L2127).
+`rDegenerateExtremalCounterexample_exact` ("degeneracy exactly $r$" is
+literal: the statement carries both `IsDegenerate r H` and
+`¬ IsDegenerate (r-1) H`).
 
 **Theorem 3 (the exact asymptotic law).** The proof method has one free
 parameter (a "Gibbs weight" $2^\lambda$, explained in §4), and its power
@@ -48,18 +52,26 @@ $$\lim_{r\to\infty} r^2\cdot\mathrm{width}\ =\ \frac{\lambda^4\ln^32}{64},$$
 while for $\lambda\ln2>1$ the limit is $-\infty$. The phase transition
 sits exactly at Gibbs weight $2^\lambda=e$.
 Lean: [`Theorem3a.lean`](Theorem3a.lean)
-[`width_tendsto_unconditional`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem3a.lean#L149);
+`width_tendsto_unconditional_full` (every subcritical $\lambda$; the
+quantified Lemma B of `lib/LemmaBQuant.lean` discharges the
+center-maximization hypothesis for $r$ large);
 sharpness in [`Prop63.lean`](Prop63.lean)
 [`threshold_sharp`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Prop63.lean#L515).
 
 (b) Optimising $\lambda$ as $r$ grows (schedule
-$\lambda_r=\frac{1-\ln r/r}{\ln2}$), the largest exponent gain
-$\varepsilon_r^{\max}$ the method can certify satisfies
-$$\boxed{\ \lim_{r\to\infty}\ 16\,r^2\,\varepsilon_r^{\max}\ =\ 1\ .}$$
-So the true constant for this method is $1/(16r^2)$, and the $1/(110r^2)$
-of Theorem 2 is what survives making everything explicit at finite $r$.
-Lean: [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean)
-[`sixteen_rsq_epsMax_tendsto'`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/lib/LedgerAsym.lean#L185).
+$\lambda_r=\frac{1-\ln r/r}{\ln2}$), the exponent gain
+$\varepsilon_r^{\max}(\beta_\theta)$ certified at the in-window parameter
+$\beta_\theta=A_r+\theta\,(C_r-A_r)$ satisfies, for every fixed
+$\theta\in(0,1)$,
+$$\boxed{\ \lim_{r\to\infty}\ 8\,r^2\,\varepsilon_r^{\max}(\beta_\theta)\ =\ 1-\theta\ .}$$
+At the canonical midpoint $\theta=\tfrac12$ this is $1/(16r^2)$; since
+$\varepsilon_r^{\max}$ is antitone in $\beta$ on the window, the method's
+supremal constant is $1/(8r^2)$, approached (but not attained) as
+$\beta\to A_r^+$. The $1/(110r^2)$ of Theorem 2 is what survives making
+everything explicit at finite $r$ at the midpoint choice.
+Lean: [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean),
+`eight_rsq_epsMax_theta_tendsto` (the family), `epsMaxR_anti`
+(monotonicity), `sixteen_rsq_epsMax_tendsto'` (the midpoint law).
 
 The rest of this README explains the proof in prose (§§2–5), then maps it
 to the Lean development (§6) and tells you how to verify it (§§7–8).
@@ -97,9 +109,14 @@ $r$-element subsets of the previous layer,
 $V_{i+1}=\binom{V_i}{r}$, and each such subset — a "child" — is joined by
 an edge to each of its $r$ elements — its "parents". Taking a few layers
 gives a connected bipartite graph (odd layers on one side, even on the
-other). Its degeneracy is exactly $r$: peeling from the top layer down,
-every vertex has at most $r$ neighbours below it; conversely the last
-layer forces degeneracy at least $r$.
+other). For $|V_0| \ge r+1$ (the proof takes $|V_0| \ge 2r^2$) its
+degeneracy is exactly $r$: peeling from the top layer down, every vertex
+has at most $r$ neighbours below it; conversely the first two layers form
+a subgraph of minimum degree $r$ — each child keeps its $r$ parents and
+each root lies in $\binom{|V_0|-1}{r-1}\ge r$ children — forcing
+degeneracy at least $r$ (Lean:
+`ExactDegeneracy.not_isDegenerate_of_layer_witness` in
+[`lib/ExactDegeneracy.lean`](lib/ExactDegeneracy.lean)).
 
 **The host.** Take two disjoint copies of the Hamming cube
 $\{0,1\}^m$ and join a vertex in one copy to a vertex in the other
@@ -212,6 +229,7 @@ test in `tests/`; declaration inventory in
 | `lib/Entropy3.lean`, `lib/Sampling3.lean`, `lib/Kernel3.lean`, `lib/Bridge3.lean` | hand-certified $r=3$ instances |
 | `lib/LawDefs.lean` | shared definitions for the window law |
 | `lib/CompactnessAndDegeneracy.lean` | upstream graph-theoretic prerequisites |
+| `lib/ExactDegeneracy.lean` | the degeneracy lower bound (two-layer minimum-degree witness) |
 | `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | final assemblies of Theorems 1–3 |
 | `tests/KernelRCheck3.lean` | checks the general-$r$ kernel specialises at $r=3$ to the hand-certified one |
 | `K_ThreeDegenerateGraphs.lean` | the frozen challenge statement (§8) |
@@ -235,6 +253,12 @@ statements assume nothing beyond $r\ge2$.
   `grep -rn --include='*.lean' '\bsorry\b' ./*.lean lib tests`.
   The only hit outside doc comments is the intentional one in the
   challenge statement (§8).
+- Independent numerical redundancy: `python3 tests/numerics_check.py`
+  reimplements the window/ledger formulas and the layered pattern outside
+  Lean and checks the 3(a) limit (from below), the supercritical
+  divergence, Lemma B's center maximization, the 3(b) family law, and
+  exact degeneracy by graph peeling. Floating-point sanity checks, not
+  proofs — a failure would be a genuine counterexample.
 
 ## 8. The challenge statement
 
@@ -252,8 +276,11 @@ The discharge: the `ThreeDegenerateGraphsTarget` namespace at the end of
 [`Theorem1.lean`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem1.lean#L1647)
 restates the challenge statement token-for-token — same standalone
 definitions, same theorem — and proves it (this is the copy the
-sorry-free default build checks). Faithfulness is checkable by diffing
-the two statements directly.
+sorry-free default build checks). Faithfulness is kernel-checked:
+[`tests/ChallengeFaithful.lean`](tests/ChallengeFaithful.lean) asserts the
+proven theorem has *exactly the type of the challenge declaration*
+(`type_of%`), so any drift between the two files fails to compile; CI
+runs `lake build Challenge ChallengeFaithful` on every push.
 
 ## 9. Toward the paper constants
 
