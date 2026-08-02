@@ -246,6 +246,12 @@ beyond $r\ge2$.
 
 ## 7. Verification
 
+The CI workflow
+[`.github/workflows/build.yml`](.github/workflows/build.yml) is the
+canonical verification script: it runs everything below on every push,
+and cloning the repository and running its steps reproduces the check
+locally.
+
 - The toolchain is pinned by `lean-toolchain` (Lean 4 `v4.32.0`; mathlib
   `v4.32.0` per `lakefile.toml`); `elan` selects it automatically.
 - Build: `lake exe cache get && lake build`. This compiles the

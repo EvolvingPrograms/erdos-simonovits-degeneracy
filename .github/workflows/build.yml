@@ -13,7 +13,12 @@ jobs:
       - uses: leanprover/lean-action@v1
         with:
           use-mathlib-cache: true
-      # The challenge statement (intentional sorry) and the kernel-checked
-      # faithfulness test that the proven theorem has exactly its type.
-      - name: Check challenge statement faithfulness
+      # The four frozen challenge statements (intentional sorry each), their
+      # solutions, and the kernel-checked faithfulness test that the proven
+      # theorem has exactly the challenge's type.
+      - name: Build challenge statements and solutions
         run: lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw ChallengeFaithful Solution1 Solution2 Solution3 Solution4
+      # Independent floating-point redundancy (not proofs): reimplements the
+      # window/ledger formulas and the layered graph outside Lean.
+      - name: Numerical falsification harness
+        run: python3 tests/numerics_check.py

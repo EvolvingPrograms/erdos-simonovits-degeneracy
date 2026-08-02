@@ -66,8 +66,11 @@ status:
     - "Per-r interval width evaluation at small r (would push 1/(28 r^2) toward ~1/(21 r^2), eps_3 toward 1/138, and the 1/(108 r^2) midpoint checkpoint to the paper's 1/(107 r^2))"
 
 verification:
-  build: "lake exe cache get && lake build"   # default targets, sorry-free
-  challenge: "lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw ChallengeFaithful Solution1 Solution2 Solution3 Solution4"
-  challenge_files: "challenges/K_*.lean"   # four frozen statements; solutions Solution1..4.lean; reviewer notes in challenges/NOTES_FOR_REVIEWER.md
-  comparator: "for c in challenges/challenge*.json; do lake env comparator $c; done"   # leanprover/comparator judge, one config per run; all four pass
-  numerics: "python3 tests/numerics_check.py"   # independent floating-point redundancy, not proofs
+  # The CI workflow is the canonical verification script: run its steps
+  # locally after cloning (lake exe cache get first, to fetch the mathlib
+  # cache the way lean-action does).
+  ci: ".github/workflows/build.yml"
+  # Optional extra, not in CI: the leanprover/comparator judge (needs
+  # comparator, lean4export at the project toolchain, and landrun in PATH;
+  # reviewer notes in challenges/NOTES_FOR_REVIEWER.md). All four pass.
+  comparator: "for c in challenges/challenge*.json; do lake env comparator $c; done"
