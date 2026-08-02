@@ -29,18 +29,10 @@ by a polynomial margin:
 **Theorem 1 (the $r=3$ counterexample).** There is a connected bipartite
 graph $H$ of degeneracy exactly 3 and a $c>0$ with
 $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
-Lean: [`Theorem1.lean`](Theorem1.lean), declaration
-`threeDegenerateExtremalCounterexample_exact` (both the exponent
-$5/3+1/4000$ and "degeneracy exactly 3" — `IsDegenerate 3 H` together
-with `¬ IsDegenerate 2 H` — are literal in the statement).
 
-**Theorem 2 (failure at every level).** For every $r\ge2$ there exist a
+**Theorem 2 (failure at every level).** For every $r\ge2$ there is a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
 $$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
-Lean: [`Theorem2.lean`](Theorem2.lean), declaration
-`rDegenerateExtremalCounterexample_exact` ("degeneracy exactly $r$" is
-literal: the statement carries both `IsDegenerate r H` and
-`¬ IsDegenerate (r-1) H`).
 
 **Theorem 3 (the exact asymptotic law).** The proof method has one free
 parameter (a "Gibbs weight" $2^\lambda$, explained in §4), and its power
@@ -51,27 +43,28 @@ feasibility window (defined in §5) has width satisfying
 $$\lim_{r\to\infty} r^2\cdot\mathrm{width}\ =\ \frac{\lambda^4\ln^32}{64},$$
 while for $\lambda\ln2>1$ the limit is $-\infty$. The phase transition
 sits exactly at Gibbs weight $2^\lambda=e$.
-Lean: [`Theorem3a.lean`](Theorem3a.lean)
-`width_tendsto_unconditional_full` (every subcritical $\lambda$; the
-quantified Lemma B of `lib/LemmaBQuant.lean` discharges the
-center-maximization hypothesis for $r$ large);
-sharpness in [`Prop63.lean`](Prop63.lean)
-[`threshold_sharp`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Prop63.lean#L515).
 
 (b) Optimising $\lambda$ as $r$ grows (schedule
 $\lambda_r=\frac{1-\ln r/r}{\ln2}$), the exponent gain
-$\varepsilon_r^{\max}(\beta_\theta)$ certified at the in-window parameter
-$\beta_\theta=A_r+\theta\,(C_r-A_r)$ satisfies, for every fixed
-$\theta\in(0,1)$,
-$$\boxed{\ \lim_{r\to\infty}\ 8\,r^2\,\varepsilon_r^{\max}(\beta_\theta)\ =\ 1-\theta\ .}$$
-At the canonical midpoint $\theta=\tfrac12$ this is $1/(16r^2)$; since
-$\varepsilon_r^{\max}$ is antitone in $\beta$ on the window, the method's
-supremal constant is $1/(8r^2)$, approached (but not attained) as
-$\beta\to A_r^+$. The $1/(110r^2)$ of Theorem 2 is what survives making
-everything explicit at finite $r$ at the midpoint choice.
-Lean: [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean),
-`eight_rsq_epsMax_theta_tendsto` (the family), `epsMaxR_anti`
-(monotonicity), `sixteen_rsq_epsMax_tendsto'` (the midpoint law).
+$\varepsilon_r^{\max}$ the method certifies satisfies
+$$\boxed{\ \lim_{r\to\infty}\ 8\,r^2\,\varepsilon_r^{\max}(\beta_\theta)\ =\ 1-\theta\ }$$
+at every position $\beta_\theta=A_r+\theta\,(C_r-A_r)$ of the window,
+$\theta\in(0,1)$. So the method's best constant is $1/(8r^2)$ — approached
+as $\beta$ nears the exclusion threshold, never attained — and the
+canonical midpoint choice $\theta=\tfrac12$ certifies $1/(16r^2)$, whose
+explicit finite-$r$ remnant is the $1/(110r^2)$ of Theorem 2.
+
+Each theorem statement is literal in Lean — "degeneracy exactly $r$" is
+carried as `IsDegenerate r H ∧ ¬ IsDegenerate (r-1) H`, and the exponents
+appear as written:
+
+| | Lean declaration | File |
+|---|---|---|
+| Theorem 1 | `threeDegenerateExtremalCounterexample_exact` | [`Theorem1.lean`](Theorem1.lean) |
+| Theorem 2 | `rDegenerateExtremalCounterexample_exact` | [`Theorem2.lean`](Theorem2.lean) |
+| Theorem 3(a) | `width_tendsto_unconditional_full` | [`Theorem3a.lean`](Theorem3a.lean) |
+| Theorem 3(a), sharpness | `threshold_sharp` | [`Prop63.lean`](Prop63.lean) |
+| Theorem 3(b) | `eight_rsq_epsMax_theta_tendsto` | [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean) |
 
 The rest of this README explains the proof in prose (§§2–5), then maps it
 to the Lean development (§6) and tells you how to verify it (§§7–8).
