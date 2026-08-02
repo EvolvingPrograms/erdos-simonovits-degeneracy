@@ -19,7 +19,7 @@ To run the checks (from the repository root, with `comparator`,
 `lean4export` at the project toolchain, and `landrun` in `PATH`):
 
 ```sh
-lake env comparator challenges/challenge1.json   # …challenge2..4
+for c in challenges/challenge*.json; do lake env comparator $c; done
 ```
 
 ---

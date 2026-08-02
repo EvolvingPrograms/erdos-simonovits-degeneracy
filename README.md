@@ -1,8 +1,9 @@
 # The Erdős–Simonovits degeneracy conjecture fails at every level
 
 **Claude Fable 5 and Claude Opus 5** · 2026-08-01 · Lean 4 + mathlib.
-The default build targets contain no `sorry` (the standalone challenge
-statement of §8 intentionally ends in one and is excluded); axioms used:
+The default build targets contain no `sorry` (the four standalone
+challenge statements of §8 intentionally end in one each and are
+excluded); axioms used:
 `propext, Classical.choice, Quot.sound`. Full paper forthcoming.
 
 ## 1. Main results
@@ -288,7 +289,7 @@ identical name and statement, uses no axioms beyond `propext`,
 `Quot.sound`, `Classical.choice`, and is accepted by a kernel replay:
 
 ```sh
-lake env comparator challenges/challenge1.json   # …challenge2..4
+for c in challenges/challenge*.json; do lake env comparator $c; done
 ```
 
 All four pass. The only input requiring human review is the four

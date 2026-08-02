@@ -69,5 +69,5 @@ verification:
   build: "lake exe cache get && lake build"   # default targets, sorry-free
   challenge: "lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw ChallengeFaithful Solution1 Solution2 Solution3 Solution4"
   challenge_files: "challenges/K_*.lean"   # four frozen statements; solutions Solution1..4.lean; reviewer notes in challenges/NOTES_FOR_REVIEWER.md
-  comparator: "lake env comparator challenges/challenge1.json"   # ...challenge2..4; leanprover/comparator judge, all four pass
+  comparator: "for c in challenges/challenge*.json; do lake env comparator $c; done"   # leanprover/comparator judge, one config per run; all four pass
   numerics: "python3 tests/numerics_check.py"   # independent floating-point redundancy, not proofs
