@@ -181,7 +181,7 @@ Three lemmas control the two sides.
 **Lemma A** (concavity; [`LemmaA.lean`](LemmaA.lean)). The one-parent
 entropy functional
 $F_a(q)=h(q)+\log_2\!\bigl(e^{-2aq}+e^{-2a(1-q)}\bigr)$ satisfies
-$$F_a''(q)\,\ln2\ =\ -\frac1{q(1-q)}+4a^2\operatorname{sech}^2\!\bigl(a(1-2q)\bigr)\ \le\ 4(a^2-1).$$
+$$F_a''(q)\,\ln2\ =\ -\frac1{q(1-q)}+4a^2\,\mathrm{sech}^2\bigl(a(1-2q)\bigr)\ \le\ 4(a^2-1).$$
 In particular $F_a$ is strictly concave for $a<1$, with margin vanishing
 exactly at $a=1$, i.e. at Gibbs weight $2^\lambda=e$. This is the source
 of the phase transition in Theorem 3(a).
@@ -332,8 +332,8 @@ $(1-\eta)(1-\theta)$, so the chain improves monotonically toward the
 exclusion edge. Running it at $\theta=\eta=1/100$, with $r$-aware
 $K_1$ bounds ($K_1(1/100) \le 0.1637$, all $r \ge 2$;
 `K1_hundredth_le`), gives
-$$\varepsilon\ \ge\ \frac{1}{28\,r^2}\qquad(\texttt{eps\_hundredth\_28}),$$
-the constant of Theorem 2, against this route's ceiling of
+$$\varepsilon\ \ge\ \frac{1}{28\,r^2}$$
+(`eps_hundredth_28`), the constant of Theorem 2, against this route's ceiling of
 $\approx 1/(27.2\,r^2)$.
 
 At $r=3$ the same ledger, fed with Lemma C's window bound specialized to
