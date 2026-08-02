@@ -2,111 +2,226 @@
 
 **Claude Fable 5 and Claude Opus 5** · 2026-08-01 · Lean 4 + mathlib, zero
 sorries in the default build targets (the standalone challenge statement
-intentionally ends in `sorry`; see §6), axioms
+intentionally ends in `sorry`; see [§8](#8-the-challenge-statement)), axioms
 `propext, Classical.choice, Quot.sound` · full paper forthcoming
 
-## Abstract
+## 1. What is proven
 
-The degeneracy conjecture of Erdős and Simonovits (Erdős problem #146) asserts
-that $\mathrm{ex}(n;H) \ll n^{2-1/r}$ for every $r$-degenerate bipartite graph
-$H$; the case $r=2$ was recently refuted in [OAI26]. We refute it at every
-level: for each $r\ge2$ there is a connected bipartite graph $H_r$ of
-degeneracy exactly $r$ with
-$$\mathrm{ex}(n;H_r)\ \ge\ c\,n^{2-\frac1r+\varepsilon_r},\qquad
-\varepsilon_r\ >\ \frac{1}{110\,r^2},$$
-for all large $n$. Optimising the Gibbs weight in the entropy method of
-[OAI26, ch. 10] exposes an exact law: the method's feasibility window
-satisfies $r^2\cdot\mathrm{width}\to\lambda^4\ln^32/64$, maximised precisely
-at Gibbs weight $e$ (beyond which it is $-\infty$), and the exponent gain
-obeys $\lim 16r^2\varepsilon_r = 1$. All results below are machine-checked;
-each theorem links to its Lean statement.
+Two definitions, so that everything below is self-contained.
 
-## 1. The construction
+- The **extremal number** $\mathrm{ex}(n;H)$ is the largest number of edges
+  an $n$-vertex graph can have while containing no copy of $H$ as a
+  subgraph.
+- A graph is **$r$-degenerate** if every subgraph of it (equivalently,
+  every nonempty vertex subset) contains a vertex with at most $r$
+  neighbours inside it. Degeneracy measures local sparsity: trees are
+  1-degenerate, planar graphs are 5-degenerate.
 
-$H_r$ is the layered $r$-subset graph: $V_0$ finite,
-$V_{i+1}=\binom{V_i}{r}$, each child joined to its $r$ parents; connected,
-bipartite, degeneracy exactly $r$. The host is two copies of $\{0,1\}^m$
-joined at Hamming distance $\le\tau m$, vertices retained independently with
-probability $2^{-\beta m}$; a second-moment count gives it
-$n^{2-1/r+\varepsilon}$ edges whenever $\beta < C_r(\tau) := rh(\tau)-(r-1)$
-([`lib/SamplingR.lean`](lib/SamplingR.lean)).
-
-## 2. Why $H_r$ cannot embed: the entropy window
-
-If $H_r$ embedded in the host, each layer's bit-strings would need average
-conditional entropy $>\beta$ given their parents (a counting/union-bound
-argument over retained children, [`lib/BridgeR.lean`](lib/BridgeR.lean)). But
-a Gibbs-inequality bound with *free* weight $2^\lambda$ (the one new dial
-over [OAI26], whose weight was fixed at 3) caps that entropy by
-$A_r(\lambda) = \lambda\tau + \sup_{q,v}G_r(q,v)$ plus a telescoping
-potential ([`Theorem2.lean`](Theorem2.lean) `typeEntropyBound_supG_gen`;
-ledger [`lib/LedgerR.lean`](lib/LedgerR.lean)). So the construction succeeds
-exactly when the **window** $A_r < \beta < C_r$ is nonempty.
-
-## 3. The window is open at every $r$: three lemmas
-
-Take $\tau_r = \tfrac12 - \tfrac{\lambda\ln2}{4r}$, $a = \lambda\ln2$.
-
-- **Lemma A** ([`LemmaA.lean`](LemmaA.lean)). For
-  $F_a(q) = h(q)+\log_2(e^{-2aq}+e^{-2a(1-q)})$:
-  the identity
-  $F_a''\ln2 = -\tfrac1{q(1-q)} + 4a^2\mathrm{sech}^2(a(1-2q)) \le 4(a^2-1)$
-  gives strict concavity in one line, with margin vanishing exactly at $a=1$.
-- **Lemma B** ([`LemmaB.lean`](LemmaB.lean)). For $\lambda \le \tfrac{27}{20}$
-  and all $r\ge2$, $\sup G_r = G_r(\tfrac12,\tfrac12)$: per-term concavity in
-  $v$, a Bernstein-operator transfer of curvature bounds in $q$, Lemma A off a
-  central strip. Quantified version ($r \ge R(\lambda)$, all subcritical
-  $\lambda$): [`lib/LemmaBQuant.lean`](lib/LemmaBQuant.lean).
-- **Lemmas C and 6.1** ([`LemmaC.lean`](LemmaC.lean),
-  [`Lemma61.lean`](Lemma61.lean)). The center value is an explicit binomial
-  log-cosh sum; $\tfrac{t^2}2-\tfrac{t^4}{12} \le \log\cosh t \le
-  \tfrac{t^2}2-\tfrac{t^4}{12}+\tfrac{t^6}{45}$ with exact moments of
-  $2\mathrm{Bin}(r,\tfrac12)-r$ sandwich the window:
-  $C_r - A_r = \tfrac{\lambda^4\ln^32}{64\,r^2}\,(1+O(\tfrac1r))$.
-
-The mechanism: at $\tau_r$ the $1/r$ terms of $A_r$ and $C_r$ cancel
-*identically* (binomial variance against entropy curvature, the perfect
-square $(4c-\lambda\ln2)^2$), and the surviving $1/r^2$ width is positive
-because log-cosh is flatter than its parabola (negative quartic term).
-
-## 4. Theorems
+Erdős and Simonovits conjectured (Erdős problem #146, [Erd]) that sparse
+bipartite patterns are easy to force: if $H$ is bipartite and
+$r$-degenerate, then $\mathrm{ex}(n;H) = O(n^{2-1/r})$. The best known
+general upper bound in this direction is $\mathrm{ex}(n;H) =
+O(n^{2-1/(4r)})$ [AKS03], and the conjecture was open for decades until the
+case $r=2$ was refuted in 2026 [OAI26, ch. 10]. This repository proves,
+machine-checked in Lean 4, that the conjecture fails **for every** $r$, and
+by a polynomial margin:
 
 **Theorem 1 (the $r=3$ counterexample).** There is a connected bipartite
-graph $H$ of degeneracy exactly $3$ and a $c>0$ with
+graph $H$ of degeneracy exactly 3 and a $c>0$ with
 $$\mathrm{ex}(n;H)\ \ge\ c\,n^{5/3+1/4000}\qquad\text{for all large }n.$$
-**Lean:** [`Theorem1.lean`](Theorem1.lean)
+Lean: [`Theorem1.lean`](Theorem1.lean), declaration
 [`threeDegenerateExtremalCounterexample`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem1.lean#L1664).
 
 **Theorem 2 (failure at every level).** For every $r\ge2$ there exist a
 connected bipartite graph $H_r$ of degeneracy exactly $r$ and a $c>0$ with
 $$\boxed{\ \mathrm{ex}(n;H_r)\ \ge\ c\,n^{\,2-\frac1r+\frac{1}{110\,r^2}}\ }\qquad\text{for all large }n.$$
-**Lean:** [`Theorem2.lean`](Theorem2.lean)
+Lean: [`Theorem2.lean`](Theorem2.lean), declaration
 [`rDegenerateExtremalCounterexample_explicit`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem2.lean#L2127).
 
-**Theorem 3 (the asymptotic law).** (a) For every fixed $\lambda$ with
-$\lambda\ln2<1$,
-$$\lim_{r\to\infty} r^2\bigl(C_r-A_r(\lambda)\bigr)\ =\ \frac{\lambda^4\ln^32}{64},$$
-while for $\lambda\ln2>1$ the limit is $-\infty$: the threshold is exactly
-Gibbs weight $2^\lambda=e$.
-**Lean:** [`Theorem3a.lean`](Theorem3a.lean)
+**Theorem 3 (the exact asymptotic law).** The proof method has one free
+parameter (a "Gibbs weight" $2^\lambda$, explained in §4), and its power
+can be computed exactly in the limit $r\to\infty$:
+
+(a) For every fixed $\lambda$ with $\lambda\ln 2<1$, the method's
+feasibility window (defined in §5) has width satisfying
+$$\lim_{r\to\infty} r^2\cdot\mathrm{width}\ =\ \frac{\lambda^4\ln^32}{64},$$
+while for $\lambda\ln2>1$ the limit is $-\infty$. The phase transition
+sits exactly at Gibbs weight $2^\lambda=e$.
+Lean: [`Theorem3a.lean`](Theorem3a.lean)
 [`width_tendsto_unconditional`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Theorem3a.lean#L149);
-[`Prop63.lean`](Prop63.lean)
+sharpness in [`Prop63.lean`](Prop63.lean)
 [`threshold_sharp`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/Prop63.lean#L515).
 
-(b) Along the schedule $\lambda_r=\tfrac{1-\ln r/r}{\ln2}$ the maximal
-admissible exponent gain $\varepsilon_r^{\max}$ (defined in
-[`lib/LedgerR.lean`](lib/LedgerR.lean)) satisfies
+(b) Optimising $\lambda$ as $r$ grows (schedule
+$\lambda_r=\frac{1-\ln r/r}{\ln2}$), the largest exponent gain
+$\varepsilon_r^{\max}$ the method can certify satisfies
 $$\boxed{\ \lim_{r\to\infty}\ 16\,r^2\,\varepsilon_r^{\max}\ =\ 1\ .}$$
-**Lean:** [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean)
-[`sixteen_rsq_epsMax_tendsto'`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/lib/LedgerAsym.lean#L185)
-(schedule and Lemma-B applicability: [`Theorem3b.lean`](Theorem3b.lean)).
+So the true constant for this method is $1/(16r^2)$, and the $1/(110r^2)$
+of Theorem 2 is what survives making everything explicit at finite $r$.
+Lean: [`lib/LedgerAsym.lean`](lib/LedgerAsym.lean)
+[`sixteen_rsq_epsMax_tendsto'`](https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy/blob/b7f33f4/lib/LedgerAsym.lean#L185).
 
-## 5. Formalization notes and verification
+The rest of this README explains the proof in prose (§§2–5), then maps it
+to the Lean development (§6) and tells you how to verify it (§§7–8).
 
-Layout: theorem files top-level, infrastructure in `lib/`, faithfulness test
-in `tests/`; inventory in `formalization.yaml`.
+## 2. The shape of the argument
 
-To verify:
+To bound $\mathrm{ex}(n;H_r)$ from below one must exhibit a single dense
+graph containing no copy of $H_r$. The argument has three moving parts:
+
+1. **A pattern graph $H_r$** of degeneracy exactly $r$ (§3).
+2. **A random host graph** which, for a parameter $\beta$ below a
+   threshold $C_r$, has $n^{2-1/r+\varepsilon}$ edges with high
+   probability (§3).
+3. **An embedding obstruction**: an entropy argument showing that when
+   $\beta$ is above a second threshold $A_r$, the host contains no copy
+   of $H_r$ at all (§4).
+
+The construction succeeds exactly when the **window** $A_r < \beta < C_r$
+is nonempty. The heart of the proof — and all of the analytic difficulty —
+is showing this window is open for every $r$ (§5). Its width turns out to
+be of order $1/r^2$: tiny, but positive, and this $1/r^2$ is exactly the
+$1/(110r^2)$ exponent gain in Theorem 2.
+
+Everything is a generalization of the $r=2$ argument of [OAI26, ch. 10],
+with two new ingredients: the whole machine is run at a general $r$
+(uniformly, with explicit constants), and one parameter that [OAI26] fixed
+numerically — the Gibbs weight — is left free and then optimised, which is
+what exposes the exact law of Theorem 3.
+
+## 3. The pattern and the host
+
+**The pattern.** $H_r$ is the layered $r$-subset graph. Start with a
+finite set $V_0$ of roots. Each subsequent layer consists of all
+$r$-element subsets of the previous layer,
+$V_{i+1}=\binom{V_i}{r}$, and each such subset — a "child" — is joined by
+an edge to each of its $r$ elements — its "parents". Taking a few layers
+gives a connected bipartite graph (odd layers on one side, even on the
+other). Its degeneracy is exactly $r$: peeling from the top layer down,
+every vertex has at most $r$ neighbours below it; conversely the last
+layer forces degeneracy at least $r$.
+
+**The host.** Take two disjoint copies of the Hamming cube
+$\{0,1\}^m$ and join a vertex in one copy to a vertex in the other
+whenever their Hamming distance is at most $\tau m$, where
+$\tau\in(0,\tfrac12)$ is a proximity parameter. Then sparsify randomly:
+keep each vertex independently with probability $2^{-\beta m}$. Writing
+$n$ for the number of surviving vertices, a second-moment computation
+([`lib/SamplingR.lean`](lib/SamplingR.lean)) shows the survivor graph has
+$n^{2-1/r+\varepsilon}$ edges (for suitable $\varepsilon>0$ depending on
+the parameters) as long as
+$$\beta\ <\ C_r(\tau)\ :=\ r\,h(\tau)-(r-1),$$
+where $h$ is the binary entropy function. So $C_r$ is the "density
+budget": below it, sparsification leaves the host dense enough to beat
+the conjectured bound.
+
+## 4. Why $H_r$ cannot embed: entropy
+
+Suppose, for contradiction, that a copy of $H_r$ sits inside the surviving
+host. Every vertex of $H_r$ is then assigned a bit-string in $\{0,1\}^m$,
+and each child's string lies within Hamming distance $\tau m$ of each of
+its $r$ parents' strings.
+
+Now regard the embedded strings as random variables (over a uniformly
+random copy, in the standard entropy-counting fashion) and ask: given the
+$r$ parent strings, how much conditional entropy can a child string have?
+Two competing pressures:
+
+- **A lower bound from survival.** Surviving vertices are rare (density
+  $2^{-\beta m}$), so for the pattern to keep finding surviving children
+  for every $r$-set of parents, children must be spread thinly across
+  many candidate strings — which forces average conditional entropy
+  **greater than $\beta$** (per bit). This is a counting/union-bound
+  argument over retained children,
+  [`lib/BridgeR.lean`](lib/BridgeR.lean).
+- **An upper bound from proximity.** Being within distance $\tau m$ of
+  all $r$ parents simultaneously pins the child down. A Gibbs-inequality
+  (soft-max) bound, which weights disagreement with each parent by a
+  factor $2^\lambda$, caps the conditional entropy by
+  $$A_r(\lambda)\ =\ \lambda\tau+\sup_{q,v}G_r(q,v)$$
+  plus a telescoping potential correction, where $G_r$ is an explicit
+  two-variable function recording the entropy cost at "type" $(q,v)$ —
+  $q$ the bit-frequency profile of the parents, $v$ the child's
+  disagreement rate. (Lean: `typeEntropyBound_supG_gen` in
+  [`Theorem2.lean`](Theorem2.lean); the bookkeeping that assembles
+  per-coordinate bounds into the global one is the "ledger",
+  [`lib/LedgerR.lean`](lib/LedgerR.lean).)
+
+If $\beta > A_r(\lambda)$ the two bounds contradict each other, so no copy
+of $H_r$ exists. The weight $2^\lambda$ is a genuinely free dial —
+[OAI26] fixed it at 3; here it is optimised, and the optimum matters
+(Theorem 3 says weight $e$ is the exact ceiling).
+
+## 5. The window is open: where the $1/r^2$ comes from
+
+We need $A_r(\lambda) < C_r(\tau)$ for some admissible choice of
+$(\tau,\lambda)$. Both sides are $1-\Theta(1/r)$, so this is a fight over
+lower-order terms. Choose
+$$\tau_r\ =\ \tfrac12-\frac{\lambda\ln2}{4r},\qquad a:=\lambda\ln2 .$$
+
+Three analytic lemmas control the two sides:
+
+- **Lemma A** ([`LemmaA.lean`](LemmaA.lean)) — concavity of the
+  one-parent entropy functional
+  $F_a(q)=h(q)+\log_2(e^{-2aq}+e^{-2a(1-q)})$. The second derivative has
+  the closed form
+  $F_a''\ln2=-\frac1{q(1-q)}+4a^2\operatorname{sech}^2(a(1-2q))\le4(a^2-1)$,
+  so strict concavity holds in one line, with margin degenerating exactly
+  at $a=1$ — i.e. at Gibbs weight $2^\lambda=e$. This is where the phase
+  transition of Theorem 3(a) originates.
+- **Lemma B** ([`LemmaB.lean`](LemmaB.lean)) — the supremum of
+  $G_r$ is attained at the symmetric point:
+  $\sup G_r=G_r(\tfrac12,\tfrac12)$, valid for $\lambda\le\frac{27}{20}$
+  and all $r\ge2$. (Proof: per-term concavity in $v$; transfer of
+  curvature bounds through a Bernstein operator in $q$; Lemma A off a
+  central strip. A quantified version covering every subcritical
+  $\lambda$ for $r$ large is
+  [`lib/LemmaBQuant.lean`](lib/LemmaBQuant.lean).) This reduces
+  $A_r(\lambda)$ to an explicit number.
+- **Lemmas C and 6.1** ([`LemmaC.lean`](LemmaC.lean),
+  [`Lemma61.lean`](Lemma61.lean)) — evaluation. The centre value
+  $G_r(\tfrac12,\tfrac12)$ is a binomially weighted log-cosh sum, and the
+  elementary sandwich
+  $\frac{t^2}2-\frac{t^4}{12}\le\log\cosh t\le\frac{t^2}2-\frac{t^4}{12}+\frac{t^6}{45}$,
+  fed with the exact moments of $2\,\mathrm{Bin}(r,\tfrac12)-r$, pins the
+  window width down to
+  $$C_r-A_r\ =\ \frac{\lambda^4\ln^32}{64\,r^2}\Bigl(1+O(\tfrac1r)\Bigr).$$
+
+The mechanism behind the positivity is a conspiracy at order $1/r$: with
+$\tau_r$ as above, the $1/r$ terms of $A_r$ and $C_r$ cancel
+**identically** — a binomial-variance term against an entropy-curvature
+term, combining into the perfect square $(4c-\lambda\ln2)^2$ — and the
+surviving $1/r^2$ term is positive for exactly one reason: $\log\cosh t$
+lies **below** its parabola $t^2/2$ (the quartic correction $-t^4/12$ has
+a negative sign). Sparse binomial fluctuations are slightly cheaper in
+entropy than the Gaussian approximation predicts, and that sliver is the
+counterexample.
+
+## 6. Guide to the Lean development
+
+Theorem files live top-level; infrastructure in `lib/`; a faithfulness
+test in `tests/`; declaration inventory in
+[`formalization.yaml`](formalization.yaml).
+
+| File | Role |
+|---|---|
+| `LemmaA.lean`, `LemmaB.lean`, `LemmaC.lean`, `Lemma61.lean` | the analytic lemmas of §5 |
+| `lib/LemmaBQuant.lean` | quantified Lemma B (all subcritical $\lambda$, $r$ large) |
+| `lib/SamplingR.lean`, `lib/KernelR.lean`, `lib/BridgeR.lean` | host density (§3), entropy kernel and embedding obstruction (§4), at general $r$ |
+| `lib/LedgerR.lean`, `lib/ProfilesR.lean`, `lib/LedgerAsym.lean` | the ledger assembling per-coordinate entropy bounds; its $r\to\infty$ asymptotics |
+| `lib/Entropy3.lean`, `lib/Sampling3.lean`, `lib/Kernel3.lean`, `lib/Bridge3.lean` | hand-certified $r=3$ instances |
+| `lib/LawDefs.lean` | shared definitions for the window law |
+| `lib/CompactnessAndDegeneracy.lean` | upstream graph-theoretic prerequisites |
+| `Theorem1.lean`, `Theorem2.lean`, `Theorem3a.lean`, `Theorem3b.lean`, `Prop63.lean` | final assemblies of Theorems 1–3 |
+| `tests/KernelRCheck3.lean` | checks the general-$r$ kernel specialises at $r=3$ to the hand-certified one |
+| `K_ThreeDegenerateGraphs.lean` | the frozen challenge statement (§8) |
+
+A note on hypotheses: intermediate lemmas carry parameter thresholds
+(e.g. `2 * r ^ 2 ≤ parentCount` in `lib/BridgeR.lean`); these are all
+discharged inside the final assemblies, and the headline theorem
+statements assume nothing beyond $r\ge2$.
+
+## 7. How to verify
 
 - The toolchain is pinned by `lean-toolchain` (Lean 4 `v4.32.0`, mathlib
   `v4.32.0` per `lakefile.toml`); `elan` picks it up automatically.
@@ -119,12 +234,12 @@ To verify:
 - Sorry inventory (scoped to sources, avoiding `.lake/`):
   `grep -rn --include='*.lean' '\bsorry\b' ./*.lean lib tests`.
   The only hit outside doc comments is the intentional one in the
-  challenge statement (§6).
+  challenge statement (§8).
 
-## 6. The challenge statement
+## 8. The challenge statement
 
 [`K_ThreeDegenerateGraphs.lean`](K_ThreeDegenerateGraphs.lean) is a
-40-line standalone *statement file* in the idiom of
+40-line standalone statement file in the idiom of
 `J_TwoDegenerateGraphs.lean` from [OAI26]: it defines degeneracy from
 scratch and states Theorem 1, ending in an **intentional `sorry`**. It is
 the frozen, human-auditable specification of what was to be proven — kept
@@ -140,11 +255,11 @@ definitions, same theorem — and proves it (this is the copy the
 sorry-free default build checks). Faithfulness is checkable by diffing
 the two statements directly.
 
-## 7. Toward the paper constants
+## 9. Toward the paper constants
 
-The full paper (forthcoming) proves the sharper
-constants $1/(107r^2)$ and, at $r=3$, $1/200$ (via a sharp $K_1$ evaluation
-and an interval-arithmetic certificate); the Lean constants $1/(110r^2)$ and
+The full paper (forthcoming) proves the sharper constants $1/(107r^2)$
+and, at $r=3$, $1/200$ (via a sharp $K_1$ evaluation and an
+interval-arithmetic certificate); the Lean constants $1/(110r^2)$ and
 $1/4000$ are the machine-checked forms, and closing that gap is listed as
 future work.
 
