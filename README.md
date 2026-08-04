@@ -302,7 +302,7 @@ proves it.
 
 | Challenge | Statement | Solution |
 |---|---|---|
-| [`K_ThreeDegenerateGraphs.lean`](challenges/K_ThreeDegenerateGraphs.lean) | Theorem 1 with existential $\varepsilon$ (the original file from [OAI26], unmodified) | [`Solution1.lean`](Solution1.lean) |
+| [`K_ThreeDegenerateGraphs.lean`](challenges/K_ThreeDegenerateGraphs.lean) | Theorem 1 with existential $\varepsilon$ (adapted from the $r=2$ statement file of [OAI26]; see [`NOTICE`](NOTICE)) | [`Solution1.lean`](Solution1.lean) |
 | [`K_RDegenerateGraphs.lean`](challenges/K_RDegenerateGraphs.lean) | Theorem 2: degeneracy exactly $r$, gain $1/(28r^2)$, every $r\ge2$ | [`Solution2.lean`](Solution2.lean) |
 | [`K_WindowLaw.lean`](challenges/K_WindowLaw.lean) | Theorem 3(a): $r^2\,\mathrm{width}_r \to \lambda^4\ln^3 2/64$ | [`Solution3.lean`](Solution3.lean) |
 | [`K_FamilyLaw.lean`](challenges/K_FamilyLaw.lean) | Theorem 3(b): $8r^2 \varepsilon^{\max}(\beta_\theta) \to 1-\theta$ | [`Solution4.lean`](Solution4.lean) |

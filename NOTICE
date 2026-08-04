@@ -1,0 +1,23 @@
+The Erdős–Simonovits degeneracy conjecture is false for all r ≥ 2
+Copyright 2026 Evolving Programs, Inc.
+
+This product includes software developed by OpenAI, from the repository
+https://github.com/openai/ten-proofs (Apache License 2.0), accompanying
+OpenAI, "Ten advances in mathematics and theoretical computer science",
+Chapter 10 (2026). Chapter 10 refutes the Erdős–Simonovits degeneracy
+conjecture (Erdős problem #146) at r = 2; the present work builds on it.
+
+Specifically, as of upstream commit
+94bc0feb6a9ff12c7d31d6de640a725c9d43d2b6:
+
+  lib/CompactnessAndDegeneracy.lean
+      Copied unmodified from CompactnessAndDegeneracy.lean.
+
+  challenges/K_ThreeDegenerateGraphs.lean
+      Modified from ComparatorChallenges/J_TwoDegenerateGraphs.lean:
+      restated at r = 3, renamed, and given a new module docstring.
+
+  challenges/K_RDegenerateGraphs.lean
+      Modified further from the above: restated at general r.
+
+All other files in this repository are original work.
