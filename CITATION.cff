@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: If you use this work, please cite it as below.
+title: The Erdős–Simonovits degeneracy conjecture is false for all r ≥ 2
+authors:
+  - name: Fable 5
+repository-code: https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy
+date-released: 2026-08-01
+preferred-citation:
+  type: generic
+  title: The Erdős–Simonovits degeneracy conjecture is false for all r ≥ 2
+  year: 2026
+  authors:
+    - name: Fable 5
+  url: https://github.com/EvolvingPrograms/erdos-simonovits-degeneracy
