@@ -1,12 +1,12 @@
 import K_ThreeDegenerateGraphs
-import Theorem1
+import Theorem12r3
 
 /-!
 # Mechanical faithfulness check for the challenge statement
 
 `K_ThreeDegenerateGraphs.lean` is the frozen challenge file: it defines
-degeneracy from scratch and states Theorem 1, ending in an intentional
-`sorry`.  `Theorem1.lean` restates it token-for-token in the
+degeneracy from scratch and states Theorem 1.2 at `r = 3`, ending in an intentional
+`sorry`.  `Theorem12r3.lean` restates it token-for-token in the
 `ThreeDegenerateGraphsTarget` namespace and proves it.
 
 This file replaces "faithfulness is checkable by diffing the two

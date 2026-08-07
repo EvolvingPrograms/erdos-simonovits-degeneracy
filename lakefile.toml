@@ -1,27 +1,37 @@
 name = "erdos-simonovits-degeneracy"
 version = "1.0.0"
 keywords = ["math"]
-defaultTargets = ["Upstream", "ErdosDegeneracyLib", "ErdosDegeneracy", "ErdosDegeneracyTests"]
+defaultTargets = ["Upstream", "ErdosDegeneracyLib", "ErdosDegeneracyScratch", "ErdosDegeneracy", "ErdosDegeneracyTests"]
 
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
 rev = "v4.32.0"
 
+# OpenAI's own Lean file for chapter 10 of [OAI26], vendored verbatim
+# (Apache-2.0; see NOTICE).
 [[lean_lib]]
 name = "Upstream"
-srcDir = "lib"
+srcDir = "proofs/lib"
 roots = ["CompactnessAndDegeneracy"]
 
 [[lean_lib]]
 name = "ErdosDegeneracyLib"
-srcDir = "lib"
-roots = ["LawDefs", "Entropy3", "Sampling3", "Kernel3", "Bridge3", "SamplingR", "KernelR", "BridgeR", "ProfilesR", "LedgerR", "EntropyConcavity", "WindowLowerBound", "WindowUpperBound", "BernsteinStrip", "CenterMaxThreshold", "WindowLimit", "LedgerTuned", "LedgerAsym", "SuperCritical", "ExactDegeneracy", "LedgerSharp", "Assembly3", "AssemblyR"]
+srcDir = "proofs/lib"
+roots = ["LawDefs", "Sampling3", "SamplingR", "KernelR", "BridgeR", "ProfilesR", "LedgerR", "EntropyConcavity", "WindowLowerBound", "WindowUpperBound", "WindowUpper", "BernsteinStrip", "CenterMaxThreshold", "WindowLimit", "LedgerTuned", "LedgerAsym", "AssemblySched", "AssemblySchedHost", "SuperCritical", "ExactDegeneracy", "LedgerSharp", "WindowSharp", "AssemblyR"]
 
 [[lean_lib]]
 name = "ErdosDegeneracy"
-srcDir = "."
-roots = ["LemmaA", "Lemma61", "LemmaC", "LemmaB", "Theorem1", "Theorem2", "Theorem3a", "Theorem3b", "Prop63"]
+srcDir = "proofs"
+roots = ["Lemma41", "Lemma42", "Lemma44", "Theorem12", "Theorem12r3", "Theorem13a", "Theorem13b", "Corollary14"]
+
+[[lean_lib]]
+# The independent, from-scratch r = 3 route: hand-certified numerics that
+# import none of the general-r analytic machinery.  Kept as a second,
+# independent confirmation of the r = 3 case.
+name = "ErdosDegeneracyScratch"
+srcDir = "proofs/scratch"
+roots = ["Entropy3", "Kernel3", "Bridge3", "Assembly3"]
 
 [[lean_lib]]
 name = "ErdosDegeneracyTests"
@@ -33,7 +43,7 @@ name = "ChallengeFaithful"
 srcDir = "tests"
 roots = ["ChallengeFaithful"]
 
-# --- Comparator challenge/solution pairs (see comparator-configs/) ---------
+# --- Comparator challenge/solution pairs (see challenges/NOTES_FOR_REVIEWER.md)
 # Frozen statement files (each ends in an intentional `sorry`) live in
 # challenges/; the solutions restate them verbatim and prove them.
 
@@ -59,20 +69,20 @@ roots = ["K_FamilyLaw"]
 
 [[lean_lib]]
 name = "Solution1"
-srcDir = "."
+srcDir = "proofs"
 roots = ["Solution1"]
 
 [[lean_lib]]
 name = "Solution2"
-srcDir = "."
+srcDir = "proofs"
 roots = ["Solution2"]
 
 [[lean_lib]]
 name = "Solution3"
-srcDir = "."
+srcDir = "proofs"
 roots = ["Solution3"]
 
 [[lean_lib]]
 name = "Solution4"
-srcDir = "."
+srcDir = "proofs"
 roots = ["Solution4"]

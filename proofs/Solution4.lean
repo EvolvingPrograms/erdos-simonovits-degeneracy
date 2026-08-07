@@ -1,17 +1,12 @@
-import Mathlib
+import Theorem13b
 
 /-!
-# Challenge 4: the exponent family law (Theorem 1.3(b))
+# Comparator solution for Challenge 4 (`K_FamilyLaw.lean`)
 
-Frozen statement file.  All quantities are defined from scratch, in bits.
-Along the tuned weight sequence `λ_r = (1 - ln r / r)/ln 2` and the
-in-window family `β_θ = A_r + θ · width_r`, the method's maximal exponent
-gain `ε_r^max(β) = (C_r - β)/(r(1 - β))` obeys, for every fixed `θ`,
+Restates the challenge verbatim and discharges it with
+`DegeneracyLawB.eight_rsq_epsMax_theta_tendsto`.
 
-  `8 r² · ε_r^max(β_θ) → 1 - θ`   as `r → ∞`.
-
-At the midpoint `θ = 1/2` this gives `16 r² ε → 1` (the constant `1/16`);
-as `θ → 0` the limit approaches the supremal constant `1/8`.
+Judged by `comparator` with `challenges/challenge4.json`.
 -/
 
 namespace FamilyLaw
@@ -69,8 +64,8 @@ def betaTheta (r : ℕ) (lam theta : ℝ) : ℝ :=
 theorem eight_rsq_epsMax_tendsto (theta : ℝ) :
     Tendsto (fun r : ℕ =>
       8 * (r : ℝ) ^ 2 * epsMaxR r (lamR r) (betaTheta r (lamR r) theta)) atTop
-      (𝓝 (1 - theta)) := by
-  sorry
+      (𝓝 (1 - theta)) :=
+  DegeneracyLawB.eight_rsq_epsMax_theta_tendsto theta
 
 end
 

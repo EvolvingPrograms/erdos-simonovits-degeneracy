@@ -1,2 +1,12 @@
 .lake/
 *.olean
+.cache/
+.DS_Store
+__pycache__/
+video/
+chat/
+
+# LaTeX build artifacts (README.tex)
+*.aux
+*.log
+*.out

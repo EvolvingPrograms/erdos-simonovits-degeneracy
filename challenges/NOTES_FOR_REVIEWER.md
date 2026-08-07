@@ -3,8 +3,8 @@
 This directory contains four frozen challenge statements in the
 [leanprover/comparator](https://github.com/leanprover/comparator) format:
 each file states one theorem and ends in an intentional `sorry`. The
-corresponding solutions (`Solution1.lean` … `Solution4.lean` at the
-repository root) restate each theorem verbatim and prove it. Comparator
+corresponding solutions (`proofs/Solution1.lean` … `proofs/Solution4.lean`)
+restate each theorem verbatim and prove it. Comparator
 verifies mechanically that the solution proves **the same statement**
 using only the axioms `propext`, `Quot.sound`, `Classical.choice`, and
 that the proof is accepted by the Lean kernel.
@@ -26,8 +26,12 @@ for c in challenges/challenge*.json; do lake env comparator $c; done
 
 ## Challenge 1 — `K_ThreeDegenerateGraphs.lean`
 
-The original challenge file, taken verbatim from OpenAI's repository and
-never modified. It asserts a counterexample to Erdős problem #146 at
+Our statement file, written in the idiom of OpenAI's
+`J_TwoDegenerateGraphs.lean` ([OAI26], ch. 10) and frozen before the
+proof. The definitions `neighborsWithin` and `IsDegenerate` are taken
+verbatim from that file; the statement itself is not theirs — chapter 10
+refutes the conjecture at r = 2, with exponent 3/2 + ε, and asserts
+nothing at r = 3. It asserts a counterexample to Erdős problem #146 at
 r = 3:
 
 > There exist `q : ℕ` and a graph `H` on `Fin q` such that `H` is
@@ -69,10 +73,10 @@ Points to check:
   level `r`, not accidentally sparser.
 - The gain `1/(28 r²)` is a literal in the exponent; nothing is hidden
   behind an existential `ε`.
-- Erdős–Simonovits predicts `ex(n; H) = O(n^(2 − 1/r))` for `r`-degenerate
+- The degeneracy conjecture predicts `ex(n; H) = O(n^(2 − 1/r))` for `r`-degenerate
   bipartite `H`; the statement exhibits a polynomial excess at every `r`.
 
-## Challenge 3 — `K_WindowLaw.lean` (Theorem 3(a))
+## Challenge 3 — `K_WindowLaw.lean` (Theorem 1.3(a))
 
 The asymptotic law for the feasibility window of the method. Unlike
 Challenges 1–2 this is not a pure graph-theoretic statement: the
@@ -101,10 +105,10 @@ The definitions to verify, in dependency order:
 The statement says the window is positive for large `r` (its scaled
 width converges to a positive constant), for every subcritical weight
 `λ ln 2 < 1`. The companion sharpness result (divergence to `−∞` for
-`λ > 1/ln 2`) is proved in the development (`Prop63.lean`) but is not
+`λ > 1/ln 2`) is proved in the development (`WindowSharp.lean`) but is not
 part of this challenge.
 
-## Challenge 4 — `K_FamilyLaw.lean` (Theorem 3(b))
+## Challenge 4 — `K_FamilyLaw.lean` (Theorem 1.3(b))
 
 The exponent family law. Same from-scratch definitions as Challenge 3,
 plus:
@@ -126,7 +130,7 @@ Points to check:
 - As `θ → 0` the limit approaches the supremal constant `1/(8 r²)`; it is
   approached but not attained (the window edge itself is excluded).
   Together with the antitonicity of `epsMaxR` in `β`
-  (`DegeneracyLawB.epsMaxR_anti` in `lib/LedgerAsym.lean`) this
+  (`DegeneracyLawB.epsMaxR_anti` in `proofs/lib/LedgerAsym.lean`) this
   identifies `1/8` as the exact asymptotic ceiling of the method.
 - Caveat, stated plainly: this challenge is about `epsMaxR`, a quantity
   *defined in the statement* — it asserts the asymptotics of the method's

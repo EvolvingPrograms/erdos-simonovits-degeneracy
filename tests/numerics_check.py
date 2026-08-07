@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Standalone numerical falsification harness (independent of Lean).
 
-Reimplements the definitions of lib/LawDefs.lean and lib/LedgerR.lean in
+Reimplements the definitions of proofs/lib/LawDefs.lean and proofs/lib/LedgerR.lean in
 floating point and checks, outside the proof assistant, that:
 
  1. r^2 * width(r, lam) approaches W(lam) = lam^4 ln^3(2)/64 from below for
-    subcritical lam (Theorem 3(a));
+    subcritical lam (Theorem 1.3(a));
  2. r^2 * width(r, lam) goes strongly negative for supercritical lam
     (Prop 6.3, threshold sharpness);
  3. the numerical maximizer of G_r over [0,1]^2 is the center (1/2, 1/2)
-    for subcritical lam (Lemma B);
+    for subcritical lam (Lemma 4.2);
  4. 8 r^2 epsMax(beta_theta) approaches 1 - theta for the whole in-window
-    family (Theorem 3(b) family law), midpoint theta = 1/2 giving 1/16;
+    family (Theorem 1.3(b) family law), midpoint theta = 1/2 giving 1/16;
  5. the layered r-subset pattern at the proof's parameter regime
     (baseSize >= r + 1) has exact degeneracy r, checked by graph peeling.
 
@@ -43,7 +43,7 @@ def h(x):  # binary entropy, bits
     return -(x * log(x) + (1 - x) * log(1 - x)) / LOG2
 
 
-def Gfun(r, lam, q, v):  # lib/LawDefs.lean Gfun
+def Gfun(r, lam, q, v):  # proofs/lib/LawDefs.lean Gfun
     s = h(q) / 2
     lgr = math.lgamma(r + 1)
     for j in range(r + 1):
@@ -68,7 +68,7 @@ def tauOf(r, lam):
     return 0.5 - lam * LOG2 / (4 * r)
 
 
-def Aside(r, lam):  # with sup G at the center (Lemma B)
+def Aside(r, lam):  # with sup G at the center (Lemma 4.2)
     return lam * tauOf(r, lam) + supG_center(r, lam)
 
 
@@ -84,11 +84,11 @@ def Wconst(lam):
     return lam**4 * LOG2**3 / 64
 
 
-def epsMax(r, lam, beta):  # lib/LedgerR.lean epsMaxR
+def epsMax(r, lam, beta):  # proofs/lib/LedgerR.lean epsMaxR
     return (Cside(r, tauOf(r, lam)) - beta) / (r * (1 - beta))
 
 
-def lamR(r):  # tuned schedule of Theorem 3(b)
+def lamR(r):  # tuned schedule of Theorem 1.3(b)
     return (1 - log(r) / r) / LOG2
 
 
@@ -108,7 +108,7 @@ for lam in (0.5, 1.0, 1.35, 1.44):
         prev = val
     rel = abs(prev - W) / W
     check(
-        f"3(a) lam={lam}: r^2*width -> W from below",
+        f"1.3(a) lam={lam}: r^2*width -> W from below",
         monotone_ok and below_ok and rel < 0.05,
         f"r=160: {prev:.8f} vs W={W:.8f}",
     )
@@ -132,7 +132,7 @@ for lam in (1.5, 2.0):
         f"{[f'{v:.3f}' for v in vals]}",
     )
 
-# ---- 3. Lemma B: center maximization (grid search) ------------------------
+# ---- 3. Lemma 4.2: center maximization (grid search) ------------------------
 for lam in (0.5, 1.0, 1.35, 1.42):
     for r in (2, 5, 20):
         center = Gfun(r, lam, 0.5, 0.5)
@@ -147,12 +147,12 @@ for lam in (0.5, 1.0, 1.35, 1.42):
             f"grid max {best:.9f} vs center {center:.9f}",
         )
 
-# ---- 4. Theorem 3(b) family law -------------------------------------------
+# ---- 4. Theorem 1.3(b) family law -------------------------------------------
 r_big = 20000
 for theta in (0.1, 0.25, 0.5, 0.9):
     val = 8 * r_big**2 * epsMax(r_big, lamR(r_big), betaTheta(r_big, lamR(r_big), theta))
     check(
-        f"3(b) theta={theta}: 8 r^2 epsMax(beta_theta) ~ 1-theta",
+        f"1.3(b) theta={theta}: 8 r^2 epsMax(beta_theta) ~ 1-theta",
         abs(val - (1 - theta)) < 0.02,
         f"r={r_big}: {val:.5f} vs {1 - theta}",
     )
@@ -167,7 +167,7 @@ for r in range(2, 400):
     beta = Aside(r, lam2) + 0.01 * wd
     vals.append(r**2 * 0.99 * 0.99 * wd / (r * (1 - beta)))
 check(
-    "Thm2 constant: min r^2 eps at (1/100,1/100) >= 1/28",
+    "Thm 1.2 constant: min r^2 eps at (1/100,1/100) >= 1/28",
     min(vals) >= 1 / 28,
     f"min {min(vals):.6f} (=1/{1/min(vals):.1f}) vs 1/28={1/28:.6f}",
 )
@@ -175,7 +175,7 @@ wd3 = width(3, lam2)
 beta3 = Aside(3, lam2) + 0.01 * wd3
 eps3 = 0.99 * 0.99 * wd3 / (3 * (1 - beta3))
 check(
-    "Thm1 sharp: eps_3 at (1/100,1/100) >= 1/160 (> 1/200)",
+    "Thm 1.2 at r=3, sharp: eps_3 at (1/100,1/100) >= 1/160",
     eps3 >= 1 / 160,
     f"eps3 {eps3:.6f} (=1/{1/eps3:.1f})",
 )

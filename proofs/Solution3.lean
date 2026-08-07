@@ -1,16 +1,12 @@
-import Mathlib
+import Theorem13a
 
 /-!
-# Challenge 3: the asymptotic window law (Theorem 1.3(a))
+# Comparator solution for Challenge 3 (`K_WindowLaw.lean`)
 
-Frozen statement file.  All quantities are defined from scratch, in bits.
-Target theorem: for every fixed `λ > 0` with `λ ln 2 < 1`,
+Restates the challenge verbatim and discharges it with
+`DegeneracyLaw.width_tendsto_unconditional_full`.
 
-  `r² · (C_r(τ_r) - A_r(λ)) → λ⁴ ln³2 / 64`   as `r → ∞`,
-
-where `C_r(τ) = r h(τ) - (r-1)` is the density threshold,
-`A_r(λ) = λ τ_r + sup G_r` is the exclusion threshold with Gibbs objective
-`G_r`, and `τ_r = 1/2 - λ ln 2/(4r)` is the tuned Hamming radius.
+Judged by `comparator` with `challenges/challenge3.json`.
 -/
 
 namespace WindowLaw
@@ -56,8 +52,8 @@ def Wconst (lam : ℝ) : ℝ := lam ^ 4 * Real.log 2 ^ 3 / 64
 
 theorem width_tendsto (lam : ℝ) (hlam0 : 0 < lam)
     (hlam1 : lam * Real.log 2 < 1) :
-    Tendsto (fun r : ℕ => (r : ℝ) ^ 2 * width r lam) atTop (𝓝 (Wconst lam)) := by
-  sorry
+    Tendsto (fun r : ℕ => (r : ℝ) ^ 2 * width r lam) atTop (𝓝 (Wconst lam)) :=
+  DegeneracyLaw.width_tendsto_unconditional_full lam hlam0 hlam1
 
 end
 

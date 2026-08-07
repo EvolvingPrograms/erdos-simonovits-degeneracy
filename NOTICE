@@ -10,7 +10,7 @@ conjecture (Erdős problem #146) at r = 2; the present work builds on it.
 Specifically, as of upstream commit
 94bc0feb6a9ff12c7d31d6de640a725c9d43d2b6:
 
-  lib/CompactnessAndDegeneracy.lean
+  proofs/lib/CompactnessAndDegeneracy.lean
       Copied unmodified from CompactnessAndDegeneracy.lean.
 
   challenges/K_ThreeDegenerateGraphs.lean

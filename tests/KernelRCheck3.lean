@@ -11,7 +11,7 @@ hypothesis at `r = 3` from `Entropy3`'s hand-certified
 `r`-generic packaging is faithful: the `r+1` binomially weighted terms of
 `TypeEntropyBound` expand to exactly the four terms of the `r = 3` lemma.
 
-Consequently every `KernelR` theorem specialises at `r = 3` to its `Kernel3`
+Consequently every `KernelR` theorem specializes at `r = 3` to its `Kernel3`
 counterpart (with the `r²/L = 9/L` without-replacement correction in place of
 the published `4/L`).
 
