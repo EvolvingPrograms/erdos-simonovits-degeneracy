@@ -9,7 +9,7 @@ Fable 5, Opus 5 · Christian Lewis<sup>\*</sup> · August 1, 2026
 A graph is $r$-degenerate if every induced subgraph of it has minimum degree at
 most $r$. Erdős and Simonovits conjectured that every bipartite $r$-degenerate
 graph $H$ satisfies $\mathrm{ex}(n,H)=O(n^{2-1/r})$: that $n^{2-\frac1r}$ bounds
-the Turán number of $H$ up to a constant factor $C(H)$. The case $r=2$ was refuted by
+the Turán number of $H$ up to a constant factor. The case $r=2$ was refuted by
 OpenAI on the morning of August 1, 2026, via a layered Hamming-ball
 construction. In this paper, we generalize this construction and prove that the
 conjecture fails for every $r\ge2$, and fails by a polynomial margin.
@@ -24,13 +24,13 @@ $$\mathrm{ex}(n,H_r)\ =\ \Omega\bigl(n^{\,2-\frac1r+\varepsilon_r}\bigr),\qquad\
 </p>
 
 No constant absorbs $n^{\varepsilon_r}$, so the exponent itself exceeds
-$2-\frac1r$. At $r=3$ the margin improves to $\varepsilon_3\ge\frac1{160}$. We
-also determine the exact reach of the method: its feasible window obeys an
-asymptotic law with a sharp phase transition at Gibbs weight $e$, and the
-supremal constant of its exponent gain is $1/(8r^2)$, approached at the
-exclusion edge but not attained: for every $\delta>0$ and every sufficiently
-large $r$ there is a connected bipartite graph $H_{r,\delta}$ of degeneracy
-exactly $r$ with
+$2-\frac1r$ for all integer $r \gt 1$. At $r=3$ the margin improves to
+$\varepsilon_3\ge\frac1{160}$. We also determine the exact reach of the method:
+its feasible window obeys an asymptotic law with a sharp phase transition at
+Gibbs weight $e$, and the supremal constant of its exponent gain is $1/(8r^2)$,
+approached at the exclusion edge but not attained: for every $\delta>0$ and
+every sufficiently large $r$ there is a connected bipartite graph $H_{r,\delta}$
+of degeneracy exactly $r$ with
 
 $$\mathrm{ex}(n,H_{r,\delta})\ =\ \Omega\bigl(n^{\,2-\frac1r+\varepsilon_{r,\delta}}\bigr),\qquad\varepsilon_{r,\delta}\ \ge\ \frac{1-\delta}{8r^2}.$$
 
