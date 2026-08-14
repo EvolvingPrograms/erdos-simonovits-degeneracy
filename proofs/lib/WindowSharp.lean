@@ -13,7 +13,7 @@ The supercritical lower bound on `G_r` that drives the divergence is
 
 namespace DegeneracyLawSuper
 
-open DegeneracyLaw DegeneracyLaw.LemmaB TwoDegenerateGraphs Filter Topology
+open DegeneracyLaw DegeneracyLaw.Lemma42 TwoDegenerateGraphs Filter Topology
 
 noncomputable section
 

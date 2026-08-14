@@ -13,7 +13,7 @@ Machinery for Lemma 4.4; the window lower bound itself is `Lemma44.lean`.
 -/
 
 namespace DegeneracyLaw
-namespace LemmaC
+namespace Lemma44
 
 open Real Finset
 
@@ -701,5 +701,5 @@ theorem Cside_gap_le (r : ℕ) (hr : 1 ≤ r) (lam : ℝ) (hlam : 0 < lam)
 
 end
 
-end LemmaC
+end Lemma44
 end DegeneracyLaw

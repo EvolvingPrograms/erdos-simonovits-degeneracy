@@ -42,9 +42,9 @@ The two-sided log cosh toolkit (`sinh`/`tanh` ladder, `log_cosh_le`,
 half here under the name this file and its downstream users refer to. -/
 
 /-- **The two-sided log cosh bound (lower half).** `t²/2 - t⁴/12 ≤ log cosh t` for every real `t`.
-Alias for the canonical `DegeneracyLaw.LemmaC.le_log_cosh`. -/
+Alias for the canonical `DegeneracyLaw.Lemma44.le_log_cosh`. -/
 theorem log_cosh_ge (t : ℝ) : t ^ 2 / 2 - t ^ 4 / 12 ≤ Real.log (Real.cosh t) :=
-  LemmaC.le_log_cosh t
+  Lemma44.le_log_cosh t
 
 /-! ## §5.2: exact binomial moments
 
@@ -56,23 +56,23 @@ rest of this file consumes. -/
 /-- `∑_j C(r,j) = 2^r` as reals. -/
 theorem binom_M0 (r : ℕ) :
     ∑ j ∈ range (r + 1), (r.choose j : ℝ) = 2 ^ r := by
-  have h := LemmaC.Mom_zero r
-  simpa [LemmaC.Mom] using h
+  have h := Lemma44.Mom_zero r
+  simpa [Lemma44.Mom] using h
 
 /-- Second moment: `∑_j C(r,j) (2j-r)² = r 2^r`. -/
 theorem binom_M2 (r : ℕ) :
     ∑ j ∈ range (r + 1), (r.choose j : ℝ) * (2 * (j : ℝ) - (r : ℝ)) ^ 2
       = (r : ℝ) * 2 ^ r := by
-  have h := LemmaC.Mom_two r
-  rw [LemmaC.Mom] at h
+  have h := Lemma44.Mom_two r
+  rw [Lemma44.Mom] at h
   rw [h]; ring
 
 /-- Fourth moment: `∑_j C(r,j) (2j-r)⁴ = (3r²-2r) 2^r`. -/
 theorem binom_M4 (r : ℕ) :
     ∑ j ∈ range (r + 1), (r.choose j : ℝ) * (2 * (j : ℝ) - (r : ℝ)) ^ 4
       = (3 * (r : ℝ) ^ 2 - 2 * (r : ℝ)) * 2 ^ r := by
-  have h := LemmaC.Mom_four r
-  rw [LemmaC.Mom] at h
+  have h := Lemma44.Mom_four r
+  rw [Lemma44.Mom] at h
   rw [h]; ring
 
 /-! ## §5.3: the entropy defect, lower bound (Step 2 of §6.6) -/

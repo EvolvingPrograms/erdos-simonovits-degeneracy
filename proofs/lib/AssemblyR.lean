@@ -33,11 +33,11 @@ The structure follows `research/results_Z_lean_bridgeR.md` §5:
 namespace DegeneracyLaw
 
 /-- **Theorem 1.2's analytic engine, unconditional.** Window positivity at
-`λ = 27/20` for every `r ≥ 2`: Lemma 4.2 (`LemmaB.supG_eq_center`) discharges the
+`λ = 27/20` for every `r ≥ 2`: Lemma 4.2 (`Lemma42.supG_eq_center`) discharges the
 `hB` hypothesis of `Theorem13a.width_pos_at_135'`. -/
 theorem width_pos_all (r : ℕ) (hr : 2 ≤ r) : 0 < width r (27/20) :=
   width_pos_at_135' r hr
-    (fun r' hr' => LemmaB.supG_eq_center r' (27/20) hr' (by norm_num) (by norm_num))
+    (fun r' hr' => Lemma42.supG_eq_center r' (27/20) hr' (by norm_num) (by norm_num))
 
 end DegeneracyLaw
 
@@ -1924,7 +1924,7 @@ theorem rGraphOverFin_free_of_exclusion
 
 /-! ### The window lower bound and the explicit exponent
 
-`Theorem13a.lowerSeq_le_rsq_width` (Lemma 4.4, discharged by `LemmaB`) gives
+`Theorem13a.lowerSeq_le_rsq_width` (Lemma 4.4, discharged by `Lemma42`) gives
 `r² · width_r ≥ W(λ)(1 − (1+a²/3)/r) − a⁶/(1920 ln2 (1−a²/4)) · r⁻³`.
 At `λ = 27/20` the right-hand side is increasing in `r`, so its value at
 `r = 2`, namely `0.0060386…`, is a uniform lower bound. -/
@@ -2014,7 +2014,7 @@ theorem width_ge (r : ℕ) (hr : 2 ≤ r) :
     (0.00603 : ℝ) / (r : ℝ) ^ 2 ≤ width r (27 / 20) := by
   have hr0 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
   have hB : ∀ r' : ℕ, 2 ≤ r' → supG r' (27 / 20) = Gfun r' (27 / 20) (1 / 2) (1 / 2) :=
-    fun r' hr' => LemmaB.supG_eq_center r' (27 / 20) hr' (by norm_num) (by norm_num)
+    fun r' hr' => Lemma42.supG_eq_center r' (27 / 20) hr' (by norm_num) (by norm_num)
   have hmain := lowerSeq_le_rsq_width (27 / 20) (by norm_num) lam_log_lt hr (hB r hr)
   have hlow := lowerSeq_ge r hr
   rw [div_le_iff₀ (by positivity)]
@@ -2074,7 +2074,7 @@ theorem lowerSeq_ge_three : (0.0098 : ℝ) ≤ lowerSeq (27 / 20) 3 := by
 /-- The `r = 3` window bound: `width(3) ≥ 0.0098/9`. -/
 theorem width_ge_three : (0.0098 : ℝ) / ((3 : ℕ) : ℝ) ^ 2 ≤ width 3 (27 / 20) := by
   have hB : supG 3 (27 / 20) = Gfun 3 (27 / 20) (1 / 2) (1 / 2) :=
-    LemmaB.supG_eq_center 3 (27 / 20) (by norm_num) (by norm_num) (by norm_num)
+    Lemma42.supG_eq_center 3 (27 / 20) (by norm_num) (by norm_num) (by norm_num)
   have hmain := lowerSeq_le_rsq_width (27 / 20) (by norm_num) lam_log_lt
     (by norm_num : 2 ≤ 3) hB
   have hlow := lowerSeq_ge_three

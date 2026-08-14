@@ -10,3 +10,6 @@ chat/
 *.aux
 *.log
 *.out
+
+.env
+**/media/

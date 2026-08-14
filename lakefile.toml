@@ -43,7 +43,7 @@ name = "ChallengeFaithful"
 srcDir = "tests"
 roots = ["ChallengeFaithful"]
 
-# --- Comparator challenge/solution pairs (see challenges/NOTES_FOR_REVIEWER.md)
+# --- Comparator challenge/solution pairs (see challenges/*.json) -----------
 # Frozen statement files (each ends in an intentional `sorry`) live in
 # challenges/; the solutions restate them verbatim and prove them.
 

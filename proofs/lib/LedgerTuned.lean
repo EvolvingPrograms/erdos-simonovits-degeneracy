@@ -331,7 +331,7 @@ theorem lowerSeq_le_tuned {r : ℕ} (hr : 7 ≤ r) :
     linarith
   have hlog := logTwoPos
   obtain ⟨ha0, ha1⟩ := aR_mem hr2
-  have h := LemmaC.width_ge r (lamR r) hr2 (lamR_pos hr2) ha1 (supG_eq_center_tuned hr)
+  have h := Lemma44.width_ge r (lamR r) hr2 (lamR_pos hr2) ha1 (supG_eq_center_tuned hr)
   have hsq : (0 : ℝ) < (r : ℝ) ^ 2 := by positivity
   have h' := mul_le_mul_of_nonneg_left h hsq.le
   refine le_trans (le_of_eq ?_) h'

@@ -95,7 +95,7 @@ theorem lowerSeq_le_rsq_width (lam : ℝ) (hlam0 : 0 < lam)
   have hr0 : (0 : ℝ) < r := by
     exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one (le_trans (by norm_num) hr)
   have hlog : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
-  have h := LemmaC.width_ge r lam hr hlam0 hlam1 hB
+  have h := Lemma44.width_ge r lam hr hlam0 hlam1 hB
   have hsq : (0 : ℝ) < (r : ℝ) ^ 2 := by positivity
   have h' := mul_le_mul_of_nonneg_left h hsq.le
   refine le_trans (le_of_eq ?_) h'
@@ -139,21 +139,21 @@ theorem width_eventually_pos (lam : ℝ) (hlam0 : 0 < lam) (hlam1 : lam * Real.l
   nlinarith [hr, hsq]
 
 /-- **Positivity at `λ = 27/20`, every `r ≥ 2`, no limit needed.**
-Restatement of `LemmaC.width_pos_at_135`. -/
+Restatement of `Lemma44.width_pos_at_135`. -/
 theorem width_pos_at_135' (r : ℕ) (hr : 2 ≤ r)
     (hB : ∀ r : ℕ, 2 ≤ r → supG r (27 / 20) = Gfun r (27 / 20) (1 / 2) (1 / 2)) :
     0 < width r (27 / 20) :=
-  LemmaC.width_pos_at_135 r hr (hB r hr)
+  Lemma44.width_pos_at_135 r hr (hB r hr)
 
 /-! ## Unconditional form: `hB` discharged by Lemma 4.2 -/
 
 /-- **Theorem 1.3(a), unconditional** for subcritical `λ ≤ 27/20`: Lemma 4.2
-(`LemmaB.supG_eq_center`) discharges the `hB` hypothesis of `width_tendsto`. -/
+(`Lemma42.supG_eq_center`) discharges the `hB` hypothesis of `width_tendsto`. -/
 theorem width_tendsto_unconditional (lam : ℝ) (hlam0 : 0 < lam)
     (hlam1 : lam * Real.log 2 < 1) (hlam2 : lam ≤ 27/20) :
     Tendsto (fun r : ℕ => (r : ℝ) ^ 2 * width r lam) atTop (𝓝 (Wconst lam)) :=
   width_tendsto lam hlam0 hlam1
-    (fun r hr => LemmaB.supG_eq_center r lam hr hlam0 hlam2)
+    (fun r hr => Lemma42.supG_eq_center r lam hr hlam0 hlam2)
 
 end
 

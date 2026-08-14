@@ -323,7 +323,7 @@ yields `μ_r ≤ a⁴(3r²-2r)/(192 r⁴ ln2) ≤ a⁴/(64 r² ln2)`, i.e. `cent
 below.
 
 The bound itself is *not* reproved here: `DegeneracyLaw.log_cosh_ge`
-(`WindowUpper.lean`, an alias for the canonical `DegeneracyLaw.LemmaC.le_log_cosh`)
+(`WindowUpper.lean`, an alias for the canonical `DegeneracyLaw.Lemma44.le_log_cosh`)
 is the single home for the whole `log cosh` / `tanh` toolkit.  Only the `log₂`
 rescaling actually used by (4.14) lives in this file.
 -/
@@ -351,21 +351,21 @@ def thetaOf (v : ℝ) : ℝ := Real.arcsin (Real.sqrt v)
 def inStripQ (lam v : ℝ) : Prop :=
   |thetaOf v - Real.pi / 4| ≤ rho (lam * Real.log 2)
 
-/-! ### 4'. The bridge to `LemmaB`
+/-! ### 4'. The bridge to `Lemma42`
 
 `DegeneracyLawQuant.rhoCrit/rho/thetaOf/inStripQ` are *syntactically* the same
-definitions as `DegeneracyLaw.LemmaB.rhoCrit/rho/thetaOf/inStrip`, so the bridge
+definitions as `DegeneracyLaw.Lemma42.rhoCrit/rho/thetaOf/inStrip`, so the bridge
 is `rfl` in every case.  Keeping the two copies means this file still reads
-standalone, while the proofs below can call `LemmaB` directly. -/
+standalone, while the proofs below can call `Lemma42` directly. -/
 
-lemma thetaOf_eq (v : ℝ) : thetaOf v = DegeneracyLaw.LemmaB.thetaOf v := rfl
-lemma inStripQ_iff (lam v : ℝ) : inStripQ lam v ↔ DegeneracyLaw.LemmaB.inStrip lam v :=
+lemma thetaOf_eq (v : ℝ) : thetaOf v = DegeneracyLaw.Lemma42.thetaOf v := rfl
+lemma inStripQ_iff (lam v : ℝ) : inStripQ lam v ↔ DegeneracyLaw.Lemma42.inStrip lam v :=
   Iff.rfl
 
 /-! ### 4''. The quadratic margin versus `DeltaLB`
 
-The single new inequality this file needs on top of `LemmaB`: the quadratic
-margin `(1-a²)D² + E²/2` produced by `LemmaB.Gfun_le_center_margin` dominates
+The single new inequality this file needs on top of `Lemma42`: the quadratic
+margin `(1-a²)D² + E²/2` produced by `Lemma42.Gfun_le_center_margin` dominates
 `ln2 · DeltaLB a` as soon as `E ≥ ρ(a) - a D` — which is exactly what being off
 the strip provides, via the triangle inequality with `|θ* - π/4| ≤ a D`. -/
 
@@ -399,7 +399,7 @@ Proof sketch (paper §4.5–4.6(i)): write
 `DeltaLB_le_deficit` bounds below by `DeltaLB a`.  The `a²/(8r ln2)` is (4.12),
 from `ψ_yy ≤ a²/ln2` and `B_r[(y-q)²] = q(1-q)/r ≤ 1/(4r)`.
 
-**Proved** by `DegeneracyLaw.LemmaB.Gfun_le_center_margin` — which packages all
+**Proved** by `DegeneracyLaw.Lemma42.Gfun_le_center_margin` — which packages all
 of the above into the `λ`-free bound
 `G_r ≤ 1-λ/2-((1-a²)(q-½)²+(θ-θ*)²/2)/ln2 + a²/(8r ln2)`, together with
 `|θ* - π/4| ≤ a|q-½|` — followed by `DeltaLB_le_quad`, which turns the off-strip
@@ -415,15 +415,15 @@ theorem Gfun_le_offstrip_quant (r : ℕ) (lam q v : ℝ) (hr : 2 ≤ r)
   have hlog2 := log_two_pos
   have hR2 : (2 : ℝ) ≤ (r : ℝ) := by exact_mod_cast hr
   have hRpos : (0 : ℝ) < (r : ℝ) := by linarith
-  have hoff0 : rho (lam * Real.log 2) < |DegeneracyLaw.LemmaB.thetaOf v - Real.pi / 4| := by
+  have hoff0 : rho (lam * Real.log 2) < |DegeneracyLaw.Lemma42.thetaOf v - Real.pi / 4| := by
     have h : ¬ inStripQ lam v := hoff
     unfold inStripQ at h
     rw [thetaOf_eq] at h
     exact not_le.1 h
   obtain ⟨ts, hstarbd, hup⟩ :=
-    DegeneracyLaw.LemmaB.Gfun_le_center_margin r lam q v hr ha0 ha1 hq hv
+    DegeneracyLaw.Lemma42.Gfun_le_center_margin r lam q v hr ha0 ha1 hq hv
   set a : ℝ := lam * Real.log 2 with hadef
-  set θ : ℝ := DegeneracyLaw.LemmaB.thetaOf v with hθdef
+  set θ : ℝ := DegeneracyLaw.Lemma42.thetaOf v with hθdef
   clear_value a θ
   have hoff' : rho a < |θ - Real.pi / 4| := hoff0
   have htri : |θ - Real.pi / 4| ≤ |θ - ts| + |ts - Real.pi / 4| :=
@@ -484,7 +484,7 @@ theorem Gfun_le_center_strip_quant (r : ℕ) (lam q v : ℝ) (hr : 2 ≤ r)
     (hq : q ∈ Set.Icc (0 : ℝ) 1) (hv : v ∈ Set.Icc (0 : ℝ) 1)
     (hin : inStripQ lam v) :
     Gfun r lam q v ≤ Gfun r lam (1 / 2) (1 / 2) :=
-  DegeneracyLaw.LemmaB.Gfun_le_center_strip r lam q v hr ha0 ha1 hq hv
+  DegeneracyLaw.Lemma42.Gfun_le_center_strip r lam q v hr ha0 ha1 hq hv
     ((inStripQ_iff lam v).1 hin)
 
 /-! ## 5. Assembly (Lemma 4.2 with the explicit threshold `R_of`) -/

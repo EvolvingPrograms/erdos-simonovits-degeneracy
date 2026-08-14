@@ -16,7 +16,7 @@ argument (§4.4a) and the off-strip numeric certificate (§4.4c).
 -/
 
 namespace DegeneracyLaw
-namespace LemmaB
+namespace Lemma42
 
 open TwoDegenerateGraphs Finset
 
@@ -1971,5 +1971,5 @@ theorem supG_eq_center_of_le (r : ℕ) (lam : ℝ)
 
 end
 
-end LemmaB
+end Lemma42
 end DegeneracyLaw

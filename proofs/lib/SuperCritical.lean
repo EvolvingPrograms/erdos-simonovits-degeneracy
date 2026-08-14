@@ -49,7 +49,7 @@ makes the threshold `λ* = 1/ln 2` **sharp**: `threshold_sharp`.
 
 namespace DegeneracyLawSuper
 
-open DegeneracyLaw DegeneracyLaw.LemmaB TwoDegenerateGraphs Filter Topology
+open DegeneracyLaw DegeneracyLaw.Lemma42 TwoDegenerateGraphs Filter Topology
 
 noncomputable section
 
@@ -217,7 +217,7 @@ theorem Ffun_ge_center_super (a t : ℝ) (ha : 1 < a) (ht0 : 0 < t) (hts : t ^ 2
 
 /-! ## §2 Step (i): Jensen for the Bernstein operator -/
 
-open LemmaB in
+open Lemma42 in
 /-- **The `≥ 0` half of (4.3a).**  On the closed quadrant `ψ(·,θ)` is convex in
 `y`: `ψ_yy = (a²T² - T_y²)/(T² ln2) ≥ 0`, because `T_y = a(sin θ·F - cos θ·E)`
 while `T = cos θ·E + sin θ·F`, so `a²T² - T_y² = 4a² cos θ E sin θ F ≥ 0`. -/
@@ -232,7 +232,7 @@ lemma psi_y2_nonneg (a y θ : ℝ) (hc : 0 ≤ Real.cos θ) (hs : 0 ≤ Real.sin
       (mul_nonneg hs hF.le)]
   exact div_nonneg hnum (by positivity)
 
-open LemmaB in
+open Lemma42 in
 /-- **The supporting-line bound.**  Convexity of `ψ(·,θ)` in the tangent form
 `ψ(y,θ) ≥ ψ(q,θ) + ψ_y(q,θ)(y - q)`. -/
 lemma psi_supporting (a q θ : ℝ) (hT : ∀ y : ℝ, 0 < Tang a y θ)
@@ -282,7 +282,7 @@ lemma psi_supporting (a q θ : ℝ) (hT : ∀ y : ℝ, 0 < Tang a y θ)
   simp only [hfdef] at hgoal
   linarith
 
-open LemmaB in
+open Lemma42 in
 /-- **Supercritical sharpness, step (i): Jensen removes `r`.**  The Bernstein operator is an
 expectation over `J/r` with mean `q`, and `ψ(·,θ)` is convex, so
 `B_r[ψ(·,θ)](q) ≥ ψ(q,θ)` for every `r ≥ 1`. -/
@@ -301,7 +301,7 @@ lemma bern_psi_ge (r : ℕ) (hr : 1 ≤ r) (a θ q : ℝ) (hq0 : 0 ≤ q) (hq1 :
 
 /-! ## §3 Step (ii): the competitor and the value `F_a(q)/2` -/
 
-open LemmaB in
+open Lemma42 in
 /-- **Supercritical sharpness, steps (i)+(ii).**  For every `r ≥ 1` and `q ∈ [0,1]` there is a
 `v ∈ [0,1]` — the polar-optimal `v_q = e^{-2a(1-q)}/(e^{-2aq}+e^{-2a(1-q)})` —
 with `G_r(q,v) ≥ F_a(q)/2`, *uniformly in `r`*. -/

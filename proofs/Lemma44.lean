@@ -17,7 +17,7 @@ The bounds and moments this rests on are `proofs/lib/WindowLowerBound.lean`.
 -/
 
 namespace DegeneracyLaw
-namespace LemmaC
+namespace Lemma44
 
 open Real Finset
 
@@ -136,5 +136,5 @@ theorem width_pos_at_135 (r : ℕ) (hr : 2 ≤ r)
 
 end
 
-end LemmaC
+end Lemma44
 end DegeneracyLaw

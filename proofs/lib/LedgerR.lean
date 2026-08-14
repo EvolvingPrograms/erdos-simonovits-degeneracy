@@ -12,7 +12,7 @@ Contents.
 
 * §1  Definitions mirroring §8: `betaMid`, `deltaR`, `sR`, `epsMaxR`, `epsR`.
 * §2  A self-contained two-sided bound on `1 - h(1/2 - x)` (paper §5.2/§5.3).
-      This intentionally duplicates `LemmaC.entGap`.
+      This intentionally duplicates `Lemma44.entGap`.
 * §3  Lemma 8.3 **as corrected**: `epsMax_lower` gives `w / (2 K₁ r²)`, and the
       halving to `w / (4 K₁ r²)` happens exactly once, in `epsR_lower_half`.
 * §4  `K1_bound`: the general form of hypothesis (W3).
@@ -150,7 +150,7 @@ theorem entGap_upper {u : ℝ} (h : |u| < 1) :
   linarith [htail]
 
 /-- The two-sided entropy-defect bound in **bits**, for `|x| ≤ 1/4`
-(paper §5.2/§5.3).  This is the file's own copy of `LemmaC.binaryEntropy_gap_bounds`. -/
+(paper §5.2/§5.3).  This is the file's own copy of `Lemma44.binaryEntropy_gap_bounds`. -/
 theorem binEntropy_defect_bounds {x : ℝ} (hx : |x| ≤ 1 / 4) :
     2 / Real.log 2 * x ^ 2 ≤ 1 - binaryEntropy (1 / 2 - x) ∧
       1 - binaryEntropy (1 / 2 - x) ≤ 2 / Real.log 2 * x ^ 2 + 3 / Real.log 2 * x ^ 4 := by

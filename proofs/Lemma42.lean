@@ -18,7 +18,7 @@ unconditional on the full range `λ ln 2 < 1`.
 -/
 
 namespace DegeneracyLaw
-namespace LemmaB
+namespace Lemma42
 
 open TwoDegenerateGraphs Finset
 
@@ -50,5 +50,5 @@ theorem supG_eq_center (r : ℕ) (lam : ℝ) (hr : 2 ≤ r) (hlam0 : 0 < lam)
 
 end
 
-end LemmaB
+end Lemma42
 end DegeneracyLaw
