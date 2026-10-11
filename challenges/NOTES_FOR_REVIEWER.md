@@ -1,15 +1,15 @@
-# Notes for the reviewer: the four Comparator challenges
+# Notes for the reviewer: the five Comparator challenges
 
-This directory contains four frozen challenge statements in the
+This directory contains five frozen challenge statements in the
 [leanprover/comparator](https://github.com/leanprover/comparator) format:
 each file states one theorem and ends in an intentional `sorry`. The
-corresponding solutions (`proofs/Solution1.lean` … `proofs/Solution4.lean`)
+corresponding solutions (`proofs/Solution1.lean` … `proofs/Solution5.lean`)
 restate each theorem verbatim and prove it. Comparator
 verifies mechanically that the solution proves **the same statement**
 using only the axioms `propext`, `Quot.sound`, `Classical.choice`, and
 that the proof is accepted by the Lean kernel.
 
-**The only thing that requires human judgment is the content of the four
+**The only thing that requires human judgment is the content of the five
 statements below.** Everything else — that the proofs exist, match the
 statements, and use no extra axioms — is machine-checked. Equivalently:
 if you agree that each statement says what it claims to say, the theorem
@@ -135,8 +135,18 @@ Points to check:
 - Caveat, stated plainly: this challenge is about `epsMaxR`, a quantity
   *defined in the statement* — it asserts the asymptotics of the method's
   ledger, not a graph-theoretic fact. Its graph-theoretic consequences
-  are what Challenges 1–2 certify (with `1/(28 r²)` and, at `r = 3`,
-  `1/160` — see `RDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp`).
+  are what Challenges 2 and 5 certify (with `1/(28 r²)` and, at `r = 3`,
+  `1/160` — see `ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp`).
+
+---
+
+## Challenge 5 — `K_ThreeDegenerateSharp.lean`
+
+This strengthens Challenge 1 to exact degeneracy 3 and the literal exponent
+$5/3 + 1/160$. `Solution5` uses
+`ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp`,
+the sharp counterexample theorem. Challenge 1 remains unchanged.
+CI runs all five comparisons after building, reusing the same `.lake` directory.
 
 ---
 

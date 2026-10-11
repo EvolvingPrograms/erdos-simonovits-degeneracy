@@ -86,3 +86,13 @@ roots = ["Solution3"]
 name = "Solution4"
 srcDir = "proofs"
 roots = ["Solution4"]
+
+[[lean_lib]]
+name = "K_ThreeDegenerateSharp"
+srcDir = "challenges"
+roots = ["K_ThreeDegenerateSharp"]
+
+[[lean_lib]]
+name = "Solution5"
+srcDir = "proofs"
+roots = ["Solution5"]

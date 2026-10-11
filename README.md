@@ -351,14 +351,18 @@ written.
 
 - Build: `lake exe cache get && lake build` (toolchain pinned by
   `lean-toolchain`). The default targets are sorry-free; the declaration
-  inventory is [`formalization.yaml`](formalization.yaml). CI runs the build
-  on every push.
+  inventory is [`formalization.yaml`](formalization.yaml). CI builds on pushes
+  to `main` and pull requests, audits the two main
+  counterexample theorems with `#print axioms`, then runs Comparator in the
+  same workspace to reuse the built modules. Verification logs are uploaded
+  as the `proof-verification` artifact.
 - Challenges: each theorem is frozen as a standalone
   [Comparator](https://github.com/leanprover/comparator) statement in
   [`challenges/`](challenges/) (each ends in an intentional `sorry`) and
   discharged verbatim by the corresponding `Solution*.lean`:
   `for c in challenges/challenge*.json; do lake env comparator $c; done`.
-  Human review reduces to reading the four challenge statements
+  Challenge 5 additionally checks exact degeneracy at $r=3$ and the sharp
+  $1/160$ gain. Human review includes reading the five challenge statements
   ([`challenges/NOTES_FOR_REVIEWER.md`](challenges/NOTES_FOR_REVIEWER.md)).
 - Independent numerics: `python3 tests/numerics_check.py` re-computes the
   window, ledger, and degeneracy claims outside Lean.

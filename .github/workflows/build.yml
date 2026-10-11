@@ -4,20 +4,36 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
         with:
           use-mathlib-cache: true
-      # The four frozen challenge statements (intentional sorry each), their
+      # The frozen challenge statements (intentional sorry each), their
       # solutions, and the kernel-checked faithfulness test that the proven
       # theorem has exactly the challenge's type.
       - name: Build challenge statements and solutions
-        run: lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw ChallengeFaithful Solution1 Solution2 Solution3 Solution4
+        run: lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw K_ThreeDegenerateSharp ChallengeFaithful Solution1 Solution2 Solution3 Solution4 Solution5
+      - name: Audit counterexample theorem axioms
+        run: python3 scripts/audit_axioms.py 2>&1 | tee axiom-audit.txt
+      - name: Compare statements and replay proofs
+        run: bash scripts/compare.sh 2>&1 | tee comparator.txt
+      - name: Upload verification logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-verification
+          path: |
+            axiom-audit.txt
+            comparator.txt
       # Independent floating-point redundancy (not proofs): reimplements the
       # window/ledger formulas and the layered graph outside Lean.
       - name: Numerical falsification harness
