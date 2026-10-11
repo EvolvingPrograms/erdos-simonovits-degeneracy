@@ -18,7 +18,7 @@ status:
     strictly improving the midpoint evaluation of the same chain
     (kept as the 1/(108 r^2) checkpoint).
   axioms: ["propext", "Classical.choice", "Quot.sound"]
-  sorries: 0  # in all proof targets; the five frozen challenge statement files in challenges/ intentionally contain one each
+  sorries: 0  # in all proof targets; five intentional challenge placeholders in challenges/; none in the solutions
   main_results:
     - name: "Theorem 1.2 at r = 3: H of degeneracy exactly 3 with ex(n;H) >= c n^(5/3 + 1/160), exponent and exactness literal"
       decl: "ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp"

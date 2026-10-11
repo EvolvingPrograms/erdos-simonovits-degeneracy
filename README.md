@@ -332,40 +332,45 @@ than $2-\frac1r+\frac{1}{8r^2}$.
 
 ## Verification
 
-Every theorem in the paper is machine-checked in Lean 4 (toolchain `v4.32.0`)
-over mathlib, sorry-free, with axioms `propext`, `Classical.choice`,
-`Quot.sound`.
+The Lean development uses the pinned Lean 4.32.0 toolchain and Mathlib.
+[The comparison specifications](challenges/) give a mathematical statement,
+readable Lean code, and a direct link to its solution for each of the five
+results below.
 
-| Paper statement           | Lean declaration                                                          | File                                     |
-|---------------------------|---------------------------------------------------------------------------|------------------------------------------|
-| Theorem 1.2, general $r$  | `RDegenerateGraphsTarget.rDegenerateExtremalCounterexample_exact`          | [`proofs/Theorem12.lean`](proofs/Theorem12.lean)       |
-| Theorem 1.2, $r=3$        | `ThreeDegenerateGraphsTarget.threeDegenerateExtremalCounterexample_sharp`  | [`proofs/Theorem12r3.lean`](proofs/Theorem12r3.lean)   |
-| Theorem 1.3(a)            | `DegeneracyLaw.width_tendsto_unconditional_full`                           | [`proofs/Theorem13a.lean`](proofs/Theorem13a.lean)     |
-| Theorem 1.3(a), sharpness | `DegeneracyLawSuper.threshold_sharp`                                       | [`proofs/lib/WindowSharp.lean`](proofs/lib/WindowSharp.lean)   |
-| Theorem 1.3(b)            | `DegeneracyLawB.eight_rsq_epsMax_theta_tendsto`                            | [`proofs/Theorem13b.lean`](proofs/Theorem13b.lean)     |
-| Corollary 1.4             | `RDegenerateGraphsTarget.twoTierExtremalCounterexample`                    | [`proofs/Corollary14.lean`](proofs/Corollary14.lean)   |
+For the graph statements, $H$ is finite, connected, and bipartite, constants are
+positive, and bounds hold for every sufficiently large $n$.
 
-"Degeneracy exactly $r$" is carried literally as
-`IsDegenerate r H ∧ ¬ IsDegenerate (r-1) H`, and the exponents appear as
-written.
+| Mathematical statement | Lean statement and explanation |
+| --- | --- |
+| Every $r\ge2$: exact degeneracy $r$ with $\operatorname{ex}(n;H)\ge c n^{2-1/r+1/(28r^2)}$ | [All-r comparison](challenges/AllR/): `rDegenerateExtremalCounterexample` |
+| Degeneracy at most 3 with $\operatorname{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $\varepsilon>0$ | [3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample` |
+| Exact degeneracy 3 with $\operatorname{ex}(n;H)\ge c n^{5/3+1/160}$ | [Sharp 3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample_sharp` |
+| For $0<\lambda$ with $\lambda\log 2<1$, $r^2\mathrm{width}(r,\lambda)\to\lambda^4(\log 2)^3/64$ | [Window-law comparison](challenges/WindowLaw/): `width_tendsto` |
+| For every fixed $\theta\in\mathbb R$, $8r^2\varepsilon_r^{\max}(\beta_\theta)\to1-\theta$ | [Family-law comparison](challenges/FamilyLaw/): `eight_rsq_epsMax_tendsto` |
 
-- Build: `lake exe cache get && lake build` (toolchain pinned by
-  `lean-toolchain`). The default targets are sorry-free; the declaration
-  inventory is [`formalization.yaml`](formalization.yaml). CI builds on pushes
-  to `main` and pull requests, audits the two main
-  counterexample theorems with `#print axioms`, then runs Comparator in the
-  same workspace to reuse the built modules. Verification logs are uploaded
-  as the `proof-verification` artifact.
-- Challenges: each theorem is frozen as a standalone
-  [Comparator](https://github.com/leanprover/comparator) statement in
-  [`challenges/`](challenges/) (each ends in an intentional `sorry`) and
-  discharged verbatim by the corresponding `Solution*.lean`:
-  `for c in challenges/challenge*.json; do lake env comparator $c; done`.
-  Challenge 5 additionally checks exact degeneracy at $r=3$ and the sharp
-  $1/160$ gain. Human review includes reading the five challenge statements
-  ([`challenges/NOTES_FOR_REVIEWER.md`](challenges/NOTES_FOR_REVIEWER.md)).
-- Independent numerics: `python3 tests/numerics_check.py` re-computes the
-  window, ledger, and degeneracy claims outside Lean.
+Each topic separates `Definitions.lean`, `Challenge.lean`, and `Solution.lean`.
+The challenge's mathematical definitions import only Mathlib. The solution
+supplies the same statement from the existing proof, without importing the
+challenge's intentional placeholders. For example, exact degeneracy remains
+visible as `IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H`.
+
+[Comparator](https://github.com/leanprover/comparator) checks the statements and
+their definitions, permits only `propext`, `Classical.choice`, and `Quot.sound`,
+and replays the proofs through Lean's kernel. Four comparisons cover all five
+theorems; the original and sharp 3-degenerate results are checked together.
+
+The [CI workflow](.github/workflows/build.yml) runs on pushes to `main` and pull
+requests. It builds the development, audits the two counterexample endpoints
+with `#print axioms`, and runs Comparator in the same workspace to reuse the
+built modules. The `proof-verification` artifact contains both audit and
+comparison logs. See [running the comparisons](challenges/README.md#running-the-comparisons)
+for commands and requirements.
+
+The full declaration inventory is [formalization.yaml](formalization.yaml).
+Other formalized results include the [supercritical threshold](proofs/lib/WindowSharp.lean)
+and [two-tier counterexample](proofs/Corollary14.lean).
+[The numerical harness](tests/numerics_check.py) independently recomputes window,
+ledger, and degeneracy quantities; these numerical checks are not proofs.
 
 ## Instantiated towers
 
@@ -420,7 +425,7 @@ All Lean sources live under [`proofs/`](proofs/):
   because it is independent, so the $r=3$ result does not rest on a single
   chain.
 
-Tests are in `tests/` and the frozen Comparator statements in `challenges/`.
+Tests are in `tests/` and the Comparator specifications in [`challenges/`](challenges/).
 
 ## Acknowledgments
 

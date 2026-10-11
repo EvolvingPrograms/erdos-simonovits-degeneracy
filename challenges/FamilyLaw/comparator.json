@@ -1,0 +1,13 @@
+{
+  "challenge_module": "FamilyLaw.Challenge",
+  "solution_module": "FamilyLaw.Solution",
+  "theorem_names": [
+    "FamilyLaw.eight_rsq_epsMax_tendsto"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

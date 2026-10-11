@@ -43,56 +43,14 @@ name = "ChallengeFaithful"
 srcDir = "tests"
 roots = ["ChallengeFaithful"]
 
-# --- Comparator challenge/solution pairs (see challenges/*.json) -----------
-# Frozen statement files (each ends in an intentional `sorry`) live in
-# challenges/; the solutions restate them verbatim and prove them.
-
+# Comparator specifications and solutions are grouped by mathematical topic.
+# Kept out of defaultTargets because Challenge modules contain intentional sorry.
 [[lean_lib]]
-name = "K_ThreeDegenerateGraphs"
+name = "Comparison"
 srcDir = "challenges"
-roots = ["K_ThreeDegenerateGraphs"]
-
-[[lean_lib]]
-name = "K_RDegenerateGraphs"
-srcDir = "challenges"
-roots = ["K_RDegenerateGraphs"]
-
-[[lean_lib]]
-name = "K_WindowLaw"
-srcDir = "challenges"
-roots = ["K_WindowLaw"]
-
-[[lean_lib]]
-name = "K_FamilyLaw"
-srcDir = "challenges"
-roots = ["K_FamilyLaw"]
-
-[[lean_lib]]
-name = "Solution1"
-srcDir = "proofs"
-roots = ["Solution1"]
-
-[[lean_lib]]
-name = "Solution2"
-srcDir = "proofs"
-roots = ["Solution2"]
-
-[[lean_lib]]
-name = "Solution3"
-srcDir = "proofs"
-roots = ["Solution3"]
-
-[[lean_lib]]
-name = "Solution4"
-srcDir = "proofs"
-roots = ["Solution4"]
-
-[[lean_lib]]
-name = "K_ThreeDegenerateSharp"
-srcDir = "challenges"
-roots = ["K_ThreeDegenerateSharp"]
-
-[[lean_lib]]
-name = "Solution5"
-srcDir = "proofs"
-roots = ["Solution5"]
+roots = [
+  "AllR.Definitions", "AllR.Challenge", "AllR.Solution",
+  "ThreeDegenerate.Definitions", "ThreeDegenerate.Challenge", "ThreeDegenerate.Solution",
+  "WindowLaw.Definitions", "WindowLaw.Challenge", "WindowLaw.Solution",
+  "FamilyLaw.Definitions", "FamilyLaw.Challenge", "FamilyLaw.Solution",
+]

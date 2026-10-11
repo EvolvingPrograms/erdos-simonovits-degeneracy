@@ -1,0 +1,13 @@
+{
+  "challenge_module": "WindowLaw.Challenge",
+  "solution_module": "WindowLaw.Solution",
+  "theorem_names": [
+    "WindowLaw.width_tendsto"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}

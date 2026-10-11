@@ -1,24 +1,14 @@
-import K_ThreeDegenerateGraphs
+import ThreeDegenerate.Challenge
 import Theorem12r3
 
 /-!
-# Mechanical faithfulness check for the challenge statement
+# Faithfulness of the original 3-degenerate challenge
 
-`K_ThreeDegenerateGraphs.lean` is the frozen challenge file: it defines
-degeneracy from scratch and states Theorem 1.2 at `r = 3`, ending in an intentional
-`sorry`.  `Theorem12r3.lean` restates it token-for-token in the
-`ThreeDegenerateGraphsTarget` namespace and proves it.
+The proved theorem must have the challenge's type. `type_of%` reads only the
+statement, so the challenge's intentional `sorry` is not used as a proof.
+The graph definitions are in `ThreeDegenerate.Definitions`.
 
-This file replaces "faithfulness is checkable by diffing the two
-statements" with a kernel check: the proven theorem is asserted to have
-**exactly the type of the challenge theorem** (`type_of%` reads the type
-off the challenge declaration itself, so any drift between the two files
-fails to compile here).  The challenge's own `sorry` is irrelevant to this
-check — only its *statement* is used.
-
-Built by `lake build ChallengeFaithful` (kept out of the default targets
-so the default build stays free of the challenge file's intentional
-`sorry`); CI builds it alongside `Challenge`.
+CI builds this check with `lake build ChallengeFaithful`.
 -/
 
 open ThreeDegenerateGraphs in

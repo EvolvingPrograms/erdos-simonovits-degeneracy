@@ -21,7 +21,7 @@ jobs:
       # solutions, and the kernel-checked faithfulness test that the proven
       # theorem has exactly the challenge's type.
       - name: Build challenge statements and solutions
-        run: lake build K_ThreeDegenerateGraphs K_RDegenerateGraphs K_WindowLaw K_FamilyLaw K_ThreeDegenerateSharp ChallengeFaithful Solution1 Solution2 Solution3 Solution4 Solution5
+        run: lake build Comparison ChallengeFaithful
       - name: Audit counterexample theorem axioms
         run: python3 scripts/audit_axioms.py 2>&1 | tee axiom-audit.txt
       - name: Compare statements and replay proofs

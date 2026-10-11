@@ -13,11 +13,13 @@ Specifically, as of upstream commit
   proofs/lib/CompactnessAndDegeneracy.lean
       Copied unmodified from CompactnessAndDegeneracy.lean.
 
-  challenges/K_ThreeDegenerateGraphs.lean
+  challenges/ThreeDegenerate/Definitions.lean
+  challenges/ThreeDegenerate/Challenge.lean
       Modified from ComparatorChallenges/J_TwoDegenerateGraphs.lean:
-      restated at r = 3, renamed, and given a new module docstring.
+      restated at r = 3, renamed, and split into definitions and statements.
 
-  challenges/K_RDegenerateGraphs.lean
+  challenges/AllR/Definitions.lean
+  challenges/AllR/Challenge.lean
       Modified further from the above: restated at general r.
 
 All other files in this repository are original work.

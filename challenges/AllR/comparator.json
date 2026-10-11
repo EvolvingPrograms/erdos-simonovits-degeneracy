@@ -1,0 +1,13 @@
+{
+  "challenge_module": "AllR.Challenge",
+  "solution_module": "AllR.Solution",
+  "theorem_names": [
+    "RDegenerateGraphs.rDegenerateExtremalCounterexample"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": false
+}
