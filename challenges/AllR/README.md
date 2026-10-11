@@ -4,7 +4,7 @@ For every integer $r \ge 2$, there is a finite connected bipartite graph $H_r$
 of **degeneracy exactly $r$** and a constant $c>0$ such that, for all sufficiently
 large $n$,
 
-$$\operatorname{ex}(n;H_r) \ge c\,n^{2-1/r+1/(28r^2)}.$$
+$$\mathrm{ex}(n;H_r) \ge c\,n^{2-1/r+1/(28r^2)}.$$
 
 The positive gain $1/(28r^2)$ makes the exponent strictly larger than
 the conjectured $2-1/r$.
@@ -20,7 +20,7 @@ The graph and the constant may depend on $r$, but not on $n$.
 | Degeneracy exactly $r$ | `IsDegenerate r H ∧ ¬ IsDegenerate (r - 1) H` |
 | A positive constant independent of $n$ | `∃ c : ℝ, 0 < c ∧ ...` |
 | For every sufficiently large natural number $n$ | `∀ᶠ n : ℕ in atTop, ...` |
-| Extremal number $\operatorname{ex}(n;H)$, viewed as a real number | `(extremalNumber n H : ℝ)` |
+| Extremal number $\mathrm{ex}(n;H)$, viewed as a real number | `(extremalNumber n H : ℝ)` |
 
 [The degeneracy definition](Definitions.lean) says that every nonempty finite
 vertex set contains a vertex with at most $r$ neighbours in that set:

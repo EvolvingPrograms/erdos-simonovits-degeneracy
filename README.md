@@ -342,9 +342,9 @@ positive, and bounds hold for every sufficiently large $n$.
 
 | Mathematical statement | Lean statement and explanation |
 | --- | --- |
-| Every $r\ge2$: exact degeneracy $r$ with $\operatorname{ex}(n;H)\ge c n^{2-1/r+1/(28r^2)}$ | [All-r comparison](challenges/AllR/): `rDegenerateExtremalCounterexample` |
-| Degeneracy at most 3 with $\operatorname{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $\varepsilon>0$ | [3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample` |
-| Exact degeneracy 3 with $\operatorname{ex}(n;H)\ge c n^{5/3+1/160}$ | [Sharp 3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample_sharp` |
+| Every $r\ge2$: exact degeneracy $r$ with $\mathrm{ex}(n;H)\ge c n^{2-1/r+1/(28r^2)}$ | [All-r comparison](challenges/AllR/): `rDegenerateExtremalCounterexample` |
+| Degeneracy at most 3 with $\mathrm{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $\varepsilon>0$ | [3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample` |
+| Exact degeneracy 3 with $\mathrm{ex}(n;H)\ge c n^{5/3+1/160}$ | [Sharp 3-degenerate comparison](challenges/ThreeDegenerate/): `threeDegenerateExtremalCounterexample_sharp` |
 | For $0<\lambda$ with $\lambda\log 2<1$, $r^2\mathrm{width}(r,\lambda)\to\lambda^4(\log 2)^3/64$ | [Window-law comparison](challenges/WindowLaw/): `width_tendsto` |
 | For every fixed $\theta\in\mathbb R$, $8r^2\varepsilon_r^{\max}(\beta_\theta)\to1-\theta$ | [Family-law comparison](challenges/FamilyLaw/): `eight_rsq_epsMax_tendsto` |
 

@@ -14,9 +14,9 @@ $(r-1)$-degenerate.
 
 | Topic | Mathematical statement | Lean declaration |
 | --- | --- | --- |
-| [Every degeneracy](AllR/) | For every $r\ge2$, some $H$ of exact degeneracy $r$ satisfies $\operatorname{ex}(n;H)\ge c n^{2-1/r+1/(28r^2)}$ | [`rDegenerateExtremalCounterexample`](AllR/Challenge.lean) |
-| [Degeneracy 3](ThreeDegenerate/) | Some 3-degenerate $H$ satisfies $\operatorname{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $\varepsilon>0$ | [`threeDegenerateExtremalCounterexample`](ThreeDegenerate/Challenge.lean) |
-| [Sharp degeneracy 3](ThreeDegenerate/) | Some $H$ of exact degeneracy 3 satisfies $\operatorname{ex}(n;H)\ge c n^{5/3+1/160}$ | [`threeDegenerateExtremalCounterexample_sharp`](ThreeDegenerate/Challenge.lean) |
+| [Every degeneracy](AllR/) | For every $r\ge2$, some $H$ of exact degeneracy $r$ satisfies $\mathrm{ex}(n;H)\ge c n^{2-1/r+1/(28r^2)}$ | [`rDegenerateExtremalCounterexample`](AllR/Challenge.lean) |
+| [Degeneracy 3](ThreeDegenerate/) | Some 3-degenerate $H$ satisfies $\mathrm{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $\varepsilon>0$ | [`threeDegenerateExtremalCounterexample`](ThreeDegenerate/Challenge.lean) |
+| [Sharp degeneracy 3](ThreeDegenerate/) | Some $H$ of exact degeneracy 3 satisfies $\mathrm{ex}(n;H)\ge c n^{5/3+1/160}$ | [`threeDegenerateExtremalCounterexample_sharp`](ThreeDegenerate/Challenge.lean) |
 | [Window law](WindowLaw/) | For $0<\lambda$ and $\lambda\log 2<1$, $r^2\mathrm{width}(r,\lambda)\to\lambda^4(\log 2)^3/64$ | [`width_tendsto`](WindowLaw/Challenge.lean) |
 | [Family law](FamilyLaw/) | For every fixed $\theta\in\mathbb R$, $8r^2\varepsilon_r^{\max}(\beta_\theta)\to1-\theta$ | [`eight_rsq_epsMax_tendsto`](FamilyLaw/Challenge.lean) |
 

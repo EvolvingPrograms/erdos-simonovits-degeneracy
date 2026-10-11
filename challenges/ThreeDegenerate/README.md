@@ -11,8 +11,8 @@ sufficiently large natural number $n$.
 
 | Statement | Degeneracy in Lean | Exponent in Lean | Declaration |
 | --- | --- | --- | --- |
-| Some 3-degenerate $H$ satisfies $\operatorname{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $c,\varepsilon>0$ | `IsThreeDegenerate H` | `(5 : ℝ) / 3 + ε` | `threeDegenerateExtremalCounterexample` |
-| Some $H$ of degeneracy exactly 3 satisfies $\operatorname{ex}(n;H)\ge c n^{5/3+1/160}$ for some $c>0$ | `IsDegenerate 3 H ∧ ¬ IsDegenerate 2 H` | `(5 : ℝ) / 3 + 1 / 160` | `threeDegenerateExtremalCounterexample_sharp` |
+| Some 3-degenerate $H$ satisfies $\mathrm{ex}(n;H)\ge c n^{5/3+\varepsilon}$ for some $c,\varepsilon>0$ | `IsThreeDegenerate H` | `(5 : ℝ) / 3 + ε` | `threeDegenerateExtremalCounterexample` |
+| Some $H$ of degeneracy exactly 3 satisfies $\mathrm{ex}(n;H)\ge c n^{5/3+1/160}$ for some $c>0$ | `IsDegenerate 3 H ∧ ¬ IsDegenerate 2 H` | `(5 : ℝ) / 3 + 1 / 160` | `threeDegenerateExtremalCounterexample_sharp` |
 
 The namespace is `ThreeDegenerateGraphs`. In [Definitions.lean](Definitions.lean),
 `IsDegenerate r H` means that every nonempty finite vertex set contains a vertex
